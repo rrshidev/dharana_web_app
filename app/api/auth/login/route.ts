@@ -14,8 +14,9 @@ export async function POST(req: NextRequest) {
   let body: { email: string; password: string };
   try {
     body = await req.json();
-  } catch {
-    return NextResponse.json({ ok: false, detail: "auth.errorGeneric" }, { status: 400 });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ ok: false, detail: `body_parse_error: ${msg}` }, { status: 400 });
   }
 
   const res = await fetch(`${API_URL}${API_PREFIX}/auth/login`, {
