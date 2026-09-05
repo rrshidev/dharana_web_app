@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-night: #1a1b2e;
+  --color-night-soft: #252640;
+  --color-night-line: rgb(237 234 242 / 0.08);
+  --color-accent: #e8a87c;
+  --color-sage: #85c88a;
+  --color-ink: #edeaf2;
+  --color-muted: #a8a5bc;
+  --color-telegram: #2aabee;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--color-night);
+  color: var(--color-ink);
+}

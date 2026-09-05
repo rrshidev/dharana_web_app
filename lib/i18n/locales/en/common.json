@@ -1,0 +1,40 @@
+{
+  "brand": "Dharana",
+  "nav": {
+    "features": "Features",
+    "channels": "Platforms",
+    "contacts": "Contacts"
+  },
+  "hero": {
+    "eyebrow": "Yoga assistant",
+    "title": "Inhale. Exhale. Practice.",
+    "subtitle": "Dharana is a companion for your daily yoga practice: an asana catalog with instructions, ready-made sequences, a practice timer and a personal sequence generator.",
+    "botCta": "Open in Telegram",
+    "appCta": "Download the app"
+  },
+  "features": {
+    "title": "Features",
+    "items": [
+      { "title": "Asana catalog", "text": "Dozens of asanas with photos, descriptions, breathing technique and contraindications." },
+      { "title": "Ready sequences", "text": "Morning, evening, back and balance sequences — pick one and practice." },
+      { "title": "Practice timer", "text": "A built-in timer will guide you from warm-up to savasana." },
+      { "title": "Generator", "text": "Build your own sequence for your goals in seconds." }
+    ]
+  },
+  "channels": {
+    "title": "Practice your way",
+    "botTitle": "Telegram bot",
+    "botText": "Quick asana cards, guided practice with a timer and subscription — right in your favourite messenger.",
+    "appTitle": "Mobile app",
+    "appText": "Full practice, sequences and a generator for Android.",
+    "appHint": "Direct APK download — a temporary option until the Google Play release."
+  },
+  "contacts": {
+    "title": "Contacts",
+    "text": "Message us on Telegram — we'll help you find the right practice and answer your questions.",
+    "bot": "Open the bot"
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  }
+}
