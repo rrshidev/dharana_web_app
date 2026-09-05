@@ -23,6 +23,12 @@ export function Header({ locale, t }: { locale: Locale; t: T }) {
           <Link href={`/${locale}#contacts`} className="hidden text-muted transition-colors hover:text-ink sm:block">
             {t("nav.contacts")}
           </Link>
+          <Link href={`/${locale}/catalog`} className="hidden text-muted transition-colors hover:text-ink sm:block">
+            {t("nav.catalog")}
+          </Link>
+          <Link href={`/${locale}/login`} className="rounded-full border border-night-line px-3 py-1 text-xs font-medium text-muted transition-colors hover:text-ink sm:block">
+            {t("nav.login")}
+          </Link>
           <Link
             href={`/${other}`}
             className="rounded-full border border-night-line px-3 py-1 text-xs font-medium text-muted transition-colors hover:text-ink"

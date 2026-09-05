@@ -3,7 +3,9 @@
   "nav": {
     "features": "Возможности",
     "channels": "Платформы",
-    "contacts": "Контакты"
+    "contacts": "Контакты",
+    "catalog": "Каталог",
+    "login": "Войти"
   },
   "hero": {
     "eyebrow": "Йога-ассистент",
@@ -36,5 +38,52 @@
   },
   "footer": {
     "rights": "Все права защищены."
+  },
+  "categories": {
+    "sit_lie+": "Сидя и лёжа",
+    "stay+": "Стоя",
+    "hand+": "Балансы на руках",
+    "coup+": "Перевёрнутые",
+    "sag+": "Прогибы",
+    "power+": "Силовые"
+  },
+  "catalog": {
+    "title": "Каталог асан",
+    "searchPlaceholder": "Поиск асаны…",
+    "all": "Все",
+    "filter": "Категория",
+    "search": "Найти",
+    "reset": "Сбросить",
+    "none": "Ничего не найдено. Попробуйте изменить фильтры.",
+    "listError": "Не удалось загрузить каталог. Попробуйте позже."
+  },
+  "asana": {
+    "backToCatalog": "← В каталог",
+    "notFound": "Асана не найдена",
+    "difficulty": "Сложность",
+    "effects": "Эффекты",
+    "contraindications": "Противопоказания",
+    "description": "Описание",
+    "noDescription": "Описание скоро появится.",
+    "noPhoto": "Фото скоро появится."
+  },
+  "auth": {
+    "loginTitle": "Вход",
+    "registerTitle": "Регистрация",
+    "emailLabel": "Email",
+    "passwordLabel": "Пароль",
+    "nameLabel": "Имя",
+    "enter": "Войти",
+    "create": "Создать аккаунт",
+    "hasAccount": "Уже есть аккаунт?",
+    "noAccount": "Нет аккаунта?",
+    "goLogin": "Войти",
+    "goRegister": "Зарегистрироваться",
+    "errorEmailRegistered": "Email уже зарегистрирован",
+    "errorInvalid": "Неверный email или пароль",
+    "errorGeneric": "Что-то пошло не так. Попробуйте ещё раз.",
+    "emailRequired": "Введите email",
+    "passwordRequired": "Введите пароль (минимум 6 символов)",
+    "nameRequired": "Введите имя"
   }
 }

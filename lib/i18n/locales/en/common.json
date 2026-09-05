@@ -3,7 +3,9 @@
   "nav": {
     "features": "Features",
     "channels": "Platforms",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "catalog": "Catalog",
+    "login": "Sign in"
   },
   "hero": {
     "eyebrow": "Yoga assistant",
@@ -36,5 +38,52 @@
   },
   "footer": {
     "rights": "All rights reserved."
+  },
+  "categories": {
+    "sit_lie+": "Seated & lying",
+    "stay+": "Standing",
+    "hand+": "Arm balances",
+    "coup+": "Inversions",
+    "sag+": "Backbends",
+    "power+": "Power"
+  },
+  "catalog": {
+    "title": "Asana catalog",
+    "searchPlaceholder": "Search asana…",
+    "all": "All",
+    "filter": "Category",
+    "search": "Search",
+    "reset": "Reset",
+    "none": "Nothing found. Try changing filters.",
+    "listError": "Failed to load catalog. Please try again later."
+  },
+  "asana": {
+    "backToCatalog": "← Back to catalog",
+    "notFound": "Asana not found",
+    "difficulty": "Difficulty",
+    "effects": "Effects",
+    "contraindications": "Contraindications",
+    "description": "Description",
+    "noDescription": "Description coming soon.",
+    "noPhoto": "Photo coming soon."
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "registerTitle": "Create account",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "nameLabel": "Name",
+    "enter": "Sign in",
+    "create": "Create account",
+    "hasAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "goLogin": "Sign in",
+    "goRegister": "Create account",
+    "errorEmailRegistered": "Email is already registered",
+    "errorInvalid": "Invalid email or password",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "emailRequired": "Enter your email",
+    "passwordRequired": "Enter a password (min 6 characters)",
+    "nameRequired": "Enter your name"
   }
 }
