@@ -35,12 +35,12 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   const search = sp.search || undefined;
   const difficulty = sp.difficulty ? Number(sp.difficulty) : undefined;
 
-  const spQuery = new URLSearchParams();
-  if (category) spQuery.set("category", category);
-  if (search) spQuery.set("search", search);
-  if (difficulty) spQuery.set("difficulty", String(difficulty));
-  const qs = spQuery.toString();
-  await requireAuth(locale, `/${locale}/catalog${qs ? `?${qs}` : ""}`);
+  const spQuery: string[] = [];
+  if (category) spQuery.push(`category=${category}`);
+  if (search) spQuery.push(`search=${search}`);
+  if (difficulty) spQuery.push(`difficulty=${difficulty}`);
+  const nextPath = `/${locale}/catalog${spQuery.length ? `?${spQuery.join("&")}` : ""}`;
+  await requireAuth(locale, nextPath);
 
   const { t } = await getServerTranslation(locale);
 

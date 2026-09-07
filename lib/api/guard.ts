@@ -5,6 +5,7 @@ import { AUTH_COOKIE } from "./media";
 /**
  * Redirects guests to /login?next=<target>. Must be awaited inside a
  * force-dynamic server component before rendering protected content.
+ * `next` should be a RAW target path (unencoded) — encoding happens here once.
  */
 export async function requireAuth(locale: string, next: string): Promise<void> {
   const cookieStore = await cookies();

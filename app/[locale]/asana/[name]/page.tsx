@@ -23,7 +23,7 @@ export default async function AsanaPage({ params }: Props) {
   const { locale, name } = await params;
   if (!isLocale(locale)) notFound();
 
-  await requireAuth(locale, `/${locale}/asana/${encodeURIComponent(name)}`);
+  await requireAuth(locale, `/${locale}/asana/${name}`);
 
   const { t } = await getServerTranslation(locale);
   let asana: Awaited<ReturnType<typeof getAsanaDetail>>;
