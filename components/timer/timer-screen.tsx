@@ -193,6 +193,9 @@ export function TimerScreen({
       stopTimer();
       setRunning(false);
       setMode("idle");
+      if (!mutedRef.current) playGong();
+      if (hidden) notify(labels.notifyComplete);
+      if (hidden) vibrate(300);
       void saveAndSummarize(st.completed, st.durations);
     }
   };
