@@ -30,6 +30,14 @@ export function UserNav({ locale, labels }: { locale: Locale; labels: UserNavLab
     };
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } finally {
+      window.location.assign(`/${locale}`);
+    }
+  };
+
   if (state === "loading") {
     return (
       <span
@@ -51,8 +59,7 @@ export function UserNav({ locale, labels }: { locale: Locale; labels: UserNavLab
         <button
           type="button"
           onClick={() => {
-            void fetch("/api/auth/logout", { method: "POST" });
-            window.location.assign(`/${locale}`);
+            void handleLogout();
           }}
           className="rounded-full border border-night-line px-3 py-1 text-xs font-medium text-muted transition-colors hover:text-ink"
         >
