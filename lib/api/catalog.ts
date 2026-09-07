@@ -39,6 +39,7 @@ interface MaybeError {
 export async function getAsanas(params: {
   category?: string;
   difficulty?: number;
+  effect?: string;
   search?: string;
   limit?: number;
   offset?: number;
@@ -46,6 +47,7 @@ export async function getAsanas(params: {
   const qs = new URLSearchParams();
   if (params.category) qs.set("category", params.category);
   if (params.difficulty) qs.set("difficulty", String(params.difficulty));
+  if (params.effect) qs.set("effect", params.effect);
   if (params.search) qs.set("search", params.search);
   qs.set("limit", String(params.limit ?? 24));
   qs.set("offset", String(params.offset ?? 0));
@@ -53,6 +55,11 @@ export async function getAsanas(params: {
   return data.error
     ? { total: 0, items: [], limit: params.limit ?? 24, offset: params.offset ?? 0 }
     : { total: data.total, items: data.items, limit: data.limit, offset: data.offset };
+}
+
+export async function getRandomAsana(): Promise<AsanaDetail | null> {
+  const data = await apiFetch<AsanaDetail & MaybeError>("/asanas/random");
+  return data.error ? null : data;
 }
 
 export async function getAsanaDetail(name: string): Promise<AsanaDetail | null> {

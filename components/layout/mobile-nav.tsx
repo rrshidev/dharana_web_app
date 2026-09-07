@@ -4,23 +4,26 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Locale } from "@/lib/i18n/settings";
-import { GridIcon, HeartIcon, UserIcon } from "@/components/icons";
+import { HomeIcon, TimerIcon, HeartIcon, UserIcon } from "@/components/icons";
 
 export interface MobileNavLabels {
-  catalog: string;
+  overview: string;
+  timer: string;
   favorites: string;
   profile: string;
 }
 
-const items: Array<{ key: string; icon: typeof GridIcon; match: (path: string) => boolean }> = [
-  { key: "catalog", icon: GridIcon, match: (p) => p.endsWith("/catalog") },
+const items: Array<{ key: string; icon: typeof HomeIcon; match: (path: string) => boolean }> = [
+  { key: "overview", icon: HomeIcon, match: (p) => p.endsWith("/overview") },
+  { key: "timer", icon: TimerIcon, match: (p) => p.endsWith("/timer") },
   { key: "favorites", icon: HeartIcon, match: (p) => p.endsWith("/favorites") },
   { key: "profile", icon: UserIcon, match: (p) => p.includes("/profile") },
 ];
 
 /**
  * App-like fixed bottom tab bar — shown only for authenticated users on
- * mobile (sm hidden). Mirrors the phone app's main navigation.
+ * mobile (sm hidden). Mirrors the phone app's main navigation (Главная /
+ * Таймер / Избранное / Профиль).
  */
 export function MobileNav({ locale, labels }: { locale: Locale; labels: MobileNavLabels }) {
   const pathname = usePathname();
@@ -43,8 +46,14 @@ export function MobileNav({ locale, labels }: { locale: Locale; labels: MobileNa
 
   if (!authed) return null;
 
-  const label = (key: string) =>
-    key === "catalog" ? labels.catalog : key === "favorites" ? labels.favorites : labels.profile;
+  const label = (key: string): string =>
+    key === "overview"
+      ? labels.overview
+      : key === "timer"
+        ? labels.timer
+        : key === "favorites"
+          ? labels.favorites
+          : labels.profile;
 
   return (
     <>
@@ -53,7 +62,7 @@ export function MobileNav({ locale, labels }: { locale: Locale; labels: MobileNa
         className="fixed inset-x-0 bottom-0 z-30 border-t border-night-line bg-night/95 pb-[env(safe-area-inset-bottom)] backdrop-blur sm:hidden"
         aria-label="Основная навигация"
       >
-        <div className="mx-auto grid h-[3.75rem] max-w-md grid-cols-3">
+        <div className="mx-auto grid h-[3.75rem] max-w-md grid-cols-4">
           {items.map(({ key, icon: Icon, match }) => {
             const href = `/${locale}/${key}`;
             const active = match(pathname);

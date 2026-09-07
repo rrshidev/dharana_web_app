@@ -111,3 +111,48 @@ export function CameraIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function HomeIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base(props)}>
+      <path d="M3.5 10.5 12 3l8.5 7.5" />
+      <path d="M5.5 9v11h13V9" />
+      <path d="M10 20v-6h4v6" />
+    </svg>
+  );
+}
+
+export function TimerIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base(props)}>
+      <circle cx="12" cy="13" r="8" />
+      <path d="M12 9v4l2.5 2.5" />
+      <path d="M9 2h6" />
+      <path d="M12 2v3" />
+    </svg>
+  );
+}
+
+export function FilmIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base(props)}>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M7 4v16" />
+      <path d="M17 4v16" />
+      <path d="M3 9h4" />
+      <path d="M3 15h4" />
+      <path d="M17 9h4" />
+      <path d="M17 15h4" />
+    </svg>
+  );
+}
+
+export function FilterIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base(props)}>
+      <path d="M4 6h16" />
+      <path d="M7 12h10" />
+      <path d="M10 18h4" />
+    </svg>
+  );
+}

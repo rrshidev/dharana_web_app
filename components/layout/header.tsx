@@ -30,6 +30,8 @@ export function Header({ locale, t }: { locale: Locale; t: T }) {
           <UserNav
             locale={locale}
             links={[
+              { href: `/${locale}/overview`, label: t("nav.overview") },
+              { href: `/${locale}/timer`, label: t("nav.timer") },
               { href: `/${locale}/catalog`, label: t("nav.catalog") },
               { href: `/${locale}/favorites`, label: t("nav.favorites") },
               { href: `/${locale}/profile`, label: t("nav.profile") },

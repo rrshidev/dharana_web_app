@@ -118,7 +118,8 @@ export default async function LocaleLayout({
         <MobileNav
           locale={locale}
           labels={{
-            catalog: t("nav.catalog"),
+            overview: t("nav.overview"),
+            timer: t("nav.timer"),
             favorites: t("nav.favorites"),
             profile: t("nav.profile"),
           }}
