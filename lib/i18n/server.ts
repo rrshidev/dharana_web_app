@@ -16,7 +16,7 @@ export function createI18n(locale: Locale = defaultLocale, ns = "common"): i18n 
     ns,
     defaultNS: ns,
     resources,
-    interpolation: { escapeValue: false },
+    interpolation: { escapeValue: false, prefix: "{", suffix: "}" },
   });
   return instance;
 }
