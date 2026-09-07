@@ -113,7 +113,8 @@ export function TimerScreen({
   const handlePhaseComplete = () => {
     const st = stateRef.current;
     if (st.mode === "asana") {
-      const step = asanas[st.currentIndex];
+      const idx = st.currentIndex;
+      const step = asanas[idx];
       if (!step) return;
       const newCompleted = [...st.completed, step.name];
       const newDurations = {
@@ -123,15 +124,20 @@ export function TimerScreen({
       setCompleted(newCompleted);
       setDurations(newDurations);
 
-      if (st.currentIndex < asanas.length - 1) {
-        const rest = asanas[st.currentIndex].rest_seconds;
-        beginPhase("rest", rest);
+      if (idx < asanas.length - 1) {
+        beginPhase("rest", step.rest_seconds);
       } else {
         beginPhase("compensation", 10);
       }
     } else if (st.mode === "rest") {
-      const next = asanas[st.currentIndex + 1];
-      if (next) beginPhase("asana", next.duration_seconds);
+      const nextIndex = st.currentIndex + 1;
+      const next = asanas[nextIndex];
+      if (next) {
+        setCurrentIndex(nextIndex);
+        beginPhase("asana", next.duration_seconds);
+      } else {
+        beginPhase("compensation", 10);
+      }
     } else if (st.mode === "compensation") {
       stopTimer();
       setRunning(false);
