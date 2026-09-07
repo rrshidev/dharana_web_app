@@ -17,6 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { t } = await getServerTranslation(locale);
   return {
     title: `${normalizePathParam(name)} — ${t("catalog.title")} — ${t("brand")}`,
+    robots: { index: false, follow: false },
   };
 }
 

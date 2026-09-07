@@ -1,0 +1,35 @@
+# Dharana (dharana.ru)
+
+# Всё открыто по умолчанию для поисковых роботов и AI-краулеров.
+
+# Личные разделы (требуют входа/личные данные) — не индексировать.
+Disallow: /ru/login
+Disallow: /en/login
+Disallow: /ru/register
+Disallow: /en/register
+Disallow: /ru/catalog
+Disallow: /en/catalog
+Disallow: /ru/asana
+Disallow: /en/asana
+
+User-agent: GPTBot
+Allow: /
+Delay: 10
+
+User-agent: ChatGPT-User
+Allow: /
+Delay: 10
+
+User-agent: ClaudeBot
+Allow: /
+Delay: 10
+
+User-agent: PerplexityBot
+Allow: /
+Delay: 10
+
+User-agent: Google-Extended
+Allow: /
+
+# Основная карта сайта
+Sitemap: https://dharana.ru/sitemap.xml

@@ -17,7 +17,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const { t } = await getServerTranslation(locale);
-  return { title: `${t("catalog.title")} — ${t("brand")}` };
+  return { title: `${t("catalog.title")} — ${t("brand")}`, robots: { index: false, follow: false } };
 }
 
 function categoryLabel(t: (k: string) => string, cat: { id: string; display_name: string }): string {
