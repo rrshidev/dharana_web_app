@@ -110,29 +110,34 @@ export default async function SubscriptionPage({ params }: Props) {
               {t("subscription.requisitesTitle")}
             </h2>
 
-            <div className="mt-3 flex flex-col gap-2.5">
-              {requisites.length > 0 ? (
-                requisites.map((req) => (
-                  <div key={req.bank} className="flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium">{req.bank}</p>
-                      {req.holder && (
-                        <p className="text-xs text-muted">{t("subscription.requisitesHolder", { holder: req.holder })}</p>
-                      )}
-                    </div>
-                    <CopyButton
-                      value={req.card}
-                      labels={{
-                        copyHint: t("subscription.requisitesCopyHint"),
-                        copied: t("subscription.requisitesCopied"),
-                      }}
-                    />
+            {(() => {
+              const holder = requisites.find((r) => r.holder)?.holder ?? null;
+              return (
+                <div className="mt-3">
+                  {holder && (
+                    <p className="text-sm text-muted">{t("subscription.requisitesHolder", { holder })}</p>
+                  )}
+                  <div className="mt-3 flex flex-col gap-2.5">
+                    {requisites.length > 0 ? (
+                      requisites.map((req) => (
+                        <div key={req.bank} className="flex flex-col gap-1.5">
+                          <p className="text-sm font-medium">{req.bank}</p>
+                          <CopyButton
+                            value={req.card}
+                            labels={{
+                              copyHint: t("subscription.requisitesCopyHint"),
+                              copied: t("subscription.requisitesCopied"),
+                            }}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted">{t("subscription.requisitesUnavailable")}</p>
+                    )}
                   </div>
-                ))
-              ) : (
-                <p className="text-sm text-muted">{t("subscription.requisitesUnavailable")}</p>
-              )}
-            </div>
+                </div>
+              );
+            })()}
           </div>
 
           <div>

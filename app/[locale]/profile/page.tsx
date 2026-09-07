@@ -5,6 +5,7 @@ import { isLocale, type Locale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { requireAuth } from "@/lib/api/guard";
 import { getProfile, getPracticeStats, getSubscriptionStatus } from "@/lib/api/user";
+import { mediaUrl } from "@/lib/api/media";
 import { ProfileActions } from "@/components/profile/profile-actions";
 import { SparkleIcon, CreditCardIcon, ChevronRightIcon } from "@/components/icons";
 
@@ -77,9 +78,17 @@ export default async function ProfilePage({ params }: Props) {
   return (
     <section className="mx-auto max-w-2xl px-6 py-10">
       <div className="flex flex-col items-center text-center">
-        <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-accent/70 to-accent/40 text-4xl font-bold text-night">
-          {initials}
-        </div>
+        {profile.avatar_url ? (
+          <img
+            src={mediaUrl(profile.avatar_url) ?? undefined}
+            alt={name}
+            className="h-24 w-24 rounded-full object-cover ring-2 ring-white/10"
+          />
+        ) : (
+          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-accent/70 to-accent/40 text-4xl font-bold text-night">
+            {initials}
+          </div>
+        )}
         <h1 className="mt-4 text-2xl font-semibold tracking-tight">{name}</h1>
         {profile.username && <p className="mt-0.5 text-sm text-muted">@{profile.username}</p>}
         {memberSince && (
