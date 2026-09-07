@@ -6,7 +6,10 @@ import { AuthForm, type AuthFormLabels } from "@/components/auth/auth-form";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ locale: string }> };
+type Props = {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ next?: string }>;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -14,9 +17,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${t("auth.registerTitle")} — ${t("brand")}` };
 }
 
-export default async function RegisterPage({ params }: Props) {
+export default async function RegisterPage({ params, searchParams }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+
+  const sp = await searchParams;
+  const nextUrl =
+    sp.next && sp.next.startsWith(`/${locale}`) ? sp.next : undefined;
 
   const { t } = await getServerTranslation(locale);
   const labels: AuthFormLabels = {
@@ -40,7 +47,7 @@ export default async function RegisterPage({ params }: Props) {
       <h1 className="mb-8 text-center text-3xl font-semibold tracking-tight">
         {t("auth.registerTitle")}
       </h1>
-      <AuthForm locale={locale} mode="register" labels={labels} />
+      <AuthForm locale={locale} mode="register" labels={labels} nextUrl={nextUrl} />
     </section>
   );
 }

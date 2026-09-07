@@ -5,7 +5,8 @@
     "channels": "Платформы",
     "contacts": "Контакты",
     "catalog": "Каталог",
-    "login": "Войти"
+    "login": "Войти",
+    "logout": "Выйти"
   },
   "hero": {
     "eyebrow": "Йога-ассистент",

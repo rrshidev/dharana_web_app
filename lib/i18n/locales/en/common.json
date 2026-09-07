@@ -5,7 +5,8 @@
     "channels": "Platforms",
     "contacts": "Contacts",
     "catalog": "Catalog",
-    "login": "Sign in"
+    "login": "Sign in",
+    "logout": "Sign out"
   },
   "hero": {
     "eyebrow": "Yoga assistant",

@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
 import type { Locale } from "@/lib/i18n/settings";
 
 export interface AuthFormLabels {
@@ -26,12 +25,13 @@ export function AuthForm({
   locale,
   mode,
   labels,
+  nextUrl,
 }: {
   locale: Locale;
   mode: Mode;
   labels: AuthFormLabels;
+  nextUrl?: string;
 }) {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -77,8 +77,8 @@ export function AuthForm({
         setLoading(false);
         return;
       }
-      router.push(`/${locale}/catalog`);
-      router.refresh();
+      const target = nextUrl || `/${locale}/catalog`;
+      window.location.assign(target);
     } catch {
       setError(labels.errorGeneric);
       setLoading(false);

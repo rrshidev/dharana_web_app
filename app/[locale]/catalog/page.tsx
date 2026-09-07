@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { getCategories, getAsanas, type Category } from "@/lib/api/catalog";
+import { requireAuth } from "@/lib/api/guard";
 import { AsanaCard } from "@/components/catalog/asana-card";
 
 export const dynamic = "force-dynamic";
@@ -33,6 +34,13 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   const category = sp.category || undefined;
   const search = sp.search || undefined;
   const difficulty = sp.difficulty ? Number(sp.difficulty) : undefined;
+
+  const spQuery = new URLSearchParams();
+  if (category) spQuery.set("category", category);
+  if (search) spQuery.set("search", search);
+  if (difficulty) spQuery.set("difficulty", String(difficulty));
+  const qs = spQuery.toString();
+  await requireAuth(locale, `/${locale}/catalog${qs ? `?${qs}` : ""}`);
 
   const { t } = await getServerTranslation(locale);
 

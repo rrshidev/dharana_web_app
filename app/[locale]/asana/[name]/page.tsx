@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { getAsanaDetail } from "@/lib/api/catalog";
+import { requireAuth } from "@/lib/api/guard";
 import { mediaUrl } from "@/lib/api/media";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function AsanaPage({ params }: Props) {
   const { locale, name } = await params;
   if (!isLocale(locale)) notFound();
+
+  await requireAuth(locale, `/${locale}/asana/${encodeURIComponent(name)}`);
 
   const { t } = await getServerTranslation(locale);
   let asana: Awaited<ReturnType<typeof getAsanaDetail>>;
