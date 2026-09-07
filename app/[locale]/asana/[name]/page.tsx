@@ -51,14 +51,12 @@ export default async function AsanaPage({ params }: Props) {
           {t("asana.notFound")}
         </p>
       ) : (
-        <div className="grid gap-8 md:grid-cols-[2fr_3fr]">
+        <div className="flex flex-col gap-8">
           <AsanaPhoto src={img} alt={asana.name} />
 
           <div className="flex flex-col gap-6">
-            <div>
-              <h1 className="text-3xl font-semibold tracking-tight">{asana.name}</h1>
-              <p className="mt-1 text-sm text-muted">{asana.category_name}</p>
-            </div>
+            <h1 className="text-3xl font-semibold tracking-tight">{asana.name}</h1>
+            <p className="mt-1 text-sm text-muted">{asana.category_name}</p>
 
             <div>
               <div className="flex items-center gap-2">
