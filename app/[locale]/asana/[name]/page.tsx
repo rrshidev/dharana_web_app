@@ -6,6 +6,7 @@ import { getServerTranslation } from "@/lib/i18n/server";
 import { getAsanaDetail, normalizePathParam } from "@/lib/api/catalog";
 import { requireAuth } from "@/lib/api/guard";
 import { mediaUrl } from "@/lib/api/media";
+import { AsanaPhoto } from "@/components/asana/asana-photo";
 
 export const dynamic = "force-dynamic";
 
@@ -51,20 +52,7 @@ export default async function AsanaPage({ params }: Props) {
         </p>
       ) : (
         <div className="grid gap-8 md:grid-cols-[2fr_3fr]">
-          <div className="overflow-hidden rounded-2xl border border-night-line bg-night">
-            {img ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={img}
-                alt={asana.name}
-                className="aspect-[4/3] h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex aspect-[4/3] items-center justify-center text-4xl text-muted/40">
-                🧘
-              </div>
-            )}
-          </div>
+          <AsanaPhoto src={img} alt={asana.name} />
 
           <div className="flex flex-col gap-6">
             <div>
