@@ -59,3 +59,16 @@ export async function getAsanaDetail(name: string): Promise<AsanaDetail | null> 
   const data = await apiFetch<AsanaDetail & MaybeError>(`/asanas/${encodeURIComponent(name)}`);
   return data.error ? null : data;
 }
+
+/**
+ * Next может отдать динамический сегмент как URL-encoded (в прод-рантайме
+ * NODE_ENV=production, standalone, params приходят в виде "%D0%92...").
+ * Декодируем один раз: для обычного (декодированного) значения — no-op.
+ */
+export function normalizePathParam(raw: string): string {
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}

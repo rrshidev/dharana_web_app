@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
-import { getAsanaDetail } from "@/lib/api/catalog";
+import { getAsanaDetail, normalizePathParam } from "@/lib/api/catalog";
 import { requireAuth } from "@/lib/api/guard";
 import { mediaUrl } from "@/lib/api/media";
 
@@ -15,12 +15,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, name } = await params;
   const { t } = await getServerTranslation(locale);
   return {
-    title: `${name} — ${t("catalog.title")} — ${t("brand")}`,
+    title: `${normalizePathParam(name)} — ${t("catalog.title")} — ${t("brand")}`,
   };
 }
 
 export default async function AsanaPage({ params }: Props) {
-  const { locale, name } = await params;
+  const { locale, name: rawName } = await params;
+  const name = normalizePathParam(rawName);
   if (!isLocale(locale)) notFound();
 
   await requireAuth(locale, `/${locale}/asana/${name}`);

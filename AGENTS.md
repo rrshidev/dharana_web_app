@@ -18,6 +18,7 @@
 - `middleware.ts` — только для переадресации неизвестных путей на `/ru`. ВАЖНО: **standalone-сборка Next НЕ исполняет middleware** — редирект `https://dharana.ru/` → `/ru` делает Caddy (`redir @root /ru permanent`). Корневого `app/page.tsx` нет намеренно (Next требует root-layout, которого нет при `[locale]`-топ-левеле).
 - **Matcher ОБЯЗАТЕЛЬНО исключает `api`**: `"/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|download).*)"`. Иначе middleware заворачивает `/api/*` в `/ru/api/*` (реальный баг, исправлен 2026-09-06).
 - Не создавать `app/page.tsx`/`app/layout.tsx` рядом с `app/[locale]` без согласования — сломает сборку.
+- **Ловушка декодирования URL-сегментов (реальный баг 2026-09-07)**: под standalone-рантаймом с `NODE_ENV=production` (так деплоится прод — `ENV NODE_ENV=production HOSTNAME=0.0.0.0` в Dockerfile) Next отдаёт динамические `params` **percent-encoded**, а не декодированными (`/ru/asana/%D0%92...` → `params.name === "%D0%92..."`, а не «Вирасана»). Под `next start`/без NODE_ENV — декодирует нормально. Поэтому ВСЕ пути-параметры пропускать через `normalizePathParam()` (lib/api/catalog.ts: однократный `decodeURIComponent`, для декодированного значения no-op) перед использованием/`encodeURIComponent`. Основной пострадавший: страница `app/[locale]/asana/[name]/page.tsx` (карточки каталога вели на «Асана не найдена» на проде, локально работало — вот почему локальные тесты не ловили).
 - Внутренние ссылки всегда с префиксом локали (`/{locale}/login`).
 
 ## Backend API (общий FastAPI)
