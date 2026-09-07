@@ -11,6 +11,6 @@ export async function requireAuth(locale: string, next: string): Promise<void> {
   const cookieStore = await cookies();
   if (!cookieStore.get(AUTH_COOKIE)?.value) {
     const safeNext = next.startsWith(`/${locale}/`) || next === `/${locale}` ? next : `/${locale}/catalog`;
-    redirect(`/${locale}/login?next=${safeNext}`);
+    redirect(`/${locale}/login?next=${encodeURIComponent(safeNext)}`);
   }
 }
