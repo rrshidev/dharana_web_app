@@ -41,6 +41,7 @@ export default async function RegisterPage({ params, searchParams }: Props) {
     emailDisposable: t("auth.emailDisposable"),
     emailNotDeliverable: t("auth.emailNotDeliverable"),
     nameRequired: t("auth.nameRequired"),
+    nameTooLong: t("auth.nameTooLong"),
     errorEmailRegistered: t("auth.errorEmailRegistered"),
     errorInvalid: t("auth.errorInvalid"),
     errorGeneric: t("auth.errorGeneric"),

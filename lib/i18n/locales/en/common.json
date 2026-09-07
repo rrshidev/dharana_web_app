@@ -89,6 +89,7 @@
     "emailInvalid": "Please check your email address",
     "emailDisposable": "This email service isn't supported. Please use a regular mailbox",
     "emailNotDeliverable": "Looks like this mailbox doesn't exist. Check the address",
-    "nameRequired": "Enter your name"
+    "nameRequired": "Enter your name",
+    "nameTooLong": "Name is too long (no more than 60 characters)"
   }
 }

@@ -18,6 +18,7 @@ export interface AuthFormLabels {
   emailInvalid?: string;
   emailDisposable?: string;
   emailNotDeliverable?: string;
+  nameTooLong?: string;
   errorEmailRegistered: string;
   errorInvalid: string;
   errorGeneric: string;
@@ -54,6 +55,7 @@ export function AuthForm({
       if (detail === "EMAIL_DISPOSABLE") return labels.emailDisposable ?? labels.errorGeneric;
       if (detail === "EMAIL_NOT_DELIVERABLE")
         return labels.emailNotDeliverable ?? labels.errorGeneric;
+      if (detail === "NAME_TOO_LONG") return labels.nameTooLong ?? labels.errorGeneric;
       return labels.errorGeneric;
     },
     [labels],
@@ -81,6 +83,10 @@ export function AuthForm({
     }
     if (mode === "register" && !name.trim()) {
       setError(labels.nameRequired ?? labels.errorGeneric);
+      return;
+    }
+    if (mode === "register" && name.trim().length > 60) {
+      setError(labels.nameTooLong ?? labels.errorGeneric);
       return;
     }
 
