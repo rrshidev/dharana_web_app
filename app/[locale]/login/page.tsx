@@ -35,6 +35,7 @@ export default async function LoginPage({ params, searchParams }: Props) {
     switchLabel: t("auth.goRegister"),
     emailRequired: t("auth.emailRequired"),
     passwordRequired: t("auth.passwordRequired"),
+    emailInvalid: t("auth.emailInvalid"),
     errorEmailRegistered: t("auth.errorEmailRegistered"),
     errorInvalid: t("auth.errorInvalid"),
     errorGeneric: t("auth.errorGeneric"),

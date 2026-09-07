@@ -84,7 +84,11 @@
     "errorInvalid": "Invalid email or password",
     "errorGeneric": "Something went wrong. Please try again.",
     "emailRequired": "Enter your email",
-    "passwordRequired": "Enter a password (min 6 characters)",
+    "passwordRequired": "Enter a password",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "emailInvalid": "Please check your email address",
+    "emailDisposable": "This email service isn't supported. Please use a regular mailbox",
+    "emailNotDeliverable": "Looks like this mailbox doesn't exist. Check the address",
     "nameRequired": "Enter your name"
   }
 }

@@ -14,6 +14,10 @@ export interface AuthFormLabels {
   emailRequired: string;
   passwordRequired: string;
   nameRequired?: string;
+  passwordTooShort?: string;
+  emailInvalid?: string;
+  emailDisposable?: string;
+  emailNotDeliverable?: string;
   errorEmailRegistered: string;
   errorInvalid: string;
   errorGeneric: string;
@@ -35,13 +39,21 @@ export function AuthForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [website, setWebsite] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const mapError = useCallback(
     (detail: string | null | undefined) => {
       if (detail === "auth.errorInvalid") return labels.errorInvalid;
-      if (detail === "auth.errorEmailRegistered") return labels.errorEmailRegistered;
+      if (detail === "auth.errorEmailRegistered" || detail === "Email already registered")
+        return labels.errorEmailRegistered;
+      if (detail === "PASSWORD_TOO_SHORT")
+        return labels.passwordTooShort ?? labels.errorGeneric;
+      if (detail === "EMAIL_INVALID") return labels.emailInvalid ?? labels.errorGeneric;
+      if (detail === "EMAIL_DISPOSABLE") return labels.emailDisposable ?? labels.errorGeneric;
+      if (detail === "EMAIL_NOT_DELIVERABLE")
+        return labels.emailNotDeliverable ?? labels.errorGeneric;
       return labels.errorGeneric;
     },
     [labels],
@@ -55,8 +67,16 @@ export function AuthForm({
       setError(labels.emailRequired);
       return;
     }
-    if (!password.trim() || password.length < 6) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError(labels.emailInvalid ?? labels.emailRequired);
+      return;
+    }
+    if (!password) {
       setError(labels.passwordRequired);
+      return;
+    }
+    if (mode === "register" && password.length < 8) {
+      setError(labels.passwordTooShort ?? labels.passwordRequired);
       return;
     }
     if (mode === "register" && !name.trim()) {
@@ -66,10 +86,16 @@ export function AuthForm({
 
     setLoading(true);
     try {
+      const payload: Record<string, string> = {
+        email: email.trim(),
+        password,
+        name: name.trim(),
+      };
+      if (mode === "register") payload.website = website;
       const res = await fetch(`/api/auth/${mode}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password, name: name.trim() }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
@@ -102,6 +128,22 @@ export function AuthForm({
             className="w-full rounded-lg border border-night-line bg-night px-3 py-2 text-ink outline-none transition-colors focus:border-accent"
           />
         </label>
+      )}
+
+      {mode === "register" && (
+        <div className="hidden" aria-hidden="true">
+          <label htmlFor="website">
+            Website
+            <input
+              id="website"
+              type="text"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+            />
+          </label>
+        </div>
       )}
 
       <label className="mt-4 block">

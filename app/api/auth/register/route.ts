@@ -27,8 +27,13 @@ export async function POST(req: NextRequest) {
   });
 
   if (!res.ok) {
-    const detail =
-      res.status === 400 ? "auth.errorEmailRegistered" : "auth.errorGeneric";
+    let detail = "auth.errorGeneric";
+    try {
+      const body = (await res.json()) as { detail?: unknown };
+      if (typeof body.detail === "string" && body.detail) detail = body.detail;
+    } catch {
+      // no body — keep generic
+    }
     return NextResponse.json({ ok: false, detail }, { status: res.status });
   }
 

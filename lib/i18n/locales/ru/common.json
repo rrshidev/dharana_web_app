@@ -84,7 +84,11 @@
     "errorInvalid": "Неверный email или пароль",
     "errorGeneric": "Что-то пошло не так. Попробуйте ещё раз.",
     "emailRequired": "Введите email",
-    "passwordRequired": "Введите пароль (минимум 6 символов)",
+    "passwordRequired": "Введите пароль",
+    "passwordTooShort": "Пароль должен быть не короче 8 символов",
+    "emailInvalid": "Проверьте правильность email",
+    "emailDisposable": "Этот почтовый сервис не подходит. Используйте обычную почту",
+    "emailNotDeliverable": "Похоже, такой почты не существует. Проверьте адрес",
     "nameRequired": "Введите имя"
   }
 }
