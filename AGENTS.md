@@ -37,6 +37,7 @@
 - Рекомендуемый процесс деплоя кода: закоммитить/запушить на GitHub → на сервере `cd /opt/dharana && sudo docker compose up -d --build web` (docker-compose.yml монтирует `./dharana-web-app` как build-context — после `git pull` в `/opt/dharana/dharana-web-app`).
   - **Используемый сейчас способ (проверен)**: `/opt/dharana/dharana-web-app` НЕ git-репозиторий — деплой тарболом: локально `tar -cf web.tar --exclude=node_modules --exclude=.next --exclude=.git -C dharana_web_app .` → `scp` на сервер → `tar -xf` поверх каталога → `sudo docker compose up -d --build web`. image_url/`NEXT_PUBLIC_API_URL` запекается при build (compose env в build НЕ попадает — он и так там в правильном виде).
 - Powershell 5.1 на локальной машине: ssh-команды с одинарными/двойными кавычками — вложенные двойные ломаются (использовать одинарные внутри или убирать). JSON для curl отправлять через файл (`curl --data-binary @file.json`), НЕ через `-d "{\"...\"}"` — PowerShell оставляет бэкслеши буквально → мусор в теле (реальный кейс при деплое Ф3).
+- **Тар-деплой «не удаляет» удалённые файлы** (tar -xf только распаковывает поверх). Если файл удалён локально — он останется на сервере и попадёт в docker build context → призрачные артефакты (реальный кейс 2026-09-07: старый `app/favicon.ico` победил новый `app/icon.svg` в метаданных). После удаления файла в репо — снести его вручную на сервере: `ssh dharana_ai 'rm -f /opt/dharana/dharana-web-app/<path>'` и пересобрать.
 
 ## Команды
 - Dev: `npm run dev` (адрес http://localhost:3000)
