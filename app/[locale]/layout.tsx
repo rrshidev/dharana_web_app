@@ -5,6 +5,7 @@ import { isLocale, type Locale, locales } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { MobileNav } from "@/components/layout/mobile-nav";
 import { APK_URL, TELEGRAM_BOT_URL } from "@/lib/constants";
 import "../globals.css";
 
@@ -114,6 +115,14 @@ export default async function LocaleLayout({
         <Header locale={locale} t={t} />
         <main className="flex-1">{children}</main>
         <Footer t={t} />
+        <MobileNav
+          locale={locale}
+          labels={{
+            catalog: t("nav.catalog"),
+            favorites: t("nav.favorites"),
+            profile: t("nav.profile"),
+          }}
+        />
       </body>
     </html>
   );

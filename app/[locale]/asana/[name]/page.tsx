@@ -4,9 +4,11 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { getAsanaDetail, normalizePathParam } from "@/lib/api/catalog";
+import { checkFavorite } from "@/lib/api/user";
 import { requireAuth } from "@/lib/api/guard";
 import { mediaUrl } from "@/lib/api/media";
 import { AsanaPhoto } from "@/components/asana/asana-photo";
+import { FavoriteButton } from "@/components/favorites/favorite-button";
 
 export const dynamic = "force-dynamic";
 
@@ -30,8 +32,9 @@ export default async function AsanaPage({ params }: Props) {
 
   const { t } = await getServerTranslation(locale);
   let asana: Awaited<ReturnType<typeof getAsanaDetail>>;
+  let isFavorite = false;
   try {
-    asana = await getAsanaDetail(name);
+    [asana, isFavorite] = await Promise.all([getAsanaDetail(name), checkFavorite(name)]);
   } catch {
     asana = null;
   }
@@ -56,8 +59,21 @@ export default async function AsanaPage({ params }: Props) {
           <AsanaPhoto src={img} alt={asana.name} />
 
           <div className="flex flex-col gap-6">
-            <h1 className="text-3xl font-semibold tracking-tight">{asana.name}</h1>
-            <p className="mt-1 text-sm text-muted">{asana.category_name}</p>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-semibold tracking-tight">{asana.name}</h1>
+                <p className="mt-1 text-sm text-muted">{asana.category_name}</p>
+              </div>
+              <FavoriteButton
+                name={asana.name}
+                initial={isFavorite}
+                size="lg"
+                labels={{
+                  add: t("asana.addToFavorites"),
+                  remove: t("asana.removeFromFavorites"),
+                }}
+              />
+            </div>
 
             <div>
               <div className="flex items-center gap-2">

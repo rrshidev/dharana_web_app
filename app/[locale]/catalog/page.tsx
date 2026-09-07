@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { getCategories, getAsanas, type Category } from "@/lib/api/catalog";
+import { getFavoriteNames } from "@/lib/api/user";
 import { requireAuth } from "@/lib/api/guard";
 import { AsanaCard } from "@/components/catalog/asana-card";
+import { FavoriteButton } from "@/components/favorites/favorite-button";
 
 export const dynamic = "force-dynamic";
 
@@ -46,12 +48,14 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
   let categories: Category[] = [];
   let listError = false;
+  let favorites: string[] = [];
   let list = { total: 0, items: [] as Awaited<ReturnType<typeof getAsanas>>["items"] };
 
   try {
-    [categories, list] = await Promise.all([
+    [categories, list, favorites] = await Promise.all([
       getCategories(),
       getAsanas({ category, difficulty, search, limit: 48 }),
+      getFavoriteNames(),
     ]);
   } catch {
     listError = true;
@@ -162,6 +166,16 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                 asana={asana}
                 categoryLabel={categoryLabel(t, cat ?? { id: asana.category_id, display_name: "" })}
                 difficultyLabel={t("asana.difficulty")}
+                favoriteButton={
+                  <FavoriteButton
+                    name={asana.name}
+                    initial={favorites.includes(asana.name)}
+                    labels={{
+                      add: t("asana.addToFavorites"),
+                      remove: t("asana.removeFromFavorites"),
+                    }}
+                  />
+                }
               />
             );
           })}

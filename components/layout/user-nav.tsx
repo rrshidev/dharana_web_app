@@ -5,14 +5,26 @@ import Link from "next/link";
 import type { Locale } from "@/lib/i18n/settings";
 
 export interface UserNavLabels {
-  catalog: string;
   login: string;
   logout: string;
 }
 
+export interface UserNavLink {
+  href: string;
+  label: string;
+}
+
 type AuthState = "loading" | "guest" | "user";
 
-export function UserNav({ locale, labels }: { locale: Locale; labels: UserNavLabels }) {
+export function UserNav({
+  locale,
+  links,
+  labels,
+}: {
+  locale: Locale;
+  links: UserNavLink[];
+  labels: UserNavLabels;
+}) {
   const [state, setState] = useState<AuthState>("loading");
 
   useEffect(() => {
@@ -50,12 +62,15 @@ export function UserNav({ locale, labels }: { locale: Locale; labels: UserNavLab
   if (state === "user") {
     return (
       <>
-        <Link
-          href={`/${locale}/catalog`}
-          className="hidden text-muted transition-colors hover:text-ink sm:block"
-        >
-          {labels.catalog}
-        </Link>
+        {links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="hidden text-muted transition-colors hover:text-ink sm:block"
+          >
+            {link.label}
+          </Link>
+        ))}
         <button
           type="button"
           onClick={() => {
