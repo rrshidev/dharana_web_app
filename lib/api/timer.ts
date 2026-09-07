@@ -34,6 +34,23 @@ export interface CompletedSession {
   asanas_count: number;
 }
 
+export interface PracticeHistoryItem {
+  id: number;
+  asanas_practiced: string[];
+  asana_durations: Record<string, number>;
+  rest_seconds: number;
+  total_duration_seconds: number;
+  started_at?: string | null;
+  completed_at?: string | null;
+  can_repeat: boolean;
+}
+
+export interface PracticeHistory {
+  is_premium: boolean;
+  free_repeatable_limit: number | null;
+  sessions: PracticeHistoryItem[];
+}
+
 export async function getActiveSession(): Promise<ActiveSession> {
   return apiFetch<ActiveSession>("/practice/active");
 }
@@ -65,4 +82,8 @@ export async function completePractice(
 
 export async function getSequenceVideos(): Promise<SequenceVideo[]> {
   return apiFetch<SequenceVideo[]>("/videos/sequences");
+}
+
+export async function getPracticeHistory(limit = 500): Promise<PracticeHistory> {
+  return apiFetch<PracticeHistory>(`/practice/history?limit=${limit}`);
 }

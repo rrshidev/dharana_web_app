@@ -5,13 +5,16 @@ import { isLocale, type Locale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { requireAuth } from "@/lib/api/guard";
 import { getProfile, getPracticeStats, getSubscriptionStatus } from "@/lib/api/user";
+import { getPracticeHistory } from "@/lib/api/timer";
+import { aggregateActivity } from "@/lib/stats/aggregate";
 import { mediaUrl } from "@/lib/api/media";
 import { ProfileActions } from "@/components/profile/profile-actions";
+import { ActivitySection } from "@/components/profile/activity-section";
 import { SparkleIcon, CreditCardIcon, ChevronRightIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ locale: string }> };
+type Props = { params: Promise<{ locale: string }>; searchParams: Promise<{ days?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -32,23 +35,28 @@ function formatDate(iso: string | null | undefined, locale: Locale): string | nu
   }).format(date);
 }
 
-export default async function ProfilePage({ params }: Props) {
+export default async function ProfilePage({ params, searchParams }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
   await requireAuth(locale, `/${locale}/profile`);
   const { t } = await getServerTranslation(locale);
 
+  const sp = await searchParams;
+  const days = [7, 30, 90].includes(Number(sp.days)) ? Number(sp.days) : 30;
+
   let profile: Awaited<ReturnType<typeof getProfile>> | null = null;
   let stats: Awaited<ReturnType<typeof getPracticeStats>> | null = null;
   let sub: Awaited<ReturnType<typeof getSubscriptionStatus>> | null = null;
+  let history: Awaited<ReturnType<typeof getPracticeHistory>> | null = null;
   let error = false;
 
   try {
-    [profile, stats, sub] = await Promise.all([
+    [profile, stats, sub, history] = await Promise.all([
       getProfile(),
       getPracticeStats(),
       getSubscriptionStatus(),
+      getPracticeHistory(500),
     ]);
   } catch {
     error = true;
@@ -74,6 +82,8 @@ export default async function ProfilePage({ params }: Props) {
     { value: String(stats?.current_streak ?? 0), label: t("profile.statsStreak") },
     { value: String(stats?.total_sessions ?? 0), label: t("profile.statsSessions") },
   ];
+
+  const activityPoints = history ? aggregateActivity(history.sessions, days) : [];
 
   return (
     <section className="mx-auto max-w-2xl px-6 py-10">
@@ -129,6 +139,38 @@ export default async function ProfilePage({ params }: Props) {
           <ChevronRightIcon className="h-4 w-4 text-muted/60 transition-transform group-hover:translate-x-0.5" />
         </Link>
       </div>
+
+      {profile.is_admin && (
+        <div className="mt-3">
+          <Link
+            href={`/${locale}/admin`}
+            className="group flex items-center gap-3 rounded-2xl border border-night-line bg-night/60 p-4 transition-colors hover:border-accent/50"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent">
+              <CreditCardIcon className="h-5 w-5" />
+            </span>
+            <span className="flex-1 text-left">
+              <span className="block text-sm font-medium">{t("admin_tab.entry")}</span>
+              <span className="mt-0.5 block text-xs text-muted">{t("admin_tab.section")}</span>
+            </span>
+            <ChevronRightIcon className="h-4 w-4 text-muted/60 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        </div>
+      )}
+
+      <ActivitySection
+        days={days}
+        points={activityPoints}
+        labels={{
+          title: t("profile.activityTitle"),
+          legendMinutes: t("profile.activityLegendMinutes"),
+          legendSessions: t("profile.activityLegendSessions"),
+          legendAsanas: t("profile.activityLegendAsanas"),
+          minUnit: t("profile.activityMinUnit"),
+          sesUnit: t("profile.activitySesUnit"),
+          asaUnit: t("profile.activityAsaUnit"),
+        }}
+      />
 
       <div className="mt-3">
         <ProfileActions
