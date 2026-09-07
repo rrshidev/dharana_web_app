@@ -21,10 +21,25 @@ export interface StartedSession {
   started_at: string;
 }
 
+export interface ActiveSession {
+  active: boolean;
+  id?: number;
+  started_at?: string | null;
+  asanas_practiced?: string[];
+}
+
 export interface CompletedSession {
   ok: boolean;
   total_duration_seconds: number;
   asanas_count: number;
+}
+
+export async function getActiveSession(): Promise<ActiveSession> {
+  return apiFetch<ActiveSession>("/practice/active");
+}
+
+export async function cancelPractice(sessionId: number): Promise<{ ok: boolean }> {
+  return apiFetch<{ ok: boolean }>(`/practice/${sessionId}`, { method: "DELETE" });
 }
 
 export async function startPractice(sequenceId?: number): Promise<StartedSession> {

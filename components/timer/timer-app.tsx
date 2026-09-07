@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { mediaUrl } from "@/lib/api/media";
-import type { PracticeAsanaStep } from "@/lib/api/timer";
+import type { ActiveSession, PracticeAsanaStep } from "@/lib/api/timer";
 import { TimerScreen, type TimerScreenLabels } from "./timer-screen";
 
 export interface TimerAppLabels {
@@ -21,6 +21,10 @@ export interface TimerAppLabels {
   remove: string;
   durationCombine: string;
   restCombine: string;
+  resumeTitle: string;
+  resumeText: string;
+  resumeAction: string;
+  resumeError: string;
   screen: TimerScreenLabels;
 }
 
@@ -30,6 +34,7 @@ interface Props {
     image_url: string | null;
     categoryLabel: string;
   }>;
+  activeSession?: ActiveSession | null;
   labels: TimerAppLabels;
 }
 
@@ -42,7 +47,7 @@ function fmtDur(seconds: number): string {
   return s > 0 ? `${m} мин ${s} с` : `${m} мин`;
 }
 
-export function TimerApp({ asanas, labels }: Props) {
+export function TimerApp({ asanas, activeSession, labels }: Props) {
   const [selected, setSelected] = useState<PracticeAsanaStep[]>([]);
   const [defaultAsana, setDefaultAsana] = useState(60);
   const [defaultRest, setDefaultRest] = useState(15);
@@ -50,6 +55,11 @@ export function TimerApp({ asanas, labels }: Props) {
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [starting, setStarting] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);
+  const [active, setActive] = useState<ActiveSession | null>(
+    activeSession?.active ? activeSession : null,
+  );
+  const [abandoning, setAbandoning] = useState(false);
+  const [abandonError, setAbandonError] = useState(false);
 
   const selectedNames = useMemo(() => new Set(selected.map((a) => a.name)), [selected]);
   const available = useMemo(
@@ -106,11 +116,31 @@ export function TimerApp({ asanas, labels }: Props) {
         return;
       }
       setSessionId((data.id as number) ?? null);
+      setActive(null);
       setView("run");
     } catch {
       setStartError(labels.stopError);
     } finally {
       setStarting(false);
+    }
+  };
+
+  const handleAbandon = async () => {
+    if (!active?.id) return;
+    setAbandoning(true);
+    setAbandonError(false);
+    try {
+      const res = await fetch(`/api/practice/${active.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        setAbandonError(true);
+        return;
+      }
+      setActive(null);
+      setStartError(null);
+    } catch {
+      setAbandonError(true);
+    } finally {
+      setAbandoning(false);
     }
   };
 
@@ -125,6 +155,47 @@ export function TimerApp({ asanas, labels }: Props) {
           setView("setup");
         }}
       />
+    );
+  }
+
+  if (active) {
+    return (
+      <div className="mx-auto flex max-w-2xl flex-col px-6 py-8">
+        <h1 className="text-2xl font-semibold tracking-tight">{labels.title}</h1>
+        <div className="mt-6 rounded-2xl border border-night-line bg-night/60 p-6">
+          <div className="flex flex-col items-center text-center">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/15 text-accent">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-8 w-8"
+                aria-hidden
+              >
+                <circle cx="12" cy="13" r="8" />
+                <path d="M12 9v4l2.5 2.5" />
+                <path d="M9 2h6" />
+              </svg>
+            </span>
+            <h2 className="mt-4 text-lg font-semibold">{labels.resumeTitle}</h2>
+            <p className="mt-2 max-w-sm text-sm text-muted">{labels.resumeText}</p>
+            {abandonError && <p className="mt-3 text-sm text-rose-400">{labels.resumeError}</p>}
+            <button
+              type="button"
+              disabled={abandoning}
+              onClick={() => {
+                void handleAbandon();
+              }}
+              className="mt-6 h-14 w-full max-w-sm rounded-full bg-accent text-base font-semibold text-night transition-opacity hover:opacity-90 disabled:opacity-40"
+            >
+              {abandoning ? "…" : labels.resumeAction}
+            </button>
+          </div>
+        </div>
+      </div>
     );
   }
 

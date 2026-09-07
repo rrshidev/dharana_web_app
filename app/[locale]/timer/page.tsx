@@ -4,6 +4,7 @@ import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { requireAuth } from "@/lib/api/guard";
 import { getAsanas, getCategories, type Category } from "@/lib/api/catalog";
+import { getActiveSession, type ActiveSession } from "@/lib/api/timer";
 import { TimerApp } from "@/components/timer/timer-app";
 
 export const dynamic = "force-dynamic";
@@ -31,10 +32,15 @@ export default async function TimerPage({ params }: Props) {
 
   let categories: Category[] = [];
   let list = { total: 0, items: [] as Awaited<ReturnType<typeof getAsanas>>["items"] };
+  let activeSession: ActiveSession | null = null;
   let failed = false;
 
   try {
-    [categories, list] = await Promise.all([getCategories(), getAsanas({ limit: 200 })]);
+    [categories, list, activeSession] = await Promise.all([
+      getCategories(),
+      getAsanas({ limit: 200 }),
+      getActiveSession().catch(() => null),
+    ]);
   } catch {
     failed = true;
   }
@@ -54,6 +60,15 @@ export default async function TimerPage({ params }: Props) {
     );
   }
 
+  let resumeText = "";
+  if (activeSession?.active && activeSession.started_at) {
+    const started = new Date(activeSession.started_at).toLocaleTimeString(
+      locale === "ru" ? "ru-RU" : "en-US",
+      { hour: "2-digit", minute: "2-digit" },
+    );
+    resumeText = t("timer.resumeText", { time: started });
+  }
+
   return (
     <section className="py-4">
       <TimerApp
@@ -62,6 +77,7 @@ export default async function TimerPage({ params }: Props) {
           image_url: a.image_url,
           categoryLabel: categoryName(a.category_id),
         }))}
+        activeSession={activeSession}
         labels={{
           title: t("timer.title"),
           defaultTime: t("timer.defaultTime"),
@@ -78,6 +94,10 @@ export default async function TimerPage({ params }: Props) {
           remove: t("timer.remove"),
           durationCombine: t("timer.durationCombine"),
           restCombine: t("timer.restCombine"),
+          resumeTitle: t("timer.resumeTitle"),
+          resumeText: resumeText,
+          resumeAction: t("timer.resumeAction"),
+          resumeError: t("timer.resumeError"),
           screen: {
             title: t("timer.title"),
             ready: t("timer.ready"),

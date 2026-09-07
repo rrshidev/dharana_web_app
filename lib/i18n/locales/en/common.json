@@ -139,6 +139,10 @@
   "timer": {
     "title": "Practice setup",
     "defaultTime": "Default duration",
+    "resumeTitle": "Unfinished practice",
+    "resumeText": "Started at {time}. You can abandon it and build a new sequence — an abandoned practice won't count in your stats.",
+    "resumeAction": "Abandon and start over",
+    "resumeError": "Could not abandon the practice. Please try again.",
     "asanaLabel": "Asana",
     "restLabel": "Rest",
     "selectedTitle": "Sequence ({count})",
