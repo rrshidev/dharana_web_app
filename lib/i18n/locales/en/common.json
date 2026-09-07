@@ -172,7 +172,11 @@
     "completeDuration": "{duration}",
     "again": "Start again",
     "close": "Close",
-    "indexOf": "{current} / {total}"
+    "indexOf": "{current} / {total}",
+    "soundToggle": "Sound on/off",
+    "notifyAsana": "Practice",
+    "notifyRest": "Rest",
+    "notifyComplete": "Practice complete!"
   },
   "complexes": {
     "title": "Ready-made sequences",

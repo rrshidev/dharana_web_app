@@ -172,7 +172,11 @@
     "completeDuration": "{duration}",
     "again": "Начать заново",
     "close": "Закрыть",
-    "indexOf": "{current} / {total}"
+    "indexOf": "{current} / {total}",
+    "soundToggle": "Звук вкл/выкл",
+    "notifyAsana": "Практика",
+    "notifyRest": "Отдых",
+    "notifyComplete": "Практика завершена!"
   },
   "complexes": {
     "title": "Готовые комплексы",

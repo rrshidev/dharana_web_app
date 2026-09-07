@@ -117,6 +117,10 @@ export default async function TimerPage({ params }: Props) {
             again: t("timer.again"),
             close: t("timer.close"),
             indexOf: t("timer.indexOf"),
+            soundToggle: t("timer.soundToggle"),
+            notifyAsana: t("timer.notifyAsana"),
+            notifyRest: t("timer.notifyRest"),
+            notifyComplete: t("timer.notifyComplete"),
           },
         }}
       />

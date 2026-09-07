@@ -2,6 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { PracticeAsanaStep } from "@/lib/api/timer";
+import {
+  isTabHidden,
+  notify,
+  playGong,
+  playNudge,
+  requestNotificationPermission,
+  unlockAudio,
+  vibrate,
+} from "./timer-alerts";
 
 export type TimerMode = "idle" | "asana" | "rest" | "compensation" | "paused";
 
@@ -24,6 +33,10 @@ export interface TimerScreenLabels {
   again: string;
   close: string;
   indexOf: string;
+  soundToggle: string;
+  notifyAsana: string;
+  notifyRest: string;
+  notifyComplete: string;
 }
 
 interface Summary {
@@ -74,6 +87,24 @@ export function TimerScreen({
   const stateRef = useRef({ mode, running, paused, currentIndex, remaining, total, completed, durations });
   stateRef.current = { mode, running, paused, currentIndex, remaining, total, completed, durations };
 
+  const [muted, setMuted] = useState(false);
+  const mutedRef = useRef(false);
+  useEffect(() => {
+    const stored = localStorage.getItem("dharana_timer_muted");
+    const next = stored === "1";
+    setMuted(next);
+    mutedRef.current = next;
+  }, []);
+
+  const toggleMute = () => {
+    const next = !muted;
+    setMuted(next);
+    mutedRef.current = next;
+    localStorage.setItem("dharana_timer_muted", next ? "1" : "0");
+  };
+
+  const lastNudgeRef = useRef(0);
+
   const stopTimer = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -104,6 +135,13 @@ export function TimerScreen({
     if (nextRemaining < 0) nextRemaining = 0;
     setRemaining(nextRemaining);
 
+    if (!mutedRef.current && st.mode === "asana" && nextRemaining <= 3 && nextRemaining > 0) {
+      if (nextRemaining !== lastNudgeRef.current) {
+        lastNudgeRef.current = nextRemaining;
+        playNudge();
+      }
+    }
+
     if (nextRemaining <= 0) {
       stopTimer();
       handlePhaseComplete();
@@ -112,6 +150,7 @@ export function TimerScreen({
 
   const handlePhaseComplete = () => {
     const st = stateRef.current;
+    const hidden = isTabHidden();
     if (st.mode === "asana") {
       const idx = st.currentIndex;
       const step = asanas[idx];
@@ -125,17 +164,29 @@ export function TimerScreen({
       setDurations(newDurations);
 
       if (idx < asanas.length - 1) {
+        if (!mutedRef.current) playGong();
+        if (hidden) notify(labels.notifyRest, step.name);
+        if (hidden) vibrate([120, 60, 120]);
         beginPhase("rest", step.rest_seconds);
       } else {
+        if (!mutedRef.current) playGong();
+        if (hidden) notify(labels.notifyComplete);
+        if (hidden) vibrate(300);
         beginPhase("compensation", 10);
       }
     } else if (st.mode === "rest") {
       const nextIndex = st.currentIndex + 1;
       const next = asanas[nextIndex];
       if (next) {
+        if (!mutedRef.current) playGong();
+        if (hidden) notify(labels.notifyAsana, next.name);
+        if (hidden) vibrate([120, 60, 120]);
         setCurrentIndex(nextIndex);
         beginPhase("asana", next.duration_seconds);
       } else {
+        if (!mutedRef.current) playGong();
+        if (hidden) notify(labels.notifyComplete);
+        if (hidden) vibrate(300);
         beginPhase("compensation", 10);
       }
     } else if (st.mode === "compensation") {
@@ -178,6 +229,12 @@ export function TimerScreen({
 
   const handleStart = () => {
     if (asanas.length === 0) return;
+    if (!mutedRef.current) {
+      unlockAudio();
+      playGong();
+    }
+    requestNotificationPermission();
+    lastNudgeRef.current = -1;
     setCurrentIndex(0);
     setCompleted([]);
     setDurations({});
@@ -316,6 +373,29 @@ const strokeClass =
           </div>
 
           <div className="mt-8 flex justify-center gap-6">
+            <button
+              type="button"
+              onClick={toggleMute}
+              title={labels.soundToggle}
+              className="flex flex-col items-center gap-1.5 text-muted transition-colors hover:text-ink"
+            >
+              <span className="flex h-12 w-12 items-center justify-center rounded-full border border-night-line bg-night-soft/40">
+                {muted ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
+                    <path d="M11 5 6 9H2v6h4l5 4z" />
+                    <line x1="16" y1="9" x2="22" y2="15" />
+                    <line x1="22" y1="9" x2="16" y2="15" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
+                    <path d="M11 5 6 9H2v6h4l5 4z" />
+                    <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+                    <path d="M18 6a8.5 8.5 0 0 1 0 12" />
+                  </svg>
+                )}
+              </span>
+              <span className="text-[11px]">{labels.soundToggle}</span>
+            </button>
             {running && !paused && (
               <button
                 type="button"
