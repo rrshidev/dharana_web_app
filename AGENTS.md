@@ -42,6 +42,14 @@
 - **Проверка свежести деплоя — ловушка хэшей**: docker-сборка (standalone, в Dockerfile `ENV NODE_ENV=production`) даёт ДРУГИЕ имена/хэши чанков, чем локальный `next build`/`next start`. Сверка имён чанков `_next/static` с локалкой для оценки свежести бесполезна. Проверять по содержимому: `sha256sum` исходников на хосте (`/opt/dharana/dharana-web-app/**`) против локальных, или grep маркерного стринга в задеплоенном чанке (например новое i18n-значение). Новый чанк пула подтягивается с `/ru/timer` → ищем `page-<hash>.js` в HTML страницы.
 - **Звук таймера требует жеста**: `AudioContext` можно создавать/резюмить только в обработчике пользовательского взаимодействия (start-кнопка). `components/timer/timer-alerts.ts` — синтез Web Audio (nudge C6 / gong 392·587·784 Гц), никаких файлов; `Notification.requestPermission()` — тоже при старте практики; `navigator.vibrate()` только мобильный Chrome; iOS Safari не умеет web-Notifications (там гонг/вибрация). Не пытаться запускать audio вне клика — авто-policy Chrome молча блокирует.
 
+## Админ-панель (добавлено 2026-09-08)
+- Раздел `/[locale]/admin/**`: layout `app/[locale]/admin/layout.tsx` с гейтом `getProfile().is_admin` (не админ → `notFound()`; гость → requireAuth → login). Табы чуть ниже layout.
+- Данные — серверные хелперы `lib/api/admin.ts` (GET `/admin/stats`, `/admin/stats/series?days=`, `/admin/metrics`, `/admin/activity`, `/admin/users`, `/admin/users/{id}`, `/admin/users/{id}/activity?days=`, `/admin/payments?status=`, `/admin/sequences`, `/admin/asanas`). Бэкенд требует JWT-админа (`require_admin`, 403).
+- Мутации — только route-handlers `app/api/admin/*`, они проксируют на бэкенд с httpOnly-кукой (`lib/api/admin-actions.ts`). **JSON-операции** — `apiFetch` (сам ставит Content-Type json); **multipart/upload** — raw `fetch` с FormData (apiFetch сломает boundary). **Все upload-файлы идут под именем поля `file`** (загрузки асан photo/video, видео комплексов, медиа в сообщении). JSON→multipart-эндпоинты (create asana, update sequence/asana info в admin.py принимают `Form(...)`) — через `formAdmin()`.
+- `[name]`-параметры асан в путях — `normalizePathParam()` + `encodeURIComponent` (ловушка percent-encoding в прод-рантайме).
+- recharts — единственная зависимость графиков (клиентские компоненты `components/charts/*`); данные графикам передаются с серверной страницы (серверное i18n через labels-пропсы, react-i18next в client НЕ используется). Период — query `?days=7|30|90` через `components/charts/period-selector.tsx`.
+- Прод-админы: id=2 rrshidev@gmail.com, id=4 Oleg (email null). Тест-аккаунт webtest (id=16) временно admin (выдать/снять через psql `app_users.is_admin`).
+
 ## Команды
 - Dev: `npm run dev` (адрес http://localhost:3000)
 - Сборка: `npm run build`; прод-запуск локал: `npx next start -p 3011`
