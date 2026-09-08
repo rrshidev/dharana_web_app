@@ -48,6 +48,8 @@
 - Мутации — только route-handlers `app/api/admin/*`, они проксируют на бэкенд с httpOnly-кукой (`lib/api/admin-actions.ts`). **JSON-операции** — `apiFetch` (сам ставит Content-Type json); **multipart/upload** — raw `fetch` с FormData (apiFetch сломает boundary). **Все upload-файлы идут под именем поля `file`** (загрузки асан photo/video, видео комплексов, медиа в сообщении). JSON→multipart-эндпоинты (create asana, update sequence/asana info в admin.py принимают `Form(...)`) — через `formAdmin()`.
 - `[name]`-параметры асан в путях — `normalizePathParam()` + `encodeURIComponent` (ловушка percent-encoding в прод-рантайме).
 - recharts — единственная зависимость графиков (клиентские компоненты `components/charts/*`); данные графикам передаются с серверной страницы (серверное i18n через labels-пропсы, react-i18next в client НЕ используется). Период — query `?days=7|30|90` через `components/charts/period-selector.tsx`.
+- **Ловушка RSC (реальный баг 2026-09-08)**: функции НЕЛЬЗЯ передавать пропсами из server в client-компоненты — в рантайме при SSR падает «Application error» (digest) на всю страницу (сборка при этом проходит!). `mediaUrl` (из lib/api/media.ts) передавали как `mediaUrl={mediaUrl}` в payments/content — страницы Заявки/Контент падали целиком. Урок: **абсолютные URL считать на сервере** (в page.tsx через `.map(mediaUrl)`) и передавать строки, а не функцию.
+- **Ловушка лимита API**: GET `/admin/users` у бэкенда `limit: le=100` — передача 200 даёт 422 → клиент тихо показывает пустой список. Сейчас в `getAdminUsers` есть `Math.min(100, …)` (админ. users page передаёт 100).
 - Прод-админы: id=2 rrshidev@gmail.com, id=4 Oleg (email null). Тест-аккаунт webtest (id=16) временно admin (выдать/снять через psql `app_users.is_admin`).
 
 ## Команды
