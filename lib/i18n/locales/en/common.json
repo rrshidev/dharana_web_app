@@ -410,6 +410,20 @@
     "emailDisposable": "This email service isn't supported. Please use a regular mailbox",
     "emailNotDeliverable": "Looks like this mailbox doesn't exist. Check the address",
     "nameRequired": "Enter your name",
-    "nameTooLong": "Name is too long (no more than 60 characters)"
+    "nameTooLong": "Name is too long (no more than 60 characters)",
+    "telegramOr": "or",
+    "telegramButton": "Sign in with Telegram",
+    "telegramTitle": "Telegram sign-in",
+    "telegramStep1": "Tap “Open bot”",
+    "telegramStep2": "The bot will send you a code",
+    "telegramStep3": "Enter it below:",
+    "telegramOpenBot": "Open bot",
+    "telegramCodePlaceholder": "Code from Telegram",
+    "telegramLogin": "Sign in",
+    "telegramCancel": "Cancel",
+    "telegramCodeRequired": "Enter the code",
+    "telegramInvalid": "Invalid or expired code",
+    "telegramExpired": "Code expired. Request a new one from the bot",
+    "telegramFailed": "Couldn't sign in with Telegram"
   }
 }

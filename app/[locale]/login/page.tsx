@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { AuthForm, type AuthFormLabels } from "@/components/auth/auth-form";
+import { TelegramLogin, type TelegramLoginLabels } from "@/components/auth/telegram-login";
 
 export const dynamic = "force-dynamic";
 
@@ -41,12 +42,30 @@ export default async function LoginPage({ params, searchParams }: Props) {
     errorGeneric: t("auth.errorGeneric"),
   };
 
+  const tgLabels: TelegramLoginLabels = {
+    or: t("auth.telegramOr"),
+    button: t("auth.telegramButton"),
+    title: t("auth.telegramTitle"),
+    step1: t("auth.telegramStep1"),
+    step2: t("auth.telegramStep2"),
+    step3: t("auth.telegramStep3"),
+    openBot: t("auth.telegramOpenBot"),
+    codePlaceholder: t("auth.telegramCodePlaceholder"),
+    login: t("auth.telegramLogin"),
+    cancel: t("auth.telegramCancel"),
+    codeRequired: t("auth.telegramCodeRequired"),
+    invalid: t("auth.telegramInvalid"),
+    expired: t("auth.telegramExpired"),
+    failed: t("auth.telegramFailed"),
+  };
+
   return (
     <section className="mx-auto max-w-6xl px-6 py-16">
       <h1 className="mb-8 text-center text-3xl font-semibold tracking-tight">
         {t("auth.loginTitle")}
       </h1>
       <AuthForm locale={locale} mode="login" labels={labels} nextUrl={nextUrl} />
+      <TelegramLogin locale={locale} labels={tgLabels} nextUrl={nextUrl} />
     </section>
   );
 }

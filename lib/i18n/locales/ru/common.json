@@ -410,6 +410,20 @@
     "emailDisposable": "Этот почтовый сервис не подходит. Используйте обычную почту",
     "emailNotDeliverable": "Похоже, такой почты не существует. Проверьте адрес",
     "nameRequired": "Введите имя",
-    "nameTooLong": "Имя слишком длинное (не больше 60 символов)"
+    "nameTooLong": "Имя слишком длинное (не больше 60 символов)",
+    "telegramOr": "или",
+    "telegramButton": "Войти через Telegram",
+    "telegramTitle": "Вход через Telegram",
+    "telegramStep1": "Нажмите «Открыть бот»",
+    "telegramStep2": "Бот пришлёт вам код",
+    "telegramStep3": "Введите его ниже:",
+    "telegramOpenBot": "Открыть бот",
+    "telegramCodePlaceholder": "Код из Telegram",
+    "telegramLogin": "Войти",
+    "telegramCancel": "Отмена",
+    "telegramCodeRequired": "Введите код",
+    "telegramInvalid": "Неверный или просроченный код",
+    "telegramExpired": "Код просрочен. Запросите новый в боте",
+    "telegramFailed": "Не удалось войти через Telegram"
   }
 }
