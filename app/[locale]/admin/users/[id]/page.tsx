@@ -75,6 +75,8 @@ export default async function AdminUserDetailPage({ params, searchParams }: Prop
         labels={{
           banned: t("admin.user.banned"),
           deleted: t("admin.user.deleted"),
+          adminBadge: t("admin.user.adminBadge"),
+          adminProtected: t("admin.user.adminProtected"),
           premium: t("admin.user.premium"),
           free: t("admin.user.free"),
           ban: t("admin.user.ban"),

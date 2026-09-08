@@ -280,6 +280,8 @@
       "back": "К списку юзеров",
       "banned": "Забанен",
       "deleted": "Удалён",
+      "adminBadge": "Админ",
+      "adminProtected": "Это администратор — действие недоступно",
       "premium": "Premium",
       "free": "Без Premium",
       "ban": "Заблокировать",

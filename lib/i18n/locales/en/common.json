@@ -280,6 +280,8 @@
       "back": "Back to users",
       "banned": "Banned",
       "deleted": "Deleted",
+      "adminBadge": "Admin",
+      "adminProtected": "This is an admin user — action is not allowed",
       "premium": "Premium",
       "free": "No Premium",
       "ban": "Block",

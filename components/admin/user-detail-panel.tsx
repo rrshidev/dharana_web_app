@@ -14,6 +14,8 @@ import { CHART } from "@/components/charts/colors";
 interface UserDetailLabels {
   banned: string;
   deleted: string;
+  adminBadge: string;
+  adminProtected: string;
   premium: string;
   free: string;
   ban: string;
@@ -93,10 +95,21 @@ export function UserDetailPanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      if (!res.ok) throw new Error((await res.json()).error ?? "fail");
+      if (!res.ok) {
+        let message = labels.actionFailed;
+        try {
+          const data = (await res.json()) as { error?: string };
+          if (data.error && data.error !== "action_failed") {
+            message = data.error === "admin_protected" ? labels.adminProtected : data.error;
+          }
+        } catch {
+          // ignore
+        }
+        throw new Error(message);
+      }
       router.refresh();
-    } catch {
-      alert(labels.actionFailed);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : labels.actionFailed);
     } finally {
       setBusy(null);
     }
@@ -125,6 +138,11 @@ export function UserDetailPanel({
               {user.is_deleted && (
                 <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${flagCls(true, "bg-[#e85d5d]/15 text-[#e85d5d]")}`}>
                   {labels.deleted}
+                </span>
+              )}
+              {user.is_admin && (
+                <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${flagCls(true, "bg-accent/15 text-accent")}`}>
+                  {labels.adminBadge}
                 </span>
               )}
             </div>
