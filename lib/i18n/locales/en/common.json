@@ -111,7 +111,18 @@
     "activityLegendAsanas": "Asanas",
     "activityMinUnit": "min",
     "activitySesUnit": "ses",
-    "activityAsaUnit": "asanas"
+    "activityAsaUnit": "asanas",
+    "avatarTitle": "Avatar",
+    "avatarUpload": "Upload photo",
+    "avatarUploading": "Uploading…",
+    "avatarSet": "Avatar updated",
+    "avatarError": "Could not update avatar",
+    "avatarLimit": "Avatar limit reached (max 5)",
+    "linkTelegram": "Link Telegram",
+    "linkTelegramSubtitle": "Sign in with a code from the bot",
+    "linkTelegramConfirm": "Link",
+    "linkTelegramFailed": "Could not link Telegram",
+    "linkTelegramSuccess": "Telegram linked!"
   },
   "subscription": {
     "title": "Subscription",

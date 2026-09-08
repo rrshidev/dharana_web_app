@@ -111,7 +111,18 @@
     "activityLegendAsanas": "Асаны",
     "activityMinUnit": "мин",
     "activitySesUnit": "сес",
-    "activityAsaUnit": "асан"
+    "activityAsaUnit": "асан",
+    "avatarTitle": "Аватар",
+    "avatarUpload": "Загрузить фото",
+    "avatarUploading": "Загрузка…",
+    "avatarSet": "Аватар установлен",
+    "avatarError": "Не удалось обновить аватар",
+    "avatarLimit": "Достигнут лимит аватаров (максимум 5)",
+    "linkTelegram": "Привязать Telegram",
+    "linkTelegramSubtitle": "Вход по коду из бота",
+    "linkTelegramConfirm": "Привязать",
+    "linkTelegramFailed": "Не удалось привязать Telegram",
+    "linkTelegramSuccess": "Telegram привязан!"
   },
   "subscription": {
     "title": "Подписка",

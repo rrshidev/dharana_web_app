@@ -76,3 +76,13 @@ export async function checkFavorite(name: string): Promise<boolean> {
   );
   return data.is_favorite;
 }
+
+export interface UserAvatar {
+  id: number;
+  url: string;
+  is_primary: boolean;
+}
+
+export async function getProfileAvatars(): Promise<UserAvatar[]> {
+  return apiFetch<UserAvatar[]>("/profile/avatars");
+}

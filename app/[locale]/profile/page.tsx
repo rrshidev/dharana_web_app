@@ -4,11 +4,18 @@ import { notFound } from "next/navigation";
 import { isLocale, type Locale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { requireAuth } from "@/lib/api/guard";
-import { getProfile, getPracticeStats, getSubscriptionStatus } from "@/lib/api/user";
+import {
+  getProfile,
+  getPracticeStats,
+  getSubscriptionStatus,
+  getProfileAvatars,
+} from "@/lib/api/user";
 import { getPracticeHistory } from "@/lib/api/timer";
 import { aggregateActivity } from "@/lib/stats/aggregate";
 import { mediaUrl } from "@/lib/api/media";
 import { ProfileActions } from "@/components/profile/profile-actions";
+import { ProfileAvatar } from "@/components/profile/avatar-picker";
+import { LinkTelegram } from "@/components/profile/link-telegram";
 import { ActivitySection } from "@/components/profile/activity-section";
 import { SparkleIcon, CreditCardIcon, ChevronRightIcon } from "@/components/icons";
 
@@ -49,6 +56,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   let stats: Awaited<ReturnType<typeof getPracticeStats>> | null = null;
   let sub: Awaited<ReturnType<typeof getSubscriptionStatus>> | null = null;
   let history: Awaited<ReturnType<typeof getPracticeHistory>> | null = null;
+  let avatars: Awaited<ReturnType<typeof getProfileAvatars>> = [];
   let error = false;
 
   try {
@@ -60,6 +68,14 @@ export default async function ProfilePage({ params, searchParams }: Props) {
     ]);
   } catch {
     error = true;
+  }
+
+  if (!error) {
+    try {
+      avatars = await getProfileAvatars();
+    } catch {
+      avatars = [];
+    }
   }
 
   if (error || !profile) {
@@ -88,17 +104,20 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   return (
     <section className="mx-auto max-w-2xl px-6 py-10">
       <div className="flex flex-col items-center text-center">
-        {profile.avatar_url ? (
-          <img
-            src={mediaUrl(profile.avatar_url) ?? undefined}
-            alt={name}
-            className="h-24 w-24 rounded-full object-cover ring-2 ring-white/10"
-          />
-        ) : (
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-accent/70 to-accent/40 text-4xl font-bold text-night">
-            {initials}
-          </div>
-        )}
+        <ProfileAvatar
+          avatarUrl={mediaUrl(profile.avatar_url)}
+          name={name}
+          initials={initials}
+          avatars={avatars.map((a) => ({ ...a, url: mediaUrl(a.url) ?? a.url }))}
+          labels={{
+            title: t("profile.avatarTitle"),
+            uploadBtn: t("profile.avatarUpload"),
+            uploading: t("profile.avatarUploading"),
+            setOk: t("profile.avatarSet"),
+            error: t("profile.avatarError"),
+            limit: t("profile.avatarLimit"),
+          }}
+        />
         <h1 className="mt-4 text-2xl font-semibold tracking-tight">{name}</h1>
         {profile.username && <p className="mt-0.5 text-sm text-muted">@{profile.username}</p>}
         {memberSince && (
@@ -155,6 +174,29 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             </span>
             <ChevronRightIcon className="h-4 w-4 text-muted/60 transition-transform group-hover:translate-x-0.5" />
           </Link>
+        </div>
+      )}
+
+      {profile.telegram_id == null && (
+        <div className="mt-3">
+          <LinkTelegram
+            labels={{
+              title: t("profile.linkTelegram"),
+              subtitle: t("profile.linkTelegramSubtitle"),
+              step1: t("auth.telegramStep1"),
+              step2: t("auth.telegramStep2"),
+              step3: t("auth.telegramStep3"),
+              openBot: t("auth.telegramOpenBot"),
+              codePlaceholder: t("auth.telegramCodePlaceholder"),
+              confirm: t("profile.linkTelegramConfirm"),
+              cancel: t("auth.telegramCancel"),
+              codeRequired: t("auth.telegramCodeRequired"),
+              invalid: t("auth.telegramInvalid"),
+              expired: t("auth.telegramExpired"),
+              failed: t("profile.linkTelegramFailed"),
+              success: t("profile.linkTelegramSuccess"),
+            }}
+          />
         </div>
       )}
 

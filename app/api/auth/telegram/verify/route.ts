@@ -31,9 +31,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const token = req.cookies.get(AUTH_COOKIE)?.value ?? null;
+
   const res = await fetch(`${API_URL}${API_PREFIX}/auth/telegram/verify`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify({ code }),
     cache: "no-store",
   });
