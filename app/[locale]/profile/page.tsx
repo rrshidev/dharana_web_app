@@ -16,6 +16,7 @@ import { mediaUrl } from "@/lib/api/media";
 import { ProfileActions } from "@/components/profile/profile-actions";
 import { ProfileAvatar } from "@/components/profile/avatar-picker";
 import { LinkTelegram } from "@/components/profile/link-telegram";
+import { EmailVerifyBanner } from "@/components/profile/email-verify-banner";
 import { ActivitySection } from "@/components/profile/activity-section";
 import { SparkleIcon, CreditCardIcon, ChevronRightIcon } from "@/components/icons";
 
@@ -124,6 +125,22 @@ export default async function ProfilePage({ params, searchParams }: Props) {
           <p className="mt-2 text-xs text-muted">{t("profile.memberSince", { date: memberSince })}</p>
         )}
       </div>
+
+      {profile.email && !profile.email_verified && (
+        <div className="mt-5">
+          <EmailVerifyBanner
+            labels={{
+              title: t("profile.emailVerifyTitle"),
+              hint: t("profile.emailVerifyHint"),
+              resend: t("profile.emailVerifyResend"),
+              sent: t("profile.emailVerifySent"),
+              failed: t("profile.emailVerifyFailed"),
+              frequency: t("profile.emailVerifyFrequency"),
+              dismiss: t("profile.emailVerifyDismiss"),
+            }}
+          />
+        </div>
+      )}
 
       <div className="mt-8 grid grid-cols-4 gap-2">
         {statsItems.map((stat) => (

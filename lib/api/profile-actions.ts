@@ -51,6 +51,17 @@ async function profileJsonFetch<T>(
   return (await res.json()) as T;
 }
 
+async function profilePostFetch<T>(path: string, token: string | null): Promise<T> {
+  if (!token) throw new ApiError(401, "unauthorized");
+  const res = await fetch(`${API_URL}${API_PREFIX}${path}`, {
+    method: "POST",
+    headers: tokenBearer(token),
+    cache: "no-store",
+  });
+  if (!res.ok) throw new ApiError(res.status, await parseDetail(res));
+  return (await res.json()) as T;
+}
+
 export async function profileAvatarUpload(
   token: string | null,
   form: FormData,
@@ -67,4 +78,18 @@ export async function profileAvatarSetPrimary(
   avatarId: number,
 ): Promise<{ ok: boolean }> {
   return profileJsonFetch(`/profile/avatars/${avatarId}/primary`, token, "PUT");
+}
+
+/** Повторная отправка письма верификации. 429 → ошибка 'frequency'. */
+export async function profileVerifyEmailResend(
+  token: string | null,
+): Promise<{ ok: boolean; sent: boolean }> {
+  try {
+    return await profilePostFetch("/auth/verify-email/send", token);
+  } catch (e) {
+    if (e instanceof ApiError && e.status === 429) {
+      throw new ApiError(429, "frequency");
+    }
+    throw e;
+  }
 }

@@ -34,12 +34,13 @@
     "botText": "Quick asana cards, guided practice with a timer and subscription — right in your favourite messenger.",
     "appTitle": "Mobile app",
     "appText": "Full practice, sequences and a generator for Android.",
-    "appHint": "Direct APK download — a temporary option until the Google Play release."
+    "appHint": "Direct APK download — a temporary option until the Google Play release.",
+    "botCta": "Open the bot"
   },
   "contacts": {
     "title": "Contacts",
-    "text": "Message us on Telegram — we'll help you find the right practice and answer your questions.",
-    "bot": "Open the bot"
+    "text": "Email us — we'll help you find the right practice and answer your questions.",
+    "emailCta": "support@dharana.ru"
   },
   "footer": {
     "rights": "All rights reserved."
@@ -122,7 +123,25 @@
     "linkTelegramSubtitle": "Sign in with a code from the bot",
     "linkTelegramConfirm": "Link",
     "linkTelegramFailed": "Could not link Telegram",
-    "linkTelegramSuccess": "Telegram linked!"
+    "linkTelegramSuccess": "Telegram linked!",
+    "emailVerifyTitle": "Email not verified",
+    "emailVerifyHint": "Confirm your address — it helps restore your profile if you ever lose access.",
+    "emailVerifyResend": "Resend the email",
+    "emailVerifySent": "Email sent — check your inbox.",
+    "emailVerifyFailed": "Could not send the email. Try again later.",
+    "emailVerifyFrequency": "The email was sent recently. Try again in a minute.",
+    "emailVerifyDismiss": "Dismiss"
+  },
+  "verifyEmail": {
+    "title": "Email confirmation",
+    "success": "Email confirmed",
+    "successText": "Thank you! Your address is now linked to your profile.",
+    "invalid": "The link is invalid or expired",
+    "invalidText": "Request a new email from your profile and follow the fresh link.",
+    "error": "Could not check the link",
+    "errorText": "Please try again in a moment.",
+    "goLogin": "Sign in",
+    "goProfile": "Open profile"
   },
   "subscription": {
     "title": "Subscription",

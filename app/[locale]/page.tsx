@@ -20,6 +20,15 @@ function AndroidIcon({ className }: { className?: string }) {
   );
 }
 
+function MailIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
+    </svg>
+  );
+}
+
 type Props = { params: Promise<{ locale: string }> };
 
 export default async function LandingPage({ params }: Props) {
@@ -118,7 +127,7 @@ export default async function LandingPage({ params }: Props) {
                 className="mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-full bg-telegram px-5 text-sm font-semibold text-white transition-colors hover:bg-[#229ed9]"
               >
                 <TelegramIcon className="h-4 w-4" />
-                {t("contacts.bot")}
+                {t("channels.botCta")}
               </a>
             </div>
             <div className="flex flex-col rounded-2xl border border-night-line bg-night p-8">
@@ -147,13 +156,11 @@ export default async function LandingPage({ params }: Props) {
           <h2 className="text-3xl font-semibold tracking-tight">{t("contacts.title")}</h2>
           <p className="mt-4 text-base leading-7 text-muted">{t("contacts.text")}</p>
           <a
-            href={TELEGRAM_BOT_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-telegram px-6 text-sm font-semibold text-white transition-colors hover:bg-[#229ed9]"
+            href="mailto:support@dharana.ru"
+            className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-sage px-6 text-sm font-semibold text-night transition-colors hover:bg-sage/90"
           >
-            <TelegramIcon className="h-5 w-5" />
-            {t("contacts.bot")}
+            <MailIcon className="h-5 w-5" />
+            {t("contacts.emailCta")}
           </a>
         </div>
       </section>

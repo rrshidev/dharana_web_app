@@ -8,6 +8,7 @@ export interface ProfileData {
   bio: string | null;
   avatar_url: string | null;
   telegram_id: number | null;
+  email_verified: boolean;
   is_admin: boolean;
   total_practice_minutes: number;
   total_practice_days: number;
