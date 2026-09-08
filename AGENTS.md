@@ -57,3 +57,7 @@
 - Dev: `npm run dev` (адрес http://localhost:3000)
 - Сборка: `npm run build`; прод-запуск локал: `npx next start -p 3011`
 - Docker-образ: multi-stage, `output: standalone`, юзер nextjs, порт 3000, `CMD ["node","server.js"]`.
+
+## Авторизация (логin/register/telegram) — добавлено 2026-09-08
+- **Вход через Telegram** (веб-паритет приложения): кнопка на `/login` (`components/auth/telegram-login.tsx`) → модалка «Открыть бот» → `https://t.me/yogaasana_bot?start=auth` (бот зовёт `POST /auth/telegram/create-code`, получает код и присылает юзеру; код живёт 10 мин в `app_pending_telegram_auth`) → юзер вводит код → `POST /api/auth/telegram/verify` (`app/api/auth/telegram/verify/route.ts`) прокси-`{code}` на `/auth/telegram/verify`, ставит httpOnly-куку `dharana_token`. Клиент сам код получить НЕ может (он только у бота) — это by design.
+- **Ошибки verify**: бэкенд `400 Invalid or expired code`/`400 Code expired`; route-handler мапит в ключи `auth.errorTelegramInvalid`/`auth.errorTelegramExpired` (клиент переводит по labels). Внимание: `create-code` — публичный endpoint (без авторизации), его можно дёргать для теста флоу (симуляция бота через curl), потом чистить тестового юзера в psql.
