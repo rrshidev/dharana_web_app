@@ -22,10 +22,10 @@
   "features": {
     "title": "Features",
     "items": [
-      { "title": "Asana catalog", "text": "Dozens of asanas with photos, descriptions, breathing technique and contraindications." },
-      { "title": "Ready sequences", "text": "Morning, evening, back and balance sequences — pick one and practice." },
-      { "title": "Practice timer", "text": "A built-in timer will guide you from warm-up to savasana." },
-      { "title": "Generator", "text": "Build your own sequence for your goals in seconds." }
+      { "title": "Asana catalog", "route": "/catalog", "text": "Dozens of asanas with photos, descriptions, breathing technique and contraindications." },
+      { "title": "Ready sequences", "route": "/complexes", "text": "Morning, evening, back and balance sequences — pick one and practice." },
+      { "title": "Practice timer", "route": "/timer", "text": "A built-in timer will guide you from warm-up to savasana." },
+      { "title": "Generator", "route": "/filter", "text": "Build your own sequence for your goals in seconds." }
     ]
   },
   "channels": {

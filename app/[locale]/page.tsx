@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { APK_URL, TELEGRAM_BOT_URL } from "@/lib/constants";
@@ -26,7 +27,9 @@ export default async function LandingPage({ params }: Props) {
   if (!isLocale(locale)) notFound();
   const { t } = await getServerTranslation(locale);
 
-  const features = t("features.items", { returnObjects: true }) as Array<{ title: string; text: string }>;
+  const features = t("features.items", { returnObjects: true }) as Array<
+    { title: string; route: string; text: string }
+  >;
 
   return (
     <div className="overflow-hidden">
@@ -75,13 +78,22 @@ export default async function LandingPage({ params }: Props) {
           <h2 className="text-center text-3xl font-semibold tracking-tight">{t("features.title")}</h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-2">
             {features.map((f) => (
-              <div
+              <Link
                 key={f.title}
-                className="rounded-2xl border border-night-line bg-night p-6 transition-colors hover:border-sage/30"
+                href={`/${locale}${f.route}`}
+                className="group rounded-2xl border border-night-line bg-night p-6 transition-colors hover:border-sage/40"
               >
-                <h3 className="text-lg font-semibold">{f.title}</h3>
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-lg font-semibold">{f.title}</h3>
+                  <span className="text-muted/60 transition-transform group-hover:translate-x-0.5">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden="true">
+                      <path d="M5 12h14" />
+                      <path d="m12 5 7 7-7 7" />
+                    </svg>
+                  </span>
+                </div>
                 <p className="mt-2 text-sm leading-6 text-muted">{f.text}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
