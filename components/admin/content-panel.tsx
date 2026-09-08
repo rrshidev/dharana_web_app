@@ -39,18 +39,14 @@ interface ContentLabels {
 }
 
 export function ContentPanel({
-  locale,
   asanas,
   sequences,
   categories,
-  mediaUrl,
   labels,
 }: {
-  locale: string;
   asanas: AdminAsana[];
   sequences: AdminSequence[];
   categories: { id: string; name: string }[];
-  mediaUrl: (url: string | null | undefined) => string | null;
   labels: ContentLabels;
 }) {
   const router = useRouter();
@@ -213,7 +209,7 @@ export function ContentPanel({
                 {a.image_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={mediaUrl(a.image_url) ?? ""}
+                    src={a.image_url}
                     alt={a.name}
                     className="h-16 w-16 shrink-0 rounded-xl object-cover"
                   />
@@ -297,7 +293,7 @@ export function ContentPanel({
                 </p>
               </div>
               <a
-                href={mediaUrl(s.video_url) ?? "#"}
+                href={s.video_url || "#"}
                 target="_blank"
                 rel="noreferrer"
                 className="rounded-lg border border-night-line px-3 py-1.5 text-xs font-semibold text-muted hover:text-ink"

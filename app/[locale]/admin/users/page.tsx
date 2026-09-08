@@ -36,7 +36,7 @@ export default async function AdminUsersPage({ params, searchParams }: Props) {
   let items: AdminUserRow[] = [];
   let total = 0;
   try {
-    const list = await getAdminUsers(q, 200);
+    const list = await getAdminUsers(q, 100);
     items = list.items;
     total = list.total;
   } catch {

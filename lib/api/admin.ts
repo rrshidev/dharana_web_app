@@ -96,6 +96,7 @@ export interface AdminPayment {
   payment_method: string | null;
   amount: number | null;
   receipt_url: string | null;
+  receipt_full_url?: string | null;
   status: string;
   premium_days: number | null;
   created_at: string | null;
@@ -149,7 +150,8 @@ export function getAdminUsers(
   search?: string,
   limit = 100,
 ): Promise<AdminUserList> {
-  const q = new URLSearchParams({ limit: String(limit) });
+  const clamped = Math.max(1, Math.min(100, limit));
+  const q = new URLSearchParams({ limit: String(clamped) });
   if (search && search.trim()) q.set("search", search.trim());
   return apiFetch<AdminUserList>(`/admin/users?${q.toString()}`);
 }

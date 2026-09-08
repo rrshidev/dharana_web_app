@@ -23,13 +23,11 @@ export function PaymentsPanel({
   locale,
   payments,
   error,
-  receiptUrl,
   labels,
 }: {
   locale: string;
   payments: AdminPayment[];
   error: boolean;
-  receiptUrl: (url: string | null | undefined) => string | null;
   labels: PaymentsLabels;
 }) {
   const router = useRouter();
@@ -112,9 +110,9 @@ export function PaymentsPanel({
               </p>
             </div>
 
-            {p.receipt_url && (
+            {p.receipt_full_url && (
               <a
-                href={receiptUrl(p.receipt_url) ?? "#"}
+                href={p.receipt_full_url}
                 target="_blank"
                 rel="noreferrer"
                 className="rounded-lg border border-night-line px-3 py-1.5 text-xs font-semibold text-muted hover:text-ink"

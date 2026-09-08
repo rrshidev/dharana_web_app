@@ -35,8 +35,12 @@ export default async function AdminContentPage({ params }: Props) {
   let categories: Category[] = [];
   try {
     [asanas, sequences, categories] = await Promise.all([
-      getAdminAsanas().then((r) => r.items),
-      getAdminSequences().then((r) => r.items),
+      getAdminAsanas().then((r) =>
+        r.items.map((a) => ({ ...a, image_url: mediaUrl(a.image_url) })),
+      ),
+      getAdminSequences().then((r) =>
+        r.items.map((s) => ({ ...s, video_url: mediaUrl(s.video_url) ?? "" })),
+      ),
       getCategories(),
     ]);
   } catch {
@@ -45,11 +49,9 @@ export default async function AdminContentPage({ params }: Props) {
 
   return (
     <ContentPanel
-      locale={locale}
       asanas={asanas}
       sequences={sequences}
       categories={categories.map((c) => ({ id: c.id, name: c.display_name }))}
-      mediaUrl={mediaUrl}
       labels={{
         tabAsanas: t("admin.content.tabAsanas"),
         tabSequences: t("admin.content.tabSequences"),

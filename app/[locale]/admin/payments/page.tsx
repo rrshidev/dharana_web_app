@@ -41,7 +41,10 @@ export default async function AdminPaymentsPage({ params, searchParams }: Props)
   let payments: Awaited<ReturnType<typeof getAdminPayments>>["payments"] = [];
   let error = false;
   try {
-    payments = (await getAdminPayments(status)).payments;
+    payments = (await getAdminPayments(status)).payments.map((p) => ({
+      ...p,
+      receipt_full_url: mediaUrl(p.receipt_url),
+    }));
   } catch {
     error = true;
   }
@@ -73,7 +76,6 @@ export default async function AdminPaymentsPage({ params, searchParams }: Props)
         locale={locale}
         payments={payments}
         error={error}
-        receiptUrl={mediaUrl}
         labels={{
           empty: t("admin.payments.empty"),
           error: t("admin.payments.error"),
