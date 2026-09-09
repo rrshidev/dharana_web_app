@@ -34,7 +34,6 @@
     "botText": "Быстрые карточки асан, практика с таймером и подписка — прямо в любимом мессенджере.",
     "appTitle": "Мобильное приложение",
     "appText": "Полноценная практика, комплексы и генератор последовательностей на Android.",
-    "appHint": "Прямая загрузка APK — промежуточный вариант до публикации в Google Play.",
     "botCta": "Открыть бота"
   },
   "contacts": {
@@ -441,6 +440,11 @@
     "emailNotDeliverable": "Похоже, такой почты не существует. Проверьте адрес",
     "nameRequired": "Введите имя",
     "nameTooLong": "Имя слишком длинное (не больше 60 символов)",
+    "googleOr": "или",
+    "googleButton": "Войти через Google",
+    "googleFailed": "Не удалось войти через Google",
+    "googleNotConfigured": "Вход через Google временно недоступен",
+    "or": "или",
     "telegramOr": "или",
     "telegramButton": "Войти через Telegram",
     "telegramTitle": "Вход через Telegram",

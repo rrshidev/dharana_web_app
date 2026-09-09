@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { AuthForm, type AuthFormLabels } from "@/components/auth/auth-form";
+import { GoogleLogin, type GoogleLoginLabels } from "@/components/auth/google-login";
 import { TelegramLogin, type TelegramLoginLabels } from "@/components/auth/telegram-login";
+import { GOOGLE_CLIENT_ID } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -59,13 +61,29 @@ export default async function LoginPage({ params, searchParams }: Props) {
     failed: t("auth.telegramFailed"),
   };
 
+  const googleLabels: GoogleLoginLabels = {
+    or: t("auth.googleOr"),
+    button: t("auth.googleButton"),
+    failed: t("auth.googleFailed"),
+  };
+
   return (
     <section className="mx-auto max-w-6xl px-6 py-16">
       <h1 className="mb-8 text-center text-3xl font-semibold tracking-tight">
         {t("auth.loginTitle")}
       </h1>
       <AuthForm locale={locale} mode="login" labels={labels} nextUrl={nextUrl} />
-      <TelegramLogin locale={locale} labels={tgLabels} nextUrl={nextUrl} />
+      <div className="mx-auto my-6 flex w-full max-w-sm items-center gap-3">
+        <div className="h-px flex-1 bg-night-line" />
+        <span className="text-xs text-muted">{t("auth.or")}</span>
+        <div className="h-px flex-1 bg-night-line" />
+      </div>
+      <div className="space-y-3">
+        {GOOGLE_CLIENT_ID ? (
+          <GoogleLogin locale={locale} clientId={GOOGLE_CLIENT_ID} labels={googleLabels} nextUrl={nextUrl} hideDivider />
+        ) : null}
+        <TelegramLogin locale={locale} labels={tgLabels} nextUrl={nextUrl} hideDivider />
+      </div>
     </section>
   );
 }

@@ -24,10 +24,12 @@ export function TelegramLogin({
   locale,
   labels,
   nextUrl,
+  hideDivider = false,
 }: {
   locale: string;
   labels: TelegramLoginLabels;
   nextUrl?: string;
+  hideDivider?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [code, setCode] = useState("");
@@ -67,11 +69,13 @@ export function TelegramLogin({
 
   return (
     <>
-      <div className="mx-auto my-6 flex w-full max-w-sm items-center gap-3">
-        <div className="h-px flex-1 bg-night-line" />
-        <span className="text-xs text-muted">{labels.or}</span>
-        <div className="h-px flex-1 bg-night-line" />
-      </div>
+      {!hideDivider && (
+        <div className="mx-auto my-6 flex w-full max-w-sm items-center gap-3">
+          <div className="h-px flex-1 bg-night-line" />
+          <span className="text-xs text-muted">{labels.or}</span>
+          <div className="h-px flex-1 bg-night-line" />
+        </div>
+      )}
 
       <div className="mx-auto w-full max-w-sm">
         <button

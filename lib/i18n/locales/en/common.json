@@ -34,7 +34,6 @@
     "botText": "Quick asana cards, guided practice with a timer and subscription — right in your favourite messenger.",
     "appTitle": "Mobile app",
     "appText": "Full practice, sequences and a generator for Android.",
-    "appHint": "Direct APK download — a temporary option until the Google Play release.",
     "botCta": "Open the bot"
   },
   "contacts": {
@@ -441,6 +440,11 @@
     "emailNotDeliverable": "Looks like this mailbox doesn't exist. Check the address",
     "nameRequired": "Enter your name",
     "nameTooLong": "Name is too long (no more than 60 characters)",
+    "googleOr": "or",
+    "googleButton": "Sign in with Google",
+    "googleFailed": "Couldn't sign in with Google",
+    "googleNotConfigured": "Google sign-in is temporarily unavailable",
+    "or": "or",
     "telegramOr": "or",
     "telegramButton": "Sign in with Telegram",
     "telegramTitle": "Telegram sign-in",

@@ -138,7 +138,6 @@ export default async function LandingPage({ params }: Props) {
                 <h3 className="text-lg font-semibold">{t("channels.appTitle")}</h3>
               </div>
               <p className="mt-4 flex-1 text-sm leading-6 text-muted">{t("channels.appText")}</p>
-              <p className="mt-3 text-xs text-muted/70">{t("channels.appHint")}</p>
               <a
                 href={APK_URL}
                 className="mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-full border border-night-line bg-night-soft px-5 text-sm font-semibold text-ink transition-colors hover:border-sage/40"
