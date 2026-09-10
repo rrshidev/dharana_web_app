@@ -42,6 +42,8 @@ export default async function LoginPage({ params, searchParams }: Props) {
     errorEmailRegistered: t("auth.errorEmailRegistered"),
     errorInvalid: t("auth.errorInvalid"),
     errorGeneric: t("auth.errorGeneric"),
+    forgotHref: `/${locale}/reset-password`,
+    forgotLabel: t("auth.forgotPassword"),
   };
 
   const tgLabels: TelegramLoginLabels = {

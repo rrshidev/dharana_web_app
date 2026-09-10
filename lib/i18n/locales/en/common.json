@@ -458,6 +458,35 @@
     "telegramCodeRequired": "Enter the code",
     "telegramInvalid": "Invalid or expired code",
     "telegramExpired": "Code expired. Request a new one from the bot",
-    "telegramFailed": "Couldn't sign in with Telegram"
+    "telegramFailed": "Couldn't sign in with Telegram",
+    "forgotPassword": "Forgot password?"
+  },
+  "resetPassword": {
+    "title": "Password reset",
+    "sendTitle": "Password reset",
+    "sendText": "Enter the email your account is registered with. We'll send you a link to reset your password.",
+    "emailLabel": "Email",
+    "emailRequired": "Enter your email",
+    "emailInvalid": "Please check your email address",
+    "sendButton": "Send link",
+    "sent": "Check your inbox — we've sent you a password reset link.",
+    "sentHint": "The link expires in 30 minutes. If you don't see the email, check your spam folder.",
+    "sendFailed": "Couldn't send the email. Please try again later.",
+    "frequency": "Email sent recently. Please wait a minute.",
+    "goLogin": "Back to sign in",
+    "goBack": "Back to sign in",
+    "newPassword": "New password",
+    "confirmPassword": "Repeat password",
+    "passwordRequired": "Enter a password",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordsMismatch": "Passwords don't match",
+    "submit": "Save password",
+    "success": "Password changed",
+    "successText": "Now you can sign in with your new password.",
+    "invalid": "Link is invalid or expired",
+    "invalidText": "Request a new reset email.",
+    "error": "Couldn't change the password",
+    "errorText": "Please try again later.",
+    "requestAgain": "Request a new email"
   }
 }

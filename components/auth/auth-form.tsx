@@ -11,6 +11,8 @@ export interface AuthFormLabels {
   switchText?: string;
   switchHref?: string;
   switchLabel?: string;
+  forgotHref?: string;
+  forgotLabel?: string;
   emailRequired: string;
   passwordRequired: string;
   nameRequired?: string;
@@ -175,6 +177,14 @@ export function AuthForm({
           className="w-full rounded-lg border border-night-line bg-night px-3 py-2 text-ink outline-none transition-colors focus:border-accent"
         />
       </label>
+
+      {labels.forgotHref && labels.forgotLabel && (
+        <p className="mt-2 text-right text-sm">
+          <a href={labels.forgotHref} className="text-accent hover:underline">
+            {labels.forgotLabel}
+          </a>
+        </p>
+      )}
 
       {error && (
         <p className="mt-4 rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">
