@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.dharana.dharana_app",
+      "sha256_cert_fingerprints": [
+        "CA:15:BD:2A:6D:C5:16:46:FD:D8:58:F6:4E:88:1D:FA:29:D8:B1:92:1A:FC:C4:13:1B:E1:E3:F1:F0:71:89:D9"
+      ]
+    }
+  }
+]
