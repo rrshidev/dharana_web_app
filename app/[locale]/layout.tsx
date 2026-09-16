@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Geist, Geist_Mono } from "next/font/google";
-import { isLocale, type Locale, locales } from "@/lib/i18n/settings";
+import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -14,10 +14,6 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 const siteUrl = "https://dharana.ru";
 
-function pagePath(locale: string): string {
-  return locale === "ru" ? "" : `/${locale}`;
-}
-
 type Props = { params: Promise<{ locale: string }> };
 
 export function generateStaticParams() {
@@ -27,30 +23,19 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const { t } = await getServerTranslation(locale);
-  const path = pagePath(locale);
-  const url = `${siteUrl}${path}/`;
-  const localeString = locale === "ru" ? "ru" : "en";
-
-  const alternates: Record<string, string> = Object.fromEntries(
-    locales.map((l) => [l, `${siteUrl}${pagePath(l)}/`]),
-  );
 
   return {
     metadataBase: new URL(siteUrl),
     title: `${t("hero.eyebrow")} — ${t("brand")}`,
     description: t("hero.subtitle"),
-    alternates: { canonical: url, languages: alternates },
     openGraph: {
       type: "website",
-      url,
+      url: siteUrl,
       siteName: t("brand"),
       title: `${t("hero.title")} — ${t("brand")}`,
       description: t("hero.subtitle"),
-      locale: localeString,
-      alternateLocale: Object.values(alternates).reduce<string[]>((acc, l) => {
-        if (!acc.includes(l)) acc.push(l);
-        return acc;
-      }, []),
+      locale: locale === "ru" ? "ru_RU" : "en_US",
+      alternateLocale: locale === "ru" ? ["en_US"] : ["ru_RU"],
       images: [
         {
           url: `${siteUrl}/og.png`,

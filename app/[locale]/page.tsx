@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { APK_URL, TELEGRAM_BOT_URL } from "@/lib/constants";
@@ -30,6 +31,23 @@ function MailIcon({ className }: { className?: string }) {
 }
 
 type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const { t } = await getServerTranslation(locale);
+
+  return {
+    title: `${t("hero.eyebrow")} — ${t("brand")}`,
+    description: t("hero.subtitle"),
+    alternates: {
+      canonical: locale === "ru" ? "https://dharana.ru/" : "https://dharana.ru/en/",
+      languages: {
+        ru: "https://dharana.ru/",
+        en: "https://dharana.ru/en/",
+      },
+    },
+  };
+}
 
 export default async function LandingPage({ params }: Props) {
   const { locale } = await params;
