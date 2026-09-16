@@ -220,7 +220,16 @@
     "soundToggle": "Sound on/off",
     "notifyAsana": "Practice",
     "notifyRest": "Rest",
-    "notifyComplete": "Practice complete!"
+    "notifyComplete": "Practice complete!",
+    "metaDescription": "Practice yoga with the timer: build a sequence of asanas and follow along with rest intervals.",
+    "conversionTitle": "Create an account",
+    "conversionText": "Your practice won't be saved without an account. Sign up to keep history, save favorites and practice without limits.",
+    "conversionCreate": "Create account",
+    "conversionLater": "Later",
+    "gateTitle": "Sign in to continue",
+    "gateText": "You've used your free practice without an account. Sign in or create an account to keep practicing and save your history.",
+    "gateLogin": "Sign in",
+    "gateRegister": "Register"
   },
   "complexes": {
     "title": "Ready-made sequences",

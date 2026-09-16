@@ -1,20 +1,28 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
-import { requireAuth } from "@/lib/api/guard";
+import { AUTH_COOKIE } from "@/lib/api/media";
 import { getAsanas, getCategories, type Category } from "@/lib/api/catalog";
 import { getActiveSession, type ActiveSession } from "@/lib/api/timer";
 import { TimerApp } from "@/components/timer/timer-app";
 
 export const dynamic = "force-dynamic";
 
+const siteUrl = "https://dharana.ru";
+
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const { t } = await getServerTranslation(locale);
-  return { title: `${t("timer.title")} — ${t("brand")}`, robots: { index: false, follow: false } };
+  return {
+    title: `${t("timer.title")} — ${t("brand")}`,
+    description: t("timer.metaDescription"),
+    robots: { index: true, follow: true },
+    alternates: { canonical: `${siteUrl}/${locale}/timer` },
+  };
 }
 
 function categoryLabel(t: (k: string) => string, cat: Category): string {
@@ -27,8 +35,9 @@ export default async function TimerPage({ params }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  await requireAuth(locale, `/${locale}/timer`);
   const { t } = await getServerTranslation(locale);
+  const cookieStore = await cookies();
+  const hasToken = Boolean(cookieStore.get(AUTH_COOKIE)?.value);
 
   let categories: Category[] = [];
   let list = { total: 0, items: [] as Awaited<ReturnType<typeof getAsanas>>["items"] };
@@ -39,7 +48,7 @@ export default async function TimerPage({ params }: Props) {
     [categories, list, activeSession] = await Promise.all([
       getCategories(),
       getAsanas({ limit: 200 }),
-      getActiveSession().catch(() => null),
+      hasToken ? getActiveSession().catch(() => null) : Promise.resolve(null),
     ]);
   } catch {
     failed = true;
@@ -78,6 +87,8 @@ export default async function TimerPage({ params }: Props) {
           categoryLabel: categoryName(a.category_id),
         }))}
         activeSession={activeSession}
+        isAuthed={hasToken}
+        locale={locale}
         labels={{
           title: t("timer.title"),
           defaultTime: t("timer.defaultTime"),
@@ -98,6 +109,16 @@ export default async function TimerPage({ params }: Props) {
           resumeText: resumeText,
           resumeAction: t("timer.resumeAction"),
           resumeError: t("timer.resumeError"),
+          guest: {
+            conversionTitle: t("timer.conversionTitle"),
+            conversionText: t("timer.conversionText"),
+            conversionCreate: t("timer.conversionCreate"),
+            conversionLater: t("timer.conversionLater"),
+            gateTitle: t("timer.gateTitle"),
+            gateText: t("timer.gateText"),
+            gateLogin: t("timer.gateLogin"),
+            gateRegister: t("timer.gateRegister"),
+          },
           screen: {
             title: t("timer.title"),
             ready: t("timer.ready"),

@@ -3,7 +3,21 @@
 import { useMemo, useState } from "react";
 import { mediaUrl } from "@/lib/api/media";
 import type { ActiveSession, PracticeAsanaStep } from "@/lib/api/timer";
+import type { Locale } from "@/lib/i18n/settings";
 import { TimerScreen, type TimerScreenLabels } from "./timer-screen";
+import { PracticeGate, type PracticeGateLabels } from "./practice-gate";
+import { addGuestPractice, getGuestPractices } from "./guest-timer";
+
+export interface TimerGuestLabels {
+  conversionTitle: string;
+  conversionText: string;
+  conversionCreate: string;
+  conversionLater: string;
+  gateTitle: string;
+  gateText: string;
+  gateLogin: string;
+  gateRegister: string;
+}
 
 export interface TimerAppLabels {
   title: string;
@@ -25,6 +39,7 @@ export interface TimerAppLabels {
   resumeText: string;
   resumeAction: string;
   resumeError: string;
+  guest: TimerGuestLabels;
   screen: TimerScreenLabels;
 }
 
@@ -35,6 +50,8 @@ interface Props {
     categoryLabel: string;
   }>;
   activeSession?: ActiveSession | null;
+  isAuthed: boolean;
+  locale: Locale;
   labels: TimerAppLabels;
 }
 
@@ -47,7 +64,7 @@ function fmtDur(seconds: number): string {
   return s > 0 ? `${m} мин ${s} с` : `${m} мин`;
 }
 
-export function TimerApp({ asanas, activeSession, labels }: Props) {
+export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Props) {
   const [selected, setSelected] = useState<PracticeAsanaStep[]>([]);
   const [defaultAsana, setDefaultAsana] = useState(60);
   const [defaultRest, setDefaultRest] = useState(15);
@@ -60,6 +77,7 @@ export function TimerApp({ asanas, activeSession, labels }: Props) {
   );
   const [abandoning, setAbandoning] = useState(false);
   const [abandonError, setAbandonError] = useState(false);
+  const [gate, setGate] = useState<"conversion" | "second" | null>(null);
 
   const selectedNames = useMemo(() => new Set(selected.map((a) => a.name)), [selected]);
   const available = useMemo(
@@ -102,6 +120,15 @@ export function TimerApp({ asanas, activeSession, labels }: Props) {
 
   const handleStart = async () => {
     if (selected.length === 0) return;
+    if (!isAuthed) {
+      if (getGuestPractices() >= 1) {
+        setGate("second");
+        return;
+      }
+      setActive(null);
+      setView("run");
+      return;
+    }
     setStarting(true);
     setStartError(null);
     try {
@@ -144,17 +171,54 @@ export function TimerApp({ asanas, activeSession, labels }: Props) {
     }
   };
 
-  if (view === "run" && sessionId !== null) {
-    return (
-      <TimerScreen
-        asanas={selected}
-        startSessionId={sessionId}
-        labels={labels.screen}
-        onExit={() => setView("setup")}
-        onRestart={() => {
-          setView("setup");
-        }}
+  const gateHref = `/${locale}/timer`;
+  const registerHref = `/${locale}/register`;
+  const gateOverlay =
+    gate && (
+      <PracticeGate
+        onClose={() => setGate(null)}
+        labels={
+          gate === "conversion"
+            ? {
+                title: labels.guest.conversionTitle,
+                text: labels.guest.conversionText,
+                primary: labels.guest.conversionCreate,
+                primaryHref: registerHref,
+                secondary: labels.guest.gateLogin,
+                secondaryHref: `/${locale}/login?next=${encodeURIComponent(gateHref)}`,
+                later: labels.guest.conversionLater,
+              }
+            : {
+                title: labels.guest.gateTitle,
+                text: labels.guest.gateText,
+                primary: labels.guest.gateLogin,
+                primaryHref: `/${locale}/login?next=${encodeURIComponent(gateHref)}`,
+                secondary: labels.guest.gateRegister,
+                secondaryHref: registerHref,
+              }
+        }
       />
+    );
+
+  if (view === "run") {
+    return (
+      <>
+        <TimerScreen
+          asanas={selected}
+          startSessionId={sessionId}
+          guestMode={!isAuthed}
+          labels={labels.screen}
+          onCompleted={() => {
+            const completedCount = addGuestPractice();
+            if (completedCount === 1) setGate("conversion");
+          }}
+          onExit={() => setView("setup")}
+          onRestart={() => {
+            setView("setup");
+          }}
+        />
+        {gateOverlay}
+      </>
     );
   }
 
@@ -225,134 +289,135 @@ export function TimerApp({ asanas, activeSession, labels }: Props) {
   );
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col px-6 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">{labels.title}</h1>
+    <>
+      <div className="mx-auto flex max-w-2xl flex-col px-6 py-8">
+        <h1 className="text-2xl font-semibold tracking-tight">{labels.title}</h1>
 
-      <div className="mt-6 rounded-2xl border border-night-line bg-night/60 p-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">
-          {labels.defaultTime}
-        </h2>
-        <div className="mt-3 grid grid-cols-2 gap-3">
-          <Select
-            label={labels.asanaLabel}
-            value={defaultAsana}
-            onChange={(v) => updateDefault(true, v)}
-          />
-          <Select
-            label={labels.restLabel}
-            value={defaultRest}
-            onChange={(v) => updateDefault(false, v)}
-          />
-        </div>
-      </div>
-
-      <div className="mt-4">
-        {selected.length === 0 ? (
-          <div className="flex flex-col items-center rounded-2xl border border-dashed border-night-line px-6 py-10 text-center">
-            <p className="text-3xl">🧘</p>
-            <p className="mt-3 text-sm text-muted">{labels.addHint}</p>
+        <div className="mt-6 rounded-2xl border border-night-line bg-night/60 p-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">
+            {labels.defaultTime}
+          </h2>
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <Select
+              label={labels.asanaLabel}
+              value={defaultAsana}
+              onChange={(v) => updateDefault(true, v)}
+            />
+            <Select
+              label={labels.restLabel}
+              value={defaultRest}
+              onChange={(v) => updateDefault(false, v)}
+            />
           </div>
-        ) : (
-          <div className="rounded-2xl border border-night-line bg-night/60">
-            <h2 className="px-4 pt-4 text-sm font-semibold uppercase tracking-wide text-muted">
-              {labels.selectedTitle.replace("{count}", String(selected.length))}
-            </h2>
-            <div className="mt-2 flex flex-col gap-1 p-2">
-              {selected.map((step, index) => (
-                <div
-                  key={`${index}-${step.name}`}
-                  className="flex items-center gap-2 rounded-xl border border-night-line bg-night/40 px-3 py-2.5"
-                >
-                  <span className="w-5 text-center text-xs text-muted">{index + 1}</span>
-                  <span className="flex-1 truncate text-sm font-medium">{step.name}</span>
-                  <span className="text-[11px] text-muted">
-                    {labels.durationCombine.replace("{duration}", fmtDur(step.duration_seconds))} ·{" "}
-                    {labels.restCombine.replace("{rest}", fmtDur(step.rest_seconds))}
-                  </span>
-                  <button
-                    type="button"
-                    title={labels.moveUp}
-                    disabled={index === 0}
-                    onClick={() => moveAsana(index, -1)}
-                    className="rounded-lg p-1 text-muted transition-colors hover:text-ink disabled:opacity-30"
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    title={labels.moveDown}
-                    disabled={index === selected.length - 1}
-                    onClick={() => moveAsana(index, 1)}
-                    className="rounded-lg p-1 text-muted transition-colors hover:text-ink disabled:opacity-30"
-                  >
-                    ↓
-                  </button>
-                  <button
-                    type="button"
-                    title={labels.remove}
-                    onClick={() => removeAsana(index)}
-                    className="rounded-lg p-1 text-muted transition-colors hover:text-ink"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
+        </div>
+
+        <div className="mt-4">
+          {selected.length === 0 ? (
+            <div className="flex flex-col items-center rounded-2xl border border-dashed border-night-line px-6 py-10 text-center">
+              <p className="text-3xl">🧘</p>
+              <p className="mt-3 text-sm text-muted">{labels.addHint}</p>
             </div>
-          </div>
-        )}
-      </div>
-
-      <div className="mt-4 rounded-2xl border border-night-line bg-night/60">
-        <h2 className="px-4 pt-4 text-sm font-semibold uppercase tracking-wide text-muted">
-          {labels.availableTitle}
-        </h2>
-        <div className="flex max-h-80 flex-col gap-1.5 overflow-y-auto p-2">
-          {available.map((asana) => {
-            const img = mediaUrl(asana.image_url);
-            return (
-              <button
-                key={asana.name}
-                type="button"
-                onClick={() => addAsana(asana.name, asana.image_url)}
-                className="flex items-center gap-3 rounded-xl border border-night-line bg-night/40 px-3 py-2 text-left transition-colors hover:border-accent/50"
-              >
-                <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-night-soft/40">
-                  {img ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={img} alt="" loading="lazy" className="h-full w-full object-cover" />
-                  ) : (
-                    <span className="flex h-full w-full items-center justify-center text-xl text-accent/70">
-                      🧘
+          ) : (
+            <div className="rounded-2xl border border-night-line bg-night/60">
+              <h2 className="px-4 pt-4 text-sm font-semibold uppercase tracking-wide text-muted">
+                {labels.selectedTitle.replace("{count}", String(selected.length))}
+              </h2>
+              <div className="mt-2 flex flex-col gap-1 p-2">
+                {selected.map((step, index) => (
+                  <div
+                    key={`${index}-${step.name}`}
+                    className="flex items-center gap-2 rounded-xl border border-night-line bg-night/40 px-3 py-2.5"
+                  >
+                    <span className="w-5 text-center text-xs text-muted">{index + 1}</span>
+                    <span className="flex-1 truncate text-sm font-medium">{step.name}</span>
+                    <span className="text-[11px] text-muted">
+                      {labels.durationCombine.replace("{duration}", fmtDur(step.duration_seconds))} ·{" "}
+                      {labels.restCombine.replace("{rest}", fmtDur(step.rest_seconds))}
                     </span>
-                  )}
-                  <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-bold text-night">
-                    +
-                  </span>
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-medium">{asana.name}</span>
-                  <span className="block truncate text-xs text-muted">{asana.categoryLabel}</span>
-                </span>
-              </button>
-            );
-          })}
+                    <button
+                      type="button"
+                      title={labels.moveUp}
+                      disabled={index === 0}
+                      onClick={() => moveAsana(index, -1)}
+                      className="rounded-lg p-1 text-muted transition-colors hover:text-ink disabled:opacity-30"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      title={labels.moveDown}
+                      disabled={index === selected.length - 1}
+                      onClick={() => moveAsana(index, 1)}
+                      className="rounded-lg p-1 text-muted transition-colors hover:text-ink disabled:opacity-30"
+                    >
+                      ↓
+                    </button>
+                    <button
+                      type="button"
+                      title={labels.remove}
+                      onClick={() => removeAsana(index)}
+                      className="rounded-lg p-1 text-muted transition-colors hover:text-ink"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
+
+        <div className="mt-4 rounded-2xl border border-night-line bg-night/60">
+          <h2 className="px-4 pt-4 text-sm font-semibold uppercase tracking-wide text-muted">
+            {labels.availableTitle}
+          </h2>
+          <div className="flex max-h-80 flex-col gap-1.5 overflow-y-auto p-2">
+            {available.map((asana) => {
+              const img = mediaUrl(asana.image_url);
+              return (
+                <button
+                  key={asana.name}
+                  type="button"
+                  onClick={() => addAsana(asana.name, asana.image_url)}
+                  className="flex items-center gap-3 rounded-xl border border-night-line bg-night/40 px-3 py-2 text-left transition-colors hover:border-accent/50"
+                >
+                  <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-night-soft/40">
+                    {img ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={img} alt="" loading="lazy" className="h-full w-full object-cover" />
+                    ) : (
+                      <span className="flex h-full w-full items-center justify-center text-xl text-accent/70">
+                        🧘
+                      </span>
+                    )}
+                    <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-bold text-night">
+                      +
+                    </span>
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium">{asana.name}</span>
+                    <span className="block truncate text-xs text-muted">{asana.categoryLabel}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {startError && <p className="mt-4 text-sm text-rose-400">{startError}</p>}
+
+        <button
+          type="button"
+          disabled={selected.length === 0 || starting}
+          onClick={() => {
+            void handleStart();
+          }}
+          className="mt-6 h-14 w-full rounded-full bg-accent text-base font-semibold text-night transition-opacity hover:opacity-90 disabled:opacity-40"
+        >
+          {labels.start.replace("{count}", String(selected.length))}
+        </button>
       </div>
-
-      {startError && (
-        <p className="mt-4 text-sm text-rose-400">{startError}</p>
-      )}
-
-      <button
-        type="button"
-        disabled={selected.length === 0 || starting}
-        onClick={() => {
-          void handleStart();
-        }}
-        className="mt-6 h-14 w-full rounded-full bg-accent text-base font-semibold text-night transition-opacity hover:opacity-90 disabled:opacity-40"
-      >
-        {labels.start.replace("{count}", String(selected.length))}
-      </button>
-    </div>
+      {gateOverlay}
+    </>
   );
 }

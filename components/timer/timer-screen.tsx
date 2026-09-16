@@ -46,8 +46,10 @@ interface Summary {
 
 interface Props {
   asanas: PracticeAsanaStep[];
-  startSessionId: number;
+  startSessionId: number | null;
   labels: TimerScreenLabels;
+  guestMode?: boolean;
+  onCompleted?: (summary: Summary) => void;
   onExit: () => void;
   onRestart: () => void;
 }
@@ -67,6 +69,8 @@ export function TimerScreen({
   asanas,
   startSessionId,
   labels,
+  guestMode = false,
+  onCompleted,
   onExit,
   onRestart,
 }: Props) {
@@ -206,6 +210,15 @@ export function TimerScreen({
   ) => {
     const restSeconds = asanas[0]?.rest_seconds ?? 15;
     const totalSeconds = Object.values(asanaDurations).reduce((a, b) => a + b, 0);
+    const summaryRes: Summary = {
+      count: asanasPracticed.length,
+      durationSeconds: totalSeconds,
+    };
+    if (guestMode) {
+      setSummary(summaryRes);
+      onCompleted?.(summaryRes);
+      return;
+    }
     setSaving(true);
     setError(false);
     try {
@@ -223,10 +236,7 @@ export function TimerScreen({
       setError(true);
     } finally {
       setSaving(false);
-      setSummary({
-        count: asanasPracticed.length,
-        durationSeconds: totalSeconds,
-      });
+      setSummary(summaryRes);
     }
   };
 
