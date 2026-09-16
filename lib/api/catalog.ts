@@ -1,4 +1,4 @@
-import { apiFetch } from "./server";
+import { apiFetch, ApiError } from "./server";
 
 export interface Category {
   id: string;
@@ -13,6 +13,7 @@ export interface AsanaSummary {
   image_url: string | null;
   difficulty: number;
   effects: string[];
+  has_video?: boolean;
 }
 
 export interface AsanaDetail extends AsanaSummary {
@@ -65,6 +66,35 @@ export async function getRandomAsana(): Promise<AsanaDetail | null> {
 export async function getAsanaDetail(name: string): Promise<AsanaDetail | null> {
   const data = await apiFetch<AsanaDetail & MaybeError>(`/asanas/${encodeURIComponent(name)}`);
   return data.error ? null : data;
+}
+
+export interface AsanaVideoInfo {
+  id: number;
+  asana_name: string;
+  is_premium: boolean;
+  accessible: boolean;
+  video_url: string | null;
+  message?: string | null;
+}
+
+/** Публичный список имён асан, у которых есть видео в каталоге. */
+export async function getAsanaVideoNames(): Promise<string[]> {
+  try {
+    const data = await apiFetch<{ names: string[] }>("/videos/asanas/names");
+    return data.names ?? [];
+  } catch {
+    return [];
+  }
+}
+
+/** Видео асаны. Авторизованный запрос; отдаёт доступ только премиум-юзеру. */
+export async function getAsanaVideo(name: string): Promise<AsanaVideoInfo | null> {
+  try {
+    return await apiFetch<AsanaVideoInfo>(`/videos/asana/${encodeURIComponent(name)}`);
+  } catch (err) {
+    if (err instanceof ApiError && (err.status === 404 || err.status === 401)) return null;
+    return null;
+  }
 }
 
 /**

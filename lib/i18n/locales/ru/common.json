@@ -72,7 +72,10 @@
     "noDescription": "Описание скоро появится.",
     "noPhoto": "Фото скоро появится.",
     "addToFavorites": "В избранное",
-    "removeFromFavorites": "Убрать из избранного"
+    "removeFromFavorites": "Убрать из избранного",
+    "video": "Видео",
+    "videoPremium": "Доступно по подписке Premium",
+    "videoCta": "Получить Premium"
   },
   "favorites": {
     "title": "Избранное",

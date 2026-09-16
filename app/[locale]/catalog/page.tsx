@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
-import { getCategories, getAsanas, type Category } from "@/lib/api/catalog";
+import { getCategories, getAsanas, getAsanaVideoNames, type Category } from "@/lib/api/catalog";
 import { getFavoriteNames } from "@/lib/api/user";
 import { requireAuth } from "@/lib/api/guard";
 import { AsanaCard } from "@/components/catalog/asana-card";
@@ -60,6 +60,8 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   } catch {
     listError = true;
   }
+
+  const videoNames = await getAsanaVideoNames();
 
   const chipHref = (catId: string | undefined) => {
     const next = catId === category ? undefined : catId;
@@ -163,9 +165,10 @@ export default async function CatalogPage({ params, searchParams }: Props) {
               <AsanaCard
                 key={asana.name}
                 locale={locale}
-                asana={asana}
+                asana={{ ...asana, has_video: videoNames.includes(asana.name) }}
                 categoryLabel={categoryLabel(t, cat ?? { id: asana.category_id, display_name: "" })}
                 difficultyLabel={t("asana.difficulty")}
+                videoLabel={t("asana.video")}
                 favoriteButton={
                   <FavoriteButton
                     name={asana.name}

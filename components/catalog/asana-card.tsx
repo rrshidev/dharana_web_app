@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Locale } from "@/lib/i18n/settings";
 import type { AsanaSummary } from "@/lib/api/catalog";
 import { mediaUrl } from "@/lib/api/media";
+import { FilmIcon } from "@/components/icons";
 
 export function AsanaCard({
   locale,
@@ -10,12 +11,14 @@ export function AsanaCard({
   categoryLabel,
   difficultyLabel,
   favoriteButton,
+  videoLabel,
 }: {
   locale: Locale;
   asana: AsanaSummary;
   categoryLabel: string;
   difficultyLabel: string;
   favoriteButton?: ReactNode;
+  videoLabel?: string;
 }) {
   const img = mediaUrl(asana.image_url);
 
@@ -38,6 +41,12 @@ export function AsanaCard({
             <div className="flex h-full w-full items-center justify-center text-4xl text-muted/40">
               🧘
             </div>
+          )}
+          {asana.has_video && videoLabel && (
+            <span className="absolute bottom-2 right-2 z-10 flex items-center gap-1 rounded-full bg-night/85 px-2.5 py-1 text-[11px] font-semibold text-accent backdrop-blur">
+              <FilmIcon className="h-3.5 w-3.5" />
+              {videoLabel}
+            </span>
           )}
         </div>
         <div className="flex flex-1 flex-col gap-2 p-4">

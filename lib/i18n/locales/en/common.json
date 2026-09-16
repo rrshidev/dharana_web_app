@@ -72,7 +72,10 @@
     "noDescription": "Description coming soon.",
     "noPhoto": "Photo coming soon.",
     "addToFavorites": "Add to favorites",
-    "removeFromFavorites": "Remove from favorites"
+    "removeFromFavorites": "Remove from favorites",
+    "video": "Video",
+    "videoPremium": "Available with Premium subscription",
+    "videoCta": "Get Premium"
   },
   "favorites": {
     "title": "Favorites",

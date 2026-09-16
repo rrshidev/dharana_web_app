@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
-import { getAsanaDetail, normalizePathParam } from "@/lib/api/catalog";
+import {
+  getAsanaDetail,
+  getAsanaVideo,
+  normalizePathParam,
+  type AsanaVideoInfo,
+} from "@/lib/api/catalog";
 import { checkFavorite } from "@/lib/api/user";
 import { requireAuth } from "@/lib/api/guard";
-import { mediaUrl } from "@/lib/api/media";
+import { mediaUrl, AUTH_COOKIE } from "@/lib/api/media";
 import { AsanaPhoto } from "@/components/asana/asana-photo";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
+import { SparkleIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +46,13 @@ export default async function AsanaPage({ params }: Props) {
     asana = null;
   }
 
+  const cookieStore = await cookies();
+  const hasToken = Boolean(cookieStore.get(AUTH_COOKIE)?.value);
+  let video: AsanaVideoInfo | null = null;
+  if (hasToken) {
+    video = await getAsanaVideo(name).catch(() => null);
+  }
+
   const img = mediaUrl(asana?.image_url ?? null);
 
   return (
@@ -57,6 +71,34 @@ export default async function AsanaPage({ params }: Props) {
       ) : (
         <div className="flex flex-col gap-8">
           <AsanaPhoto src={img} alt={asana.name} />
+
+          {video && (
+            <div>
+              <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
+                {t("asana.video")}
+              </h2>
+              {video.accessible && video.video_url ? (
+                <video
+                  src={mediaUrl(video.video_url) ?? undefined}
+                  controls
+                  preload="metadata"
+                  playsInline
+                  className="aspect-video w-full rounded-2xl border border-night-line bg-night"
+                />
+              ) : (
+                <div className="flex aspect-video w-full flex-col items-center justify-center rounded-2xl border border-night-line bg-night-soft/40 text-center">
+                  <SparkleIcon className="h-10 w-10 text-accent/70" />
+                  <p className="mt-4 px-6 text-sm font-medium">{t("asana.videoPremium")}</p>
+                  <Link
+                    href={`/${locale}/profile/subscription`}
+                    className="mt-4 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-night transition-opacity hover:opacity-90"
+                  >
+                    {t("asana.videoCta")}
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="flex flex-col gap-6">
             <div className="flex items-start justify-between gap-4">
