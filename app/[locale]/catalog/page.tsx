@@ -1,25 +1,40 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { getCategories, getAsanas, getAsanaVideoNames, type Category } from "@/lib/api/catalog";
 import { getFavoriteNames } from "@/lib/api/user";
-import { requireAuth } from "@/lib/api/guard";
+import { AUTH_COOKIE } from "@/lib/api/media";
 import { AsanaCard } from "@/components/catalog/asana-card";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
+import { FavoriteGate } from "@/components/favorites/favorite-gate";
 
 export const dynamic = "force-dynamic";
+
+const siteUrl = "https://dharana.ru";
 
 type Props = {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ category?: string; search?: string; difficulty?: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { locale } = await params;
   const { t } = await getServerTranslation(locale);
-  return { title: `${t("catalog.title")} — ${t("brand")}`, robots: { index: false, follow: false } };
+  const sp = await searchParams;
+  const hasFilters = Boolean(sp.category || sp.search || sp.difficulty);
+  return {
+    title: `${t("catalog.title")} — ${t("brand")}`,
+    description: t("catalog.metaDescription"),
+    robots: hasFilters
+      ? { index: false, follow: true }
+      : { index: true, follow: true },
+    alternates: hasFilters
+      ? undefined
+      : { canonical: `${siteUrl}/${locale}/catalog` },
+  };
 }
 
 function categoryLabel(t: (k: string) => string, cat: { id: string; display_name: string }): string {
@@ -42,9 +57,11 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   if (search) spQuery.push(`search=${search}`);
   if (difficulty) spQuery.push(`difficulty=${difficulty}`);
   const nextPath = `/${locale}/catalog${spQuery.length ? `?${spQuery.join("&")}` : ""}`;
-  await requireAuth(locale, nextPath);
 
   const { t } = await getServerTranslation(locale);
+
+  const cookieStore = await cookies();
+  const hasToken = Boolean(cookieStore.get(AUTH_COOKIE)?.value);
 
   let categories: Category[] = [];
   let listError = false;
@@ -52,13 +69,20 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   let list = { total: 0, items: [] as Awaited<ReturnType<typeof getAsanas>>["items"] };
 
   try {
-    [categories, list, favorites] = await Promise.all([
+    [categories, list] = await Promise.all([
       getCategories(),
       getAsanas({ category, difficulty, search, limit: 48 }),
-      getFavoriteNames(),
     ]);
   } catch {
     listError = true;
+  }
+
+  if (hasToken) {
+    try {
+      favorites = await getFavoriteNames();
+    } catch {
+      // нет доступа к избранному — показываем каталог без следов авторизации
+    }
   }
 
   const videoNames = await getAsanaVideoNames();
@@ -75,8 +99,39 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
   const hasFilters = Boolean(category || search || difficulty);
 
+  const gateLabels = {
+    title: t("favorites.gateTitle"),
+    text: t("favorites.gateText"),
+    login: t("favorites.gateLogin"),
+    register: t("favorites.gateRegister"),
+  };
+
+  const itemListLd =
+    !listError && !hasFilters
+      ? {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: t("catalog.title"),
+          itemListElement: list.items.map((asana, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "Thing",
+              name: asana.name,
+              url: `${siteUrl}/${locale}/asana/${encodeURIComponent(asana.name)}`,
+            },
+          })),
+        }
+      : null;
+
   return (
     <section className="mx-auto max-w-6xl px-6 py-12">
+      {itemListLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
+        />
+      )}
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <h1 className="text-3xl font-semibold tracking-tight">{t("catalog.title")}</h1>
         <p className="text-sm text-muted">{list.total}</p>
@@ -170,14 +225,18 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                 difficultyLabel={t("asana.difficulty")}
                 videoLabel={t("asana.video")}
                 favoriteButton={
-                  <FavoriteButton
-                    name={asana.name}
-                    initial={favorites.includes(asana.name)}
-                    labels={{
-                      add: t("asana.addToFavorites"),
-                      remove: t("asana.removeFromFavorites"),
-                    }}
-                  />
+                  hasToken ? (
+                    <FavoriteButton
+                      name={asana.name}
+                      initial={favorites.includes(asana.name)}
+                      labels={{
+                        add: t("asana.addToFavorites"),
+                        remove: t("asana.removeFromFavorites"),
+                      }}
+                    />
+                  ) : (
+                    <FavoriteGate locale={locale} next={nextPath} labels={gateLabels} />
+                  )
                 }
               />
             );

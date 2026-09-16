@@ -54,6 +54,7 @@
   },
   "catalog": {
     "title": "Asana catalog",
+    "metaDescription": "Yoga asana catalog with photos, instructions, benefits and contraindications. Practice every day with Dharana.",
     "searchPlaceholder": "Search asana…",
     "all": "All",
     "filter": "Category",
@@ -81,7 +82,11 @@
     "title": "Favorites",
     "empty": "No favorite asanas yet",
     "emptyHint": "Tap the heart on a catalog card or on the asana page to save it here",
-    "catalogCta": "Browse the catalog"
+    "catalogCta": "Browse the catalog",
+    "gateTitle": "Sign in to save favorites",
+    "gateText": "Collect your favorite asanas in a personal list and practice with them.",
+    "gateLogin": "Sign in",
+    "gateRegister": "Register"
   },
   "profile": {
     "title": "Profile",

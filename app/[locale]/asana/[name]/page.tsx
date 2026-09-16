@@ -7,26 +7,36 @@ import { getServerTranslation } from "@/lib/i18n/server";
 import {
   getAsanaDetail,
   getAsanaVideo,
+  getAsanaVideoNames,
   normalizePathParam,
   type AsanaVideoInfo,
 } from "@/lib/api/catalog";
 import { checkFavorite } from "@/lib/api/user";
-import { requireAuth } from "@/lib/api/guard";
 import { mediaUrl, AUTH_COOKIE } from "@/lib/api/media";
 import { AsanaPhoto } from "@/components/asana/asana-photo";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
+import { FavoriteGate } from "@/components/favorites/favorite-gate";
 import { SparkleIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
+
+const siteUrl = "https://dharana.ru";
 
 type Props = { params: Promise<{ locale: string; name: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, name } = await params;
   const { t } = await getServerTranslation(locale);
+  const asanaName = normalizePathParam(name);
+  const asana = await getAsanaDetail(asanaName).catch(() => null);
   return {
-    title: `${normalizePathParam(name)} — ${t("catalog.title")} — ${t("brand")}`,
-    robots: { index: false, follow: false },
+    title: `${asanaName} — ${t("catalog.title")} — ${t("brand")}`,
+    description:
+      asana?.description?.slice(0, 160) || t("asana.noDescription"),
+    robots: { index: true, follow: true },
+    alternates: {
+      canonical: `${siteUrl}/${locale}/asana/${encodeURIComponent(asanaName)}`,
+    },
   };
 }
 
@@ -35,28 +45,77 @@ export default async function AsanaPage({ params }: Props) {
   const name = normalizePathParam(rawName);
   if (!isLocale(locale)) notFound();
 
-  await requireAuth(locale, `/${locale}/asana/${name}`);
-
   const { t } = await getServerTranslation(locale);
+
+  const cookieStore = await cookies();
+  const hasToken = Boolean(cookieStore.get(AUTH_COOKIE)?.value);
+
   let asana: Awaited<ReturnType<typeof getAsanaDetail>>;
   let isFavorite = false;
   try {
-    [asana, isFavorite] = await Promise.all([getAsanaDetail(name), checkFavorite(name)]);
+    asana = await getAsanaDetail(name);
   } catch {
     asana = null;
   }
 
-  const cookieStore = await cookies();
-  const hasToken = Boolean(cookieStore.get(AUTH_COOKIE)?.value);
+  if (hasToken) {
+    try {
+      isFavorite = await checkFavorite(name);
+    } catch {
+      // без доступа к профилю показываем сердечко как есть
+    }
+  }
+
   let video: AsanaVideoInfo | null = null;
+  let guestHasVideo = false;
   if (hasToken) {
     video = await getAsanaVideo(name).catch(() => null);
+  } else {
+    const videoNames = await getAsanaVideoNames();
+    guestHasVideo = videoNames.includes(name);
   }
 
   const img = mediaUrl(asana?.image_url ?? null);
 
+  const asanaUrl = `${siteUrl}/${locale}/asana/${encodeURIComponent(name)}`;
+  const ldJson = asana
+    ? {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: t("brand"), item: `${siteUrl}/${locale}` },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: t("catalog.title"),
+                item: `${siteUrl}/${locale}/catalog`,
+              },
+              { "@type": "ListItem", position: 3, name: asana.name },
+            ],
+          },
+          {
+            "@type": "ExercisePlan",
+            name: asana.name,
+            description: asana.description || t("asana.noDescription"),
+            url: asanaUrl,
+            image: img ?? undefined,
+            keywords: asana.effects.length ? asana.effects.join(", ") : undefined,
+          },
+        ],
+      }
+    : null;
+
   return (
     <article className="mx-auto max-w-4xl px-6 py-12">
+      {ldJson && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJson) }}
+        />
+      )}
+
       <Link
         href={`/${locale}/catalog`}
         className="mb-6 inline-block text-sm text-muted transition-colors hover:text-ink"
@@ -72,12 +131,12 @@ export default async function AsanaPage({ params }: Props) {
         <div className="flex flex-col gap-8">
           <AsanaPhoto src={img} alt={asana.name} />
 
-          {video && (
+          {(video || guestHasVideo) && (
             <div>
               <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
                 {t("asana.video")}
               </h2>
-              {video.accessible && video.video_url ? (
+              {video?.accessible && video.video_url ? (
                 <video
                   src={mediaUrl(video.video_url) ?? undefined}
                   controls
@@ -106,15 +165,29 @@ export default async function AsanaPage({ params }: Props) {
                 <h1 className="text-3xl font-semibold tracking-tight">{asana.name}</h1>
                 <p className="mt-1 text-sm text-muted">{asana.category_name}</p>
               </div>
-              <FavoriteButton
-                name={asana.name}
-                initial={isFavorite}
-                size="lg"
-                labels={{
-                  add: t("asana.addToFavorites"),
-                  remove: t("asana.removeFromFavorites"),
-                }}
-              />
+              {hasToken ? (
+                <FavoriteButton
+                  name={asana.name}
+                  initial={isFavorite}
+                  size="lg"
+                  labels={{
+                    add: t("asana.addToFavorites"),
+                    remove: t("asana.removeFromFavorites"),
+                  }}
+                />
+              ) : (
+                <FavoriteGate
+                  locale={locale}
+                  next={`/${locale}/asana/${asana.name}`}
+                  labels={{
+                    title: t("favorites.gateTitle"),
+                    text: t("favorites.gateText"),
+                    login: t("favorites.gateLogin"),
+                    register: t("favorites.gateRegister"),
+                  }}
+                  size="lg"
+                />
+              )}
             </div>
 
             <div>
