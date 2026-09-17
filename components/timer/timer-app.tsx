@@ -177,6 +177,7 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Pr
     gate && (
       <PracticeGate
         onClose={() => setGate(null)}
+        goal={gate === "conversion" ? "conversion_modal" : "timer_gate"}
         labels={
           gate === "conversion"
             ? {

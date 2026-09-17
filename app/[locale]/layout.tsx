@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
+import { injectMetrica, metricaNoscript, METRIKA_ID } from "@/lib/analytics/metrica";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
@@ -97,6 +99,16 @@ export default async function LocaleLayout({
         />
       </head>
       <body className="flex min-h-full flex-col font-sans">
+        {METRIKA_ID > 0 && (
+          <>
+            <Script
+              id="metrika"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{ __html: injectMetrica() }}
+            />
+            {metricaNoscript()}
+          </>
+        )}
         <Header locale={locale} t={t} />
         <main className="flex-1">{children}</main>
         <Footer t={t} />

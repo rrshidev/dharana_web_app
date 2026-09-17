@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import type { Locale } from "@/lib/i18n/settings";
+import { reachGoal } from "@/lib/analytics/metrica";
 
 export interface AuthFormLabels {
   emailLabel: string;
@@ -112,6 +113,7 @@ export function AuthForm({
         return;
       }
       const target = nextUrl || `/${locale}/catalog`;
+      if (mode === "register") reachGoal("register");
       window.location.assign(target);
     } catch {
       setError(labels.errorGeneric);

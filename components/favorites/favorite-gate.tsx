@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n/settings";
 import { HeartIcon } from "@/components/icons";
+import { reachGoal } from "@/lib/analytics/metrica";
 
 export interface FavoriteGateLabels {
   title: string;
@@ -31,6 +32,10 @@ export function FavoriteGate({
   const [open, setOpen] = useState(false);
   const loginHref = `/${locale}/login?next=${encodeURIComponent(next)}`;
   const registerHref = `/${locale}/register`;
+
+  useEffect(() => {
+    if (open) reachGoal("favorite_gate");
+  }, [open]);
 
   const pad = size === "lg" ? "h-11 w-11" : "h-9 w-9";
   const icon = size === "lg" ? "h-5 w-5" : "h-4 w-4";

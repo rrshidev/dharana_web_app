@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { SparkleIcon } from "@/components/icons";
+import { reachGoal } from "@/lib/analytics/metrica";
 
 export interface PracticeGateLabels {
   title: string;
@@ -19,7 +21,19 @@ export interface PracticeGateLabels {
  * - "second" gate — mandatory sign-in before starting practice #2.
  * Rendered as a full-screen overlay over the timer UI.
  */
-export function PracticeGate({ labels, onClose }: { labels: PracticeGateLabels; onClose: () => void }) {
+export function PracticeGate({
+  labels,
+  onClose,
+  goal,
+}: {
+  labels: PracticeGateLabels;
+  onClose: () => void;
+  goal?: string;
+}) {
+  useEffect(() => {
+    if (goal) reachGoal(goal);
+  }, [goal]);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-night/70 p-4 backdrop-blur-sm"
