@@ -1,0 +1,75 @@
+name: Deploy Web
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Деплой на VPS (/opt/dharana, compose-сервис web, контейнер dharana-web-app).
+# Требуемые secrets (внесены 2026-09-13, те же, что у dharana-api):
+#   DHARANA_SSH_HOST   - IP VPS (212.192.22.6)
+#   DHARANA_SSH_PORT   - SSH-порт (7020)
+#   DHARANA_SSH_USER   - пользователь deploy
+#   DHARANA_SSH_KEY    - приватный ключ ~/.ssh/dharana_ci (BEGIN/END ED25519 без пароля)
+# Деплой копирует исходники тарболом (без node_modules/.next/.git) и пересобирает
+# контейнер. NEXT_PUBLIC_* запекаются docker-сборкой из build.args в compose на VPS.
+# Тар-деплой НЕ удаляет удалённые файлы — после удаления файла в репо сносить вручную.
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+  deploy:
+    name: Deploy to VPS
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Package sources
+        run: tar -czf dharana-web-app.tar.gz --exclude='./node_modules' --exclude='./.next' --exclude='./.git' --exclude='./.env' .
+
+      - name: Copy to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DHARANA_SSH_HOST }}
+          port: ${{ secrets.DHARANA_SSH_PORT }}
+          username: ${{ secrets.DHARANA_SSH_USER }}
+          key: ${{ secrets.DHARANA_SSH_KEY }}
+          source: "dharana-web-app.tar.gz"
+          target: "/tmp/dharana_deploy_${{ github.run_id }}"
+
+      - name: Extract, rebuild, restart, verify
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DHARANA_SSH_HOST }}
+          port: ${{ secrets.DHARANA_SSH_PORT }}
+          username: ${{ secrets.DHARANA_SSH_USER }}
+          key: ${{ secrets.DHARANA_SSH_KEY }}
+          script: |
+            set -e
+            cd /opt/dharana
+            sudo tar -xzf /tmp/dharana_deploy_${{ github.run_id }}/dharana-web-app.tar.gz -C ./dharana-web-app
+            sudo docker compose build web
+            sudo docker compose up -d web
+            sleep 10
+            curl -fsS -o /dev/null https://dharana.ru/ru/login || true
