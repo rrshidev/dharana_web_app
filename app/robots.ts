@@ -21,8 +21,6 @@ export default function robots(): MetadataRoute.Robots {
           "/en/profile",
           "/ru/favorites",
           "/en/favorites",
-          "/ru/complexes",
-          "/en/complexes",
           "/ru/filter",
           "/en/filter",
           "/ru/generator",

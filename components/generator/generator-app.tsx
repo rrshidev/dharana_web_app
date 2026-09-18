@@ -5,6 +5,7 @@ import Link from "next/link";
 import { mediaUrl } from "@/lib/api/media";
 import type { PracticeAsanaStep } from "@/lib/api/timer";
 import { TimerScreen, type TimerScreenLabels } from "@/components/timer/timer-screen";
+import { PracticeGate } from "@/components/timer/practice-gate";
 
 export interface GeneratorLabels {
   title: string;
@@ -32,6 +33,10 @@ export interface GeneratorLabels {
   limitTitle: string;
   limitText: string;
   limitCta: string;
+  guestGateTitle: string;
+  guestGateText: string;
+  guestGateLogin: string;
+  guestGateRegister: string;
   screen: TimerScreenLabels;
 }
 
@@ -64,7 +69,15 @@ function fmtMinutes(total: number): string {
   return `${s} с`;
 }
 
-export function GeneratorApp({ labels, locale }: { labels: GeneratorLabels; locale: string }) {
+export function GeneratorApp({
+  labels,
+  locale,
+  isAuthed,
+}: {
+  labels: GeneratorLabels;
+  locale: string;
+  isAuthed: boolean;
+}) {
   const [difficulty, setDifficulty] = useState<string>("intermediate");
   const [duration, setDuration] = useState<string>("30");
   const [focus, setFocus] = useState<string>("");
@@ -72,12 +85,17 @@ export function GeneratorApp({ labels, locale }: { labels: GeneratorLabels; loca
   const [result, setResult] = useState<GenerateResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [limitHit, setLimitHit] = useState(false);
+  const [gate, setGate] = useState(false);
 
   const [view, setView] = useState<"setup" | "run">("setup");
   const [starting, setStarting] = useState(false);
   const [sessionId, setSessionId] = useState<number | null>(null);
 
   const generate = async () => {
+    if (!isAuthed) {
+      setGate(true);
+      return;
+    }
     setGenerating(true);
     setError(null);
     setLimitHit(false);
@@ -137,6 +155,21 @@ export function GeneratorApp({ labels, locale }: { labels: GeneratorLabels; loca
     setView("setup");
     setSessionId(null);
   };
+
+  const gateOverlay = gate && (
+    <PracticeGate
+      onClose={() => setGate(false)}
+      goal="generator_gate"
+      labels={{
+        title: labels.guestGateTitle,
+        text: labels.guestGateText,
+        primary: labels.guestGateLogin,
+        primaryHref: `/${locale}/login?next=${encodeURIComponent(`/${locale}/generator`)}`,
+        secondary: labels.guestGateRegister,
+        secondaryHref: `/${locale}/register`,
+      }}
+    />
+  );
 
   if (view === "run" && result) {
     const asanas = result.items.map(
@@ -315,6 +348,7 @@ export function GeneratorApp({ labels, locale }: { labels: GeneratorLabels; loca
           )}
         </>
       )}
+      {gateOverlay}
     </section>
   );
 }

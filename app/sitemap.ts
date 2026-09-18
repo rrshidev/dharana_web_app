@@ -50,6 +50,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/en/timer`, priority: 0.7, changeFrequency: "weekly" as const, langPath: "/en/timer" },
   ];
 
+  const complexesPages = [
+    { url: `${base}/ru/complexes`, priority: 0.6, changeFrequency: "monthly" as const, langPath: "/ru/complexes" },
+    { url: `${base}/en/complexes`, priority: 0.6, changeFrequency: "monthly" as const, langPath: "/en/complexes" },
+  ];
+
   const asanas = await fetchAllAsanas();
   const asanaPages = asanas.flatMap<Page>((asana) => {
     const slug = encodeURIComponent(asana.name);
@@ -59,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
   });
 
-  const pages: Page[] = [...landing, ...catalogPages, ...timerPages, ...asanaPages];
+  const pages: Page[] = [...landing, ...catalogPages, ...timerPages, ...complexesPages, ...asanaPages];
 
   return pages.map(({ url, priority, changeFrequency, langPath }) => {
     const sibling = langPath.startsWith("/ru")

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
-import { requireAuth } from "@/lib/api/guard";
+import { AUTH_COOKIE } from "@/lib/api/media";
 import { GeneratorApp } from "@/components/generator/generator-app";
 
 export const dynamic = "force-dynamic";
@@ -23,13 +24,15 @@ export default async function GeneratorPage({ params }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  await requireAuth(locale, `/${locale}/generator`);
   const { t } = await getServerTranslation(locale);
+  const cookieStore = await cookies();
+  const hasToken = Boolean(cookieStore.get(AUTH_COOKIE)?.value);
 
   return (
     <section className="py-4">
       <GeneratorApp
         locale={locale}
+        isAuthed={hasToken}
         labels={{
           title: t("generator.title"),
           subtitle: t("generator.subtitle"),
@@ -70,6 +73,10 @@ export default async function GeneratorPage({ params }: Props) {
           limitTitle: t("generator.limitTitle"),
           limitText: t("generator.limitText"),
           limitCta: t("generator.limitCta"),
+          guestGateTitle: t("timer.gateTitle"),
+          guestGateText: t("timer.gateText"),
+          guestGateLogin: t("timer.gateLogin"),
+          guestGateRegister: t("timer.gateRegister"),
           screen: {
             title: t("timer.title"),
             ready: t("timer.ready"),

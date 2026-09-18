@@ -3,26 +3,31 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
-import { requireAuth } from "@/lib/api/guard";
 import { getSequenceVideos, type SequenceVideo } from "@/lib/api/timer";
 import { API_URL } from "@/lib/constants";
 import { FilmIcon, SparkleIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
 
+const siteUrl = "https://dharana.ru";
+
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const { t } = await getServerTranslation(locale);
-  return { title: `${t("complexes.title")} — ${t("brand")}`, robots: { index: false, follow: false } };
+  return {
+    title: `${t("complexes.title")} — ${t("brand")}`,
+    description: t("complexes.metaDescription"),
+    robots: { index: true, follow: true },
+    alternates: { canonical: `${siteUrl}/${locale}/complexes` },
+  };
 }
 
 export default async function ComplexesPage({ params }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  await requireAuth(locale, `/${locale}/complexes`);
   const { t } = await getServerTranslation(locale);
 
   let videos: SequenceVideo[] = [];
