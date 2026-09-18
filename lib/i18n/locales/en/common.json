@@ -25,7 +25,7 @@
       { "title": "Asana catalog", "route": "/catalog", "text": "Dozens of asanas with photos, descriptions, breathing technique and contraindications." },
       { "title": "Ready sequences", "route": "/complexes", "text": "Morning, evening, back and balance sequences — pick one and practice." },
       { "title": "Practice timer", "route": "/timer", "text": "A built-in timer will guide you from warm-up to savasana." },
-      { "title": "Generator", "route": "/filter", "text": "Build your own sequence for your goals in seconds." }
+      { "title": "Generator", "route": "/generator", "text": "Build your own sequence for your goals in seconds." }
     ]
   },
   "channels": {
@@ -505,5 +505,46 @@
     "error": "Couldn't change the password",
     "errorText": "Please try again later.",
     "requestAgain": "Request a new email"
+  },
+  "generator": {
+    "title": "Practice generator",
+    "subtitle": "We'll build a yoga sequence for your level and goals.",
+    "metaDescription": "Personal yoga practice generator: ready-made asana sequences for any level and duration.",
+    "difficulty": "Level",
+    "duration": "Duration",
+    "focus": "Focus",
+    "noFocus": "No focus",
+    "difficulties": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "durations": {
+      "15": "15 minutes",
+      "30": "30 minutes",
+      "60": "60 minutes"
+    },
+    "focuses": {
+      "back": "Back",
+      "legs": "Legs",
+      "balance": "Balance",
+      "flexibility": "Flexibility",
+      "energy": "Energy"
+    },
+    "generate": "Generate practice",
+    "generating": "Building your sequence…",
+    "error": "Couldn't generate a practice. Please try again.",
+    "resultTitle": "Your practice",
+    "total": "Total",
+    "calories": "Calories",
+    "kcal": "kcal",
+    "asanas": "Asanas",
+    "startPractice": "Start practice",
+    "starting": "Preparing practice…",
+    "startError": "Couldn't start the practice. Please try again.",
+    "regenerate": "Rebuild",
+    "limitTitle": "Daily limit reached",
+    "limitText": "Free users can generate one practice per day. Get Premium and practice without limits.",
+    "limitCta": "Get Premium"
   }
 }

@@ -13,7 +13,7 @@ import {
 import { getProfile } from "@/lib/api/user";
 import { AsanaCard } from "@/components/catalog/asana-card";
 import { Greeting } from "@/components/overview/greeting";
-import { GridIcon, FilmIcon, FilterIcon, ChevronRightIcon } from "@/components/icons";
+import { GridIcon, FilmIcon, WandIcon, ChevronRightIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -57,7 +57,7 @@ export default async function OverviewPage({ params }: Props) {
   const quick = [
     { href: `/${locale}/catalog`, icon: GridIcon, label: t("catalog.title") },
     { href: `/${locale}/complexes`, icon: FilmIcon, label: t("complexes.title") },
-    { href: `/${locale}/filter`, icon: FilterIcon, label: t("filter.title") },
+    { href: `/${locale}/generator`, icon: WandIcon, label: t("generator.title") },
   ];
 
   const dailyCat = daily ? categories.find((c) => c.id === daily.category_id) : undefined;

@@ -157,6 +157,17 @@ export function FilterIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function WandIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base(props)}>
+      <path d="m15 4 5 5" />
+      <path d="M4 20 14.5 9.5" />
+      <path d="m4.5 9.5-2 1 2 2-1 2 2 2" />
+      <path d="m13.5 4.5-1-2-2 2-2-1 2 2" />
+    </svg>
+  );
+}
+
 export function MailIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...base(props)}>
