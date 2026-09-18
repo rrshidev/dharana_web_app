@@ -61,6 +61,7 @@ export default async function GeneratorPage({ params }: Props) {
           total: t("generator.total"),
           calories: t("generator.calories"),
           kcal: t("generator.kcal"),
+          sec: t("generator.sec"),
           asanas: t("generator.asanas"),
           startPractice: t("generator.startPractice"),
           starting: t("generator.starting"),

@@ -23,6 +23,7 @@ export interface GeneratorLabels {
   total: string;
   calories: string;
   kcal: string;
+  sec: string;
   asanas: string;
   startPractice: string;
   starting: string;
@@ -287,8 +288,8 @@ export function GeneratorApp({ labels, locale }: { labels: GeneratorLabels; loca
                         <span className="font-medium">{item.name}</span>
                       </span>
                       <span className="shrink-0 text-xs text-muted tabular-nums">
-                        {fmtMinutes(item.duration_seconds)}
-                        {item.rest_seconds > 0 ? ` + ${item.rest_seconds}с` : ""}
+                        {item.duration_seconds} {labels.sec}
+                        {item.rest_seconds > 0 ? ` + ${item.rest_seconds} ${labels.sec}` : ""}
                       </span>
                     </li>
                   ))}
