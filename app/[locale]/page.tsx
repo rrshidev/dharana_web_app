@@ -40,10 +40,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${t("hero.eyebrow")} — ${t("brand")}`,
     description: t("hero.subtitle"),
     alternates: {
-      canonical: locale === "ru" ? "https://dharana.ru/" : "https://dharana.ru/en/",
+      canonical: locale === "ru" ? "https://dharana.ru/ru" : "https://dharana.ru/en",
       languages: {
-        ru: "https://dharana.ru/",
-        en: "https://dharana.ru/en/",
+        ru: "https://dharana.ru/ru",
+        en: "https://dharana.ru/en",
       },
     },
   };

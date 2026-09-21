@@ -24,16 +24,20 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const { locale } = await params;
   const { t } = await getServerTranslation(locale);
   const sp = await searchParams;
-  const hasFilters = Boolean(sp.category || sp.search || sp.difficulty);
+  const spQuery: string[] = [];
+  if (sp.category) spQuery.push(`category=${sp.category}`);
+  if (sp.search) spQuery.push(`search=${sp.search}`);
+  if (sp.difficulty) spQuery.push(`difficulty=${sp.difficulty}`);
+  const indexable = !sp.search;
   return {
     title: `${t("catalog.title")} — ${t("brand")}`,
     description: t("catalog.metaDescription"),
-    robots: hasFilters
-      ? { index: false, follow: true }
-      : { index: true, follow: true },
-    alternates: hasFilters
-      ? undefined
-      : { canonical: `${siteUrl}/${locale}/catalog` },
+    robots: indexable
+      ? { index: true, follow: true }
+      : { index: false, follow: true },
+    alternates: indexable
+      ? { canonical: `${siteUrl}/${locale}/catalog${spQuery.length ? `?${spQuery.join("&")}` : ""}` }
+      : undefined,
   };
 }
 

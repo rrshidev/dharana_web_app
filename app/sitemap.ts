@@ -36,8 +36,8 @@ type Page = {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const landing = [
-    { url: `${base}/`, priority: 1, changeFrequency: "weekly" as const, langPath: "/" },
-    { url: `${base}/en/`, priority: 0.9, changeFrequency: "weekly" as const, langPath: "/en/" },
+    { url: `${base}/ru`, priority: 1, changeFrequency: "weekly" as const, langPath: "/ru" },
+    { url: `${base}/en`, priority: 0.9, changeFrequency: "weekly" as const, langPath: "/en" },
   ];
 
   const catalogPages = [
