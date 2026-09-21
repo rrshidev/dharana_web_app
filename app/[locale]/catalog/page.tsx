@@ -24,10 +24,11 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const { locale } = await params;
   const { t } = await getServerTranslation(locale);
   const sp = await searchParams;
-  const spQuery: string[] = [];
-  if (sp.category) spQuery.push(`category=${sp.category}`);
-  if (sp.search) spQuery.push(`search=${sp.search}`);
-  if (sp.difficulty) spQuery.push(`difficulty=${sp.difficulty}`);
+  const spQuery = new URLSearchParams();
+  if (sp.category) spQuery.set("category", sp.category);
+  if (sp.search) spQuery.set("search", sp.search);
+  if (sp.difficulty) spQuery.set("difficulty", String(sp.difficulty));
+  const query = spQuery.toString();
   const indexable = !sp.search;
   return {
     title: `${t("catalog.title")} — ${t("brand")}`,
@@ -36,7 +37,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
       ? { index: true, follow: true }
       : { index: false, follow: true },
     alternates: indexable
-      ? { canonical: `${siteUrl}/${locale}/catalog${spQuery.length ? `?${spQuery.join("&")}` : ""}` }
+      ? { canonical: `${siteUrl}/${locale}/catalog${query ? `?${query}` : ""}` }
       : undefined,
   };
 }
