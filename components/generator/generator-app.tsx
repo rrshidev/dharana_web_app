@@ -109,6 +109,7 @@ export function GeneratorApp({
           difficulty,
           duration_minutes: Number(duration),
           focus: focus || null,
+          lang: locale,
         }),
       });
       if (res.status === 403) {
@@ -320,7 +321,11 @@ export function GeneratorApp({
                     <li key={`${item.name}-${idx}`} className="flex items-center justify-between gap-4 text-sm">
                       <span className="flex items-center gap-2">
                         <span className="w-6 text-right text-xs text-muted tabular-nums">{idx + 1}.</span>
-                        <span className="font-medium">{item.name}</span>
+                        <span className="font-medium">
+                          {locale === "en"
+                            ? item.name_en || item.name
+                            : item.name_ru || item.name}
+                        </span>
                       </span>
                       <span className="shrink-0 text-xs text-muted tabular-nums">
                         {item.duration_seconds} {labels.sec}

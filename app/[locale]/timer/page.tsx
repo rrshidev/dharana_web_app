@@ -84,6 +84,7 @@ export default async function TimerPage({ params }: Props) {
         asanas={list.items.map((a) => ({
           name: a.name,
           name_en: a.name_en || null,
+          name_ru: a.name_ru || null,
           image_url: a.image_url,
           categoryLabel: categoryName(a.category_id),
         }))}

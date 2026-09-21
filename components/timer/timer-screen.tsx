@@ -80,7 +80,7 @@ export function TimerScreen({
   onRestart,
 }: Props) {
   const stepName = (step: PracticeAsanaStep): string =>
-    locale === "en" ? step.name_en || step.name : step.name;
+    locale === "en" ? step.name_en || step.name : step.name_ru || step.name;
   const [mode, setMode] = useState<TimerMode>("idle");
   const [running, setRunning] = useState(false);
   const [paused, setPaused] = useState(false);

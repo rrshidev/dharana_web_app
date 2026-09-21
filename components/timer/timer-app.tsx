@@ -49,6 +49,7 @@ interface Props {
   asanas: Array<{
     name: string;
     name_en: string | null;
+    name_ru: string | null;
     image_url: string | null;
     categoryLabel: string;
   }>;
@@ -95,6 +96,7 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Pr
       {
         name: item.name,
         name_en: item.name_en,
+        name_ru: item.name_ru,
         image_url: item.image_url,
         duration_seconds: defaultAsana,
         rest_seconds: defaultRest,
@@ -341,7 +343,9 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Pr
                   >
                     <span className="w-5 text-center text-xs text-muted">{index + 1}</span>
                     <span className="flex-1 truncate text-sm font-medium">
-                      {locale === "en" ? step.name_en || step.name : step.name}
+                      {locale === "en"
+                        ? step.name_en || step.name
+                        : step.name_ru || step.name}
                     </span>
                     <span className="text-[11px] text-muted">
                       {labels.durationCombine.replace(
@@ -416,7 +420,9 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Pr
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-medium">
-                      {locale === "en" ? asana.name_en || asana.name : asana.name}
+                      {locale === "en"
+                        ? asana.name_en || asana.name
+                        : asana.name_ru || asana.name}
                     </span>
                     <span className="block truncate text-xs text-muted">{asana.categoryLabel}</span>
                   </span>

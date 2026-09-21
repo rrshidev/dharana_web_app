@@ -3,6 +3,7 @@ import { apiFetch } from "./server";
 export interface PracticeAsanaStep {
   name: string;
   name_en?: string | null;
+  name_ru?: string | null;
   duration_seconds: number;
   rest_seconds: number;
   image_url?: string | null;
