@@ -37,7 +37,18 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
       ? { index: true, follow: true }
       : { index: false, follow: true },
     alternates: indexable
-      ? { canonical: `${siteUrl}/${locale}/catalog${query ? `?${query}` : ""}` }
+      ? {
+          canonical: `${siteUrl}/${locale}/catalog${query ? `?${query}` : ""}`,
+          ...(query
+            ? {}
+            : {
+                languages: {
+                  ru: `${siteUrl}/ru/catalog`,
+                  en: `${siteUrl}/en/catalog`,
+                  "x-default": `${siteUrl}/ru/catalog`,
+                },
+              }),
+        }
       : undefined,
   };
 }
@@ -75,8 +86,8 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
   try {
     [categories, list] = await Promise.all([
-      getCategories(),
-      getAsanas({ category, difficulty, search, limit: 48 }),
+      getCategories(locale),
+      getAsanas({ category, difficulty, search, limit: 48, lang: locale }),
     ]);
   } catch {
     listError = true;

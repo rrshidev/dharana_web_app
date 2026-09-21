@@ -28,14 +28,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, name } = await params;
   const { t } = await getServerTranslation(locale);
   const asanaName = normalizePathParam(name);
-  const asana = await getAsanaDetail(asanaName).catch(() => null);
+  const asana = await getAsanaDetail(asanaName, locale).catch(() => null);
+  const displayName =
+    locale === "en"
+      ? asana?.name_en || asana?.name || asanaName
+      : asana?.name_ru || asana?.name || asanaName;
+  const path = `asana/${encodeURIComponent(asanaName)}`;
   return {
-    title: `${asanaName} — ${t("catalog.title")} — ${t("brand")}`,
+    title: `${displayName} — ${t("catalog.title")} — ${t("brand")}`,
     description:
       asana?.description?.slice(0, 160) || t("asana.noDescription"),
     robots: { index: true, follow: true },
     alternates: {
-      canonical: `${siteUrl}/${locale}/asana/${encodeURIComponent(asanaName)}`,
+      canonical: `${siteUrl}/${locale}/${path}`,
+      languages: {
+        ru: `${siteUrl}/ru/${path}`,
+        en: `${siteUrl}/en/${path}`,
+        "x-default": `${siteUrl}/ru/${path}`,
+      },
     },
   };
 }
@@ -53,7 +63,7 @@ export default async function AsanaPage({ params }: Props) {
   let asana: Awaited<ReturnType<typeof getAsanaDetail>>;
   let isFavorite = false;
   try {
-    asana = await getAsanaDetail(name);
+    asana = await getAsanaDetail(name, locale);
   } catch {
     asana = null;
   }
@@ -76,6 +86,10 @@ export default async function AsanaPage({ params }: Props) {
   }
 
   const img = mediaUrl(asana?.image_url ?? null);
+  const displayName =
+    locale === "en"
+      ? asana?.name_en || asana?.name || name
+      : asana?.name_ru || asana?.name || name;
 
   const asanaUrl = `${siteUrl}/${locale}/asana/${encodeURIComponent(name)}`;
   const ldJson = asana
@@ -92,12 +106,12 @@ export default async function AsanaPage({ params }: Props) {
                 name: t("catalog.title"),
                 item: `${siteUrl}/${locale}/catalog`,
               },
-              { "@type": "ListItem", position: 3, name: asana.name },
+              { "@type": "ListItem", position: 3, name: displayName },
             ],
           },
           {
             "@type": "ExercisePlan",
-            name: asana.name,
+            name: displayName,
             description: asana.description || t("asana.noDescription"),
             url: asanaUrl,
             image: img ?? undefined,
@@ -129,7 +143,7 @@ export default async function AsanaPage({ params }: Props) {
         </p>
       ) : (
         <div className="flex flex-col gap-8">
-          <AsanaPhoto src={img} alt={asana.name} />
+          <AsanaPhoto src={img} alt={displayName} />
 
           {(video || guestHasVideo) && (
             <div>
@@ -162,7 +176,7 @@ export default async function AsanaPage({ params }: Props) {
           <div className="flex flex-col gap-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h1 className="text-3xl font-semibold tracking-tight">{asana.name}</h1>
+                <h1 className="text-3xl font-semibold tracking-tight">{displayName}</h1>
                 <p className="mt-1 text-sm text-muted">{asana.category_name}</p>
               </div>
               {hasToken ? (

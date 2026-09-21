@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { mediaUrl } from "@/lib/api/media";
 import type { PracticeAsanaStep } from "@/lib/api/timer";
+import type { Locale } from "@/lib/i18n/settings";
 import { TimerScreen, type TimerScreenLabels } from "@/components/timer/timer-screen";
 import { PracticeGate } from "@/components/timer/practice-gate";
 
@@ -75,7 +76,7 @@ export function GeneratorApp({
   isAuthed,
 }: {
   labels: GeneratorLabels;
-  locale: string;
+  locale: Locale;
   isAuthed: boolean;
 }) {
   const [difficulty, setDifficulty] = useState<string>("intermediate");
@@ -182,6 +183,7 @@ export function GeneratorApp({
       <TimerScreen
         asanas={asanas}
         startSessionId={sessionId}
+        locale={locale}
         labels={labels.screen}
         onExit={backToSetup}
         onRestart={backToSetup}

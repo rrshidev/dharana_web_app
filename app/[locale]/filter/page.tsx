@@ -63,8 +63,8 @@ export default async function FilterPage({ params, searchParams }: Props) {
 
   try {
     [categories, list] = await Promise.all([
-      getCategories(),
-      getAsanas({ category, difficulty, effect, limit: 50 }),
+      getCategories(locale),
+      getAsanas({ category, difficulty, effect, limit: 50, lang: locale }),
     ]);
   } catch {
     error = true;

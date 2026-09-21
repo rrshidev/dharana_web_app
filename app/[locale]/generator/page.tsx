@@ -100,6 +100,8 @@ export default async function GeneratorPage({ params }: Props) {
             notifyAsana: t("timer.notifyAsana"),
             notifyRest: t("timer.notifyRest"),
             notifyComplete: t("timer.notifyComplete"),
+            secShort: t("timer.secShort"),
+            minShort: t("timer.minShort"),
           },
         }}
       />

@@ -221,6 +221,8 @@
     "notifyAsana": "Practice",
     "notifyRest": "Rest",
     "notifyComplete": "Practice complete!",
+    "secShort": "s",
+    "minShort": "min",
     "metaDescription": "Practice yoga with the timer: build a sequence of asanas and follow along with rest intervals.",
     "conversionTitle": "Create an account",
     "conversionText": "Your practice won't be saved without an account. Sign up to keep history, save favorites and practice without limits.",

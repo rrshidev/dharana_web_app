@@ -9,6 +9,8 @@ export interface Category {
 
 export interface AsanaSummary {
   name: string;
+  name_en?: string | null;
+  name_ru?: string | null;
   category_id: string;
   image_url: string | null;
   difficulty: number;
@@ -29,8 +31,9 @@ export interface AsanaList {
   offset: number;
 }
 
-export async function getCategories(): Promise<Category[]> {
-  return apiFetch<Category[]>("/categories");
+export async function getCategories(lang?: string): Promise<Category[]> {
+  const qs = lang ? `?lang=${encodeURIComponent(lang)}` : "";
+  return apiFetch<Category[]>(`/categories${qs}`);
 }
 
 interface MaybeError {
@@ -44,12 +47,14 @@ export async function getAsanas(params: {
   search?: string;
   limit?: number;
   offset?: number;
+  lang?: string;
 }): Promise<AsanaList> {
   const qs = new URLSearchParams();
   if (params.category) qs.set("category", params.category);
   if (params.difficulty) qs.set("difficulty", String(params.difficulty));
   if (params.effect) qs.set("effect", params.effect);
   if (params.search) qs.set("search", params.search);
+  if (params.lang) qs.set("lang", params.lang);
   qs.set("limit", String(params.limit ?? 24));
   qs.set("offset", String(params.offset ?? 0));
   const data = await apiFetch<AsanaList & MaybeError>(`/asanas?${qs.toString()}`);
@@ -58,13 +63,20 @@ export async function getAsanas(params: {
     : { total: data.total, items: data.items, limit: data.limit, offset: data.offset };
 }
 
-export async function getRandomAsana(): Promise<AsanaDetail | null> {
-  const data = await apiFetch<AsanaDetail & MaybeError>("/asanas/random");
+export async function getRandomAsana(lang?: string): Promise<AsanaDetail | null> {
+  const qs = lang ? `?lang=${encodeURIComponent(lang)}` : "";
+  const data = await apiFetch<AsanaDetail & MaybeError>(`/asanas/random${qs}`);
   return data.error ? null : data;
 }
 
-export async function getAsanaDetail(name: string): Promise<AsanaDetail | null> {
-  const data = await apiFetch<AsanaDetail & MaybeError>(`/asanas/${encodeURIComponent(name)}`);
+export async function getAsanaDetail(
+  name: string,
+  lang?: string,
+): Promise<AsanaDetail | null> {
+  const qs = lang ? `?lang=${encodeURIComponent(lang)}` : "";
+  const data = await apiFetch<AsanaDetail & MaybeError>(
+    `/asanas/${encodeURIComponent(name)}${qs}`,
+  );
   return data.error ? null : data;
 }
 

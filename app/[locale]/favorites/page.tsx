@@ -42,8 +42,8 @@ export default async function FavoritesPage({ params }: Props) {
   let error = false;
 
   try {
-    [names, categories] = await Promise.all([getFavoriteNames(), getCategories()]);
-    const details = await Promise.all(names.map((name) => getAsanaDetail(name)));
+    [names, categories] = await Promise.all([getFavoriteNames(), getCategories(locale)]);
+    const details = await Promise.all(names.map((name) => getAsanaDetail(name, locale)));
     favorites = details
       .map((asana, order) => ({ order, asana }))
       .filter((f): f is { order: number; asana: NonNullable<typeof f.asana> } => Boolean(f.asana))

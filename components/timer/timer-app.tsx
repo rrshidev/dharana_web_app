@@ -39,6 +39,8 @@ export interface TimerAppLabels {
   resumeText: string;
   resumeAction: string;
   resumeError: string;
+  secShort: string;
+  minShort: string;
   guest: TimerGuestLabels;
   screen: TimerScreenLabels;
 }
@@ -46,6 +48,7 @@ export interface TimerAppLabels {
 interface Props {
   asanas: Array<{
     name: string;
+    name_en: string | null;
     image_url: string | null;
     categoryLabel: string;
   }>;
@@ -57,11 +60,11 @@ interface Props {
 
 const DURATION_OPTIONS = [5, 10, 15, 30, 45, 60, 90, 120, 180, 300];
 
-function fmtDur(seconds: number): string {
-  if (seconds < 60) return `${seconds} с`;
+function fmtDur(seconds: number, secShort: string, minShort: string): string {
+  if (seconds < 60) return `${seconds} ${secShort}`;
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
-  return s > 0 ? `${m} мин ${s} с` : `${m} мин`;
+  return s > 0 ? `${m} ${minShort} ${s} ${secShort}` : `${m} ${minShort}`;
 }
 
 export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Props) {
@@ -85,11 +88,17 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Pr
     [asanas, selectedNames],
   );
 
-  const addAsana = (name: string, imageUrl: string | null) => {
-    if (selectedNames.has(name)) return;
+  const addAsana = (item: Props["asanas"][number]) => {
+    if (selectedNames.has(item.name)) return;
     setSelected((prev) => [
       ...prev,
-      { name, image_url: imageUrl, duration_seconds: defaultAsana, rest_seconds: defaultRest },
+      {
+        name: item.name,
+        name_en: item.name_en,
+        image_url: item.image_url,
+        duration_seconds: defaultAsana,
+        rest_seconds: defaultRest,
+      },
     ]);
     setStartError(null);
   };
@@ -207,6 +216,7 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Pr
         <TimerScreen
           asanas={selected}
           startSessionId={sessionId}
+          locale={locale}
           guestMode={!isAuthed}
           labels={labels.screen}
           onCompleted={() => {
@@ -282,7 +292,7 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Pr
       >
         {DURATION_OPTIONS.map((s) => (
           <option key={s} value={s}>
-            {fmtDur(s)}
+            {fmtDur(s, labels.secShort, labels.minShort)}
           </option>
         ))}
       </select>
@@ -330,10 +340,19 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Pr
                     className="flex items-center gap-2 rounded-xl border border-night-line bg-night/40 px-3 py-2.5"
                   >
                     <span className="w-5 text-center text-xs text-muted">{index + 1}</span>
-                    <span className="flex-1 truncate text-sm font-medium">{step.name}</span>
+                    <span className="flex-1 truncate text-sm font-medium">
+                      {locale === "en" ? step.name_en || step.name : step.name}
+                    </span>
                     <span className="text-[11px] text-muted">
-                      {labels.durationCombine.replace("{duration}", fmtDur(step.duration_seconds))} ·{" "}
-                      {labels.restCombine.replace("{rest}", fmtDur(step.rest_seconds))}
+                      {labels.durationCombine.replace(
+                        "{duration}",
+                        fmtDur(step.duration_seconds, labels.secShort, labels.minShort),
+                      )}{" "}
+                      ·{" "}
+                      {labels.restCombine.replace(
+                        "{rest}",
+                        fmtDur(step.rest_seconds, labels.secShort, labels.minShort),
+                      )}
                     </span>
                     <button
                       type="button"
@@ -379,7 +398,7 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Pr
                 <button
                   key={asana.name}
                   type="button"
-                  onClick={() => addAsana(asana.name, asana.image_url)}
+                  onClick={() => addAsana(asana)}
                   className="flex items-center gap-3 rounded-xl border border-night-line bg-night/40 px-3 py-2 text-left transition-colors hover:border-accent/50"
                 >
                   <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-night-soft/40">
@@ -396,7 +415,9 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Pr
                     </span>
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium">{asana.name}</span>
+                    <span className="block truncate text-sm font-medium">
+                      {locale === "en" ? asana.name_en || asana.name : asana.name}
+                    </span>
                     <span className="block truncate text-xs text-muted">{asana.categoryLabel}</span>
                   </span>
                 </button>

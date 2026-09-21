@@ -44,8 +44,8 @@ export default async function OverviewPage({ params }: Props) {
 
   try {
     [categories, daily, userName] = await Promise.all([
-      getCategories(),
-      getRandomAsana(),
+      getCategories(locale),
+      getRandomAsana(locale),
       getProfile()
         .then((p) => p.name)
         .catch(() => null),

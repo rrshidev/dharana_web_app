@@ -46,8 +46,8 @@ export default async function TimerPage({ params }: Props) {
 
   try {
     [categories, list, activeSession] = await Promise.all([
-      getCategories(),
-      getAsanas({ limit: 200 }),
+      getCategories(locale),
+      getAsanas({ limit: 200, lang: locale }),
       hasToken ? getActiveSession().catch(() => null) : Promise.resolve(null),
     ]);
   } catch {
@@ -83,6 +83,7 @@ export default async function TimerPage({ params }: Props) {
       <TimerApp
         asanas={list.items.map((a) => ({
           name: a.name,
+          name_en: a.name_en || null,
           image_url: a.image_url,
           categoryLabel: categoryName(a.category_id),
         }))}
@@ -109,6 +110,8 @@ export default async function TimerPage({ params }: Props) {
           resumeText: resumeText,
           resumeAction: t("timer.resumeAction"),
           resumeError: t("timer.resumeError"),
+          secShort: t("timer.secShort"),
+          minShort: t("timer.minShort"),
           guest: {
             conversionTitle: t("timer.conversionTitle"),
             conversionText: t("timer.conversionText"),
@@ -142,6 +145,8 @@ export default async function TimerPage({ params }: Props) {
             notifyAsana: t("timer.notifyAsana"),
             notifyRest: t("timer.notifyRest"),
             notifyComplete: t("timer.notifyComplete"),
+            secShort: t("timer.secShort"),
+            minShort: t("timer.minShort"),
           },
         }}
       />

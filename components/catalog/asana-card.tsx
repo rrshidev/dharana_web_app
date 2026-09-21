@@ -21,6 +21,10 @@ export function AsanaCard({
   videoLabel?: string;
 }) {
   const img = mediaUrl(asana.image_url);
+  const displayName =
+    locale === "en"
+      ? asana.name_en || asana.name
+      : asana.name_ru || asana.name;
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-night-line bg-night/60 transition-colors hover:border-accent/50">
@@ -33,7 +37,7 @@ export function AsanaCard({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={img}
-              alt={asana.name}
+              alt={displayName}
               loading="lazy"
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
@@ -50,7 +54,7 @@ export function AsanaCard({
           )}
         </div>
         <div className="flex flex-1 flex-col gap-2 p-4">
-          <h3 className="text-base font-semibold leading-snug">{asana.name}</h3>
+          <h3 className="text-base font-semibold leading-snug">{displayName}</h3>
           <p className="text-xs text-muted">{categoryLabel}</p>
           <div className="mt-auto flex items-center gap-1 pt-1" aria-label={difficultyLabel}>
             {[1, 2, 3, 4, 5].map((n) => (

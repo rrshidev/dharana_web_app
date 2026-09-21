@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { PracticeAsanaStep } from "@/lib/api/timer";
+import type { Locale } from "@/lib/i18n/settings";
 import {
   isTabHidden,
   notify,
@@ -37,6 +38,8 @@ export interface TimerScreenLabels {
   notifyAsana: string;
   notifyRest: string;
   notifyComplete: string;
+  secShort: string;
+  minShort: string;
 }
 
 interface Summary {
@@ -47,6 +50,7 @@ interface Summary {
 interface Props {
   asanas: PracticeAsanaStep[];
   startSessionId: number | null;
+  locale: Locale;
   labels: TimerScreenLabels;
   guestMode?: boolean;
   onCompleted?: (summary: Summary) => void;
@@ -60,20 +64,23 @@ function fmtTime(total: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-function fmtDuration(total: number): string {
+function fmtDuration(total: number, labels: TimerScreenLabels): string {
   const m = Math.floor(total / 60);
-  return m > 0 ? `${m} мин` : `${total} с`;
+  return m > 0 ? `${m} ${labels.minShort}` : `${total} ${labels.secShort}`;
 }
 
 export function TimerScreen({
   asanas,
   startSessionId,
+  locale,
   labels,
   guestMode = false,
   onCompleted,
   onExit,
   onRestart,
 }: Props) {
+  const stepName = (step: PracticeAsanaStep): string =>
+    locale === "en" ? step.name_en || step.name : step.name;
   const [mode, setMode] = useState<TimerMode>("idle");
   const [running, setRunning] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -169,7 +176,7 @@ export function TimerScreen({
 
       if (idx < asanas.length - 1) {
         if (!mutedRef.current) playGong();
-        if (hidden) notify(labels.notifyRest, step.name);
+        if (hidden) notify(labels.notifyRest, stepName(step));
         if (hidden) vibrate([120, 60, 120]);
         beginPhase("rest", step.rest_seconds);
       } else {
@@ -183,7 +190,7 @@ export function TimerScreen({
       const next = asanas[nextIndex];
       if (next) {
         if (!mutedRef.current) playGong();
-        if (hidden) notify(labels.notifyAsana, next.name);
+        if (hidden) notify(labels.notifyAsana, stepName(next));
         if (hidden) vibrate([120, 60, 120]);
         setCurrentIndex(nextIndex);
         beginPhase("asana", next.duration_seconds);
@@ -314,7 +321,7 @@ const strokeClass =
   const progress = total > 0 ? (total - remaining) / total : 0;
   const circumference = 2 * Math.PI * 90;
 
-  const currentName = asanas[currentIndex]?.name ?? "";
+  const currentName = asanas[currentIndex] ? stepName(asanas[currentIndex]) : "";
 
   return (
     <div className="mx-auto flex max-w-md flex-col px-6 py-8">
@@ -330,7 +337,7 @@ const strokeClass =
           <h2 className="mt-6 text-2xl font-semibold tracking-tight">{labels.completeTitle}</h2>
           <p className="mt-2 text-sm text-muted">
             {labels.completeCount.replace("{count}", String(summary.count))} ·{" "}
-            {labels.completeDuration.replace("{duration}", fmtDuration(summary.durationSeconds))}
+            {labels.completeDuration.replace("{duration}", fmtDuration(summary.durationSeconds, labels))}
           </p>
           {error && <p className="mt-3 text-sm text-rose-400">Saving failed</p>}
           <div className="mt-8 flex w-full flex-col gap-3">
@@ -500,9 +507,11 @@ const strokeClass =
                           : "text-muted"
                     }`}
                   >
-                    {step.name}
+                    {stepName(step)}
                   </span>
-                  <span className="text-[11px] tabular-nums text-muted">{step.duration_seconds} с</span>
+                  <span className="text-[11px] tabular-nums text-muted">
+                    {step.duration_seconds} {labels.secShort}
+                  </span>
                 </div>
               );
             })}
