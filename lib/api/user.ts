@@ -56,6 +56,24 @@ export async function getPracticeStats(): Promise<PracticeStats> {
   return apiFetch<PracticeStats>("/practice/stats");
 }
 
+export interface PracticeSeries {
+  days: string[];
+  minutes: number[];
+  sessions: number[];
+  asanas: number[];
+}
+
+/** Дневные ряды активности с бэкенда (статистика всех типов практик). */
+export async function getPracticeSeries(
+  days: number,
+  practiceType: string,
+  tzOffsetMinutes = 0,
+): Promise<PracticeSeries> {
+  return apiFetch<PracticeSeries>(
+    `/practice/stats/series?days=${days}&practice_type=${practiceType}&tz_offset_minutes=${tzOffsetMinutes}`,
+  );
+}
+
 export async function getSubscriptionStatus(): Promise<SubscriptionStatus> {
   return apiFetch<SubscriptionStatus>("/subscription/status");
 }

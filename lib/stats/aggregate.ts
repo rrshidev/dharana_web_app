@@ -51,3 +51,21 @@ export function aggregateActivity(
 
   return [...days.values()];
 }
+
+/**
+ * Конвертирует серверные ряды ({days, minutes, sessions, asanas})
+ * в набор точек для графика.
+ */
+export function seriesToPoints(series: {
+  days: string[];
+  minutes: number[];
+  sessions: number[];
+  asanas: number[];
+}): DayActivity[] {
+  return series.days.map((label, i) => ({
+    label,
+    minutes: series.minutes[i] ?? 0,
+    sessions: series.sessions[i] ?? 0,
+    asanas: series.asanas[i] ?? 0,
+  }));
+}

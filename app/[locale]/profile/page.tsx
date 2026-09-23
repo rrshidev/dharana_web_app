@@ -7,17 +7,20 @@ import { requireAuth } from "@/lib/api/guard";
 import {
   getProfile,
   getPracticeStats,
+  getPracticeSeries,
   getSubscriptionStatus,
   getProfileAvatars,
 } from "@/lib/api/user";
-import { getPracticeHistory } from "@/lib/api/timer";
-import { aggregateActivity } from "@/lib/stats/aggregate";
+import { seriesToPoints, type DayActivity } from "@/lib/stats/aggregate";
 import { mediaUrl } from "@/lib/api/media";
 import { ProfileActions } from "@/components/profile/profile-actions";
 import { ProfileAvatar } from "@/components/profile/avatar-picker";
 import { LinkTelegram } from "@/components/profile/link-telegram";
 import { EmailVerifyBanner } from "@/components/profile/email-verify-banner";
-import { ActivitySection } from "@/components/profile/activity-section";
+import {
+  ActivitySection,
+  type PracticeTypeFilter,
+} from "@/components/profile/activity-section";
 import { SparkleIcon, CreditCardIcon, ChevronRightIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
@@ -56,16 +59,14 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   let profile: Awaited<ReturnType<typeof getProfile>> | null = null;
   let stats: Awaited<ReturnType<typeof getPracticeStats>> | null = null;
   let sub: Awaited<ReturnType<typeof getSubscriptionStatus>> | null = null;
-  let history: Awaited<ReturnType<typeof getPracticeHistory>> | null = null;
   let avatars: Awaited<ReturnType<typeof getProfileAvatars>> = [];
   let error = false;
 
   try {
-    [profile, stats, sub, history] = await Promise.all([
+    [profile, stats, sub] = await Promise.all([
       getProfile(),
       getPracticeStats(),
       getSubscriptionStatus(),
-      getPracticeHistory(500),
     ]);
   } catch {
     error = true;
@@ -100,7 +101,27 @@ export default async function ProfilePage({ params, searchParams }: Props) {
     { value: String(stats?.total_sessions ?? 0), label: t("profile.statsSessions") },
   ];
 
-  const activityPoints = history ? aggregateActivity(history.sessions, days) : [];
+  const tzOffset = -new Date().getTimezoneOffset();
+  const practiceTypes: PracticeTypeFilter[] = ["all", "asana", "meditation", "pranayama"];
+  let series: Partial<Record<PracticeTypeFilter, DayActivity[]>> = {};
+  if (!error) {
+    const rows = await Promise.all(
+      practiceTypes.map((p) =>
+        getPracticeSeries(days, p, tzOffset).catch(() => null),
+      ),
+    );
+    practiceTypes.forEach((p, i) => {
+      const row = rows[i];
+      if (row) series[p] = seriesToPoints(row);
+    });
+  }
+
+  const activityTabs: Record<PracticeTypeFilter, string> = {
+    all: t("profile.activityTypeAll"),
+    asana: t("profile.activityTypeAsana"),
+    meditation: t("profile.activityTypeMeditation"),
+    pranayama: t("profile.activityTypePranayama"),
+  };
 
   return (
     <section className="mx-auto max-w-2xl px-6 py-10">
@@ -219,9 +240,10 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 
       <ActivitySection
         days={days}
-        points={activityPoints}
+        series={series}
         labels={{
           title: t("profile.activityTitle"),
+          tabs: activityTabs,
           legendMinutes: t("profile.activityLegendMinutes"),
           legendSessions: t("profile.activityLegendSessions"),
           legendAsanas: t("profile.activityLegendAsanas"),
