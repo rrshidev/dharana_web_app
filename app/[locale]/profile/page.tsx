@@ -247,9 +247,12 @@ export default async function ProfilePage({ params, searchParams }: Props) {
           legendMinutes: t("profile.activityLegendMinutes"),
           legendSessions: t("profile.activityLegendSessions"),
           legendAsanas: t("profile.activityLegendAsanas"),
+          legendPranayama: t("profile.activityLegendPranayama"),
+          legendExercises: t("profile.activityLegendExercises"),
           minUnit: t("profile.activityMinUnit"),
           sesUnit: t("profile.activitySesUnit"),
           asaUnit: t("profile.activityAsaUnit"),
+          exercisesUnit: t("profile.activityExercisesUnit"),
         }}
       />
 

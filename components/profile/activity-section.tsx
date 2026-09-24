@@ -20,14 +20,27 @@ export function ActivitySection({
     legendMinutes: string;
     legendSessions: string;
     legendAsanas: string;
+    legendPranayama: string;
+    legendExercises: string;
     minUnit: string;
     sesUnit: string;
     asaUnit: string;
+    exercisesUnit: string;
   };
 }) {
   const [active, setActive] = useState<PracticeTypeFilter>("all");
   const tabs: PracticeTypeFilter[] = ["all", "asana", "meditation", "pranayama"];
   const points = series[active] ?? [];
+
+  // Третья метрика: асаны/упражнения/пранаяма (медитация — только минуты и сессии).
+  const thirdMetric =
+    active === "meditation"
+      ? null
+      : active === "pranayama"
+        ? { name: labels.legendPranayama, unit: labels.exercisesUnit }
+        : active === "all"
+          ? { name: labels.legendExercises, unit: labels.exercisesUnit }
+          : { name: labels.legendAsanas, unit: labels.asaUnit };
 
   return (
     <section className="mt-6 rounded-2xl border border-night-line bg-night/60 p-4">
@@ -63,15 +76,16 @@ export function ActivitySection({
       </div>
       <ActivityChart
         days={points}
+        metrics={thirdMetric}
         labels={{
           minutes: labels.minUnit,
           sessions: labels.sesUnit,
-          asanas: labels.asaUnit,
+          asanas: thirdMetric?.unit ?? labels.asaUnit,
         }}
         legend={{
           minutes: labels.legendMinutes,
           sessions: labels.legendSessions,
-          asanas: labels.legendAsanas,
+          asanas: thirdMetric?.name ?? labels.legendAsanas,
         }}
       />
     </section>

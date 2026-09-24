@@ -25,10 +25,13 @@ interface ActivityChartProps {
   height?: number;
   labels: { minutes: string; sessions: string; asanas: string };
   legend: { minutes: string; sessions: string; asanas: string };
+  /** Третья метрика (асаны/упражнения/пранаяма). null — скрыть (медитация). */
+  metrics?: { name: string; unit: string } | null;
 }
 
 /** График активности профиля: минуты / сессии / асаны (нормализованы по своей шкале). */
-export function ActivityChart({ days, height = 200, labels, legend }: ActivityChartProps) {
+export function ActivityChart({ days, height = 200, labels, legend, metrics }: ActivityChartProps) {
+  const showAsanas = metrics != null;
   const maxes = useMemo(() => {
     const maxMin = Math.max(1, ...days.map((d) => d.minutes));
     const maxSes = Math.max(1, ...days.map((d) => d.sessions));
@@ -59,7 +62,9 @@ export function ActivityChart({ days, height = 200, labels, legend }: ActivityCh
   const series = [
     { key: "minutes", name: legend.minutes, color: CHART.accent, max: maxes.maxMin },
     { key: "sessions", name: legend.sessions, color: CHART.sage, max: maxes.maxSes },
-    { key: "asanas", name: legend.asanas, color: CHART.blue, max: maxes.maxAsa },
+    ...(showAsanas
+      ? [{ key: "asanas", name: legend.asanas, color: CHART.blue, max: maxes.maxAsa }]
+      : []),
   ];
 
   if (days.length === 0) {
@@ -140,7 +145,8 @@ export function ActivityChart({ days, height = 200, labels, legend }: ActivityCh
             />
             <span className="text-muted">{s.name}</span>
             <span className="font-semibold text-ink">
-              {totals[s.key as keyof typeof totals]} {labels[s.key as keyof typeof labels]}
+              {totals[s.key as keyof typeof totals]}{" "}
+              {s.key === "asanas" && metrics ? metrics.unit : labels[s.key as keyof typeof labels]}
             </span>
           </span>
         ))}
