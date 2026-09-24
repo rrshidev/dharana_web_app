@@ -6,8 +6,6 @@ import { BrandMark } from "./brand";
 type T = (key: string) => string;
 
 export function Header({ locale, t }: { locale: Locale; t: T }) {
-  const other: Locale = locale === "ru" ? "en" : "ru";
-
   return (
     <header className="sticky top-0 z-20 border-b border-night-line bg-night/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
@@ -17,37 +15,24 @@ export function Header({ locale, t }: { locale: Locale; t: T }) {
           </span>
           <span className="text-xl font-semibold tracking-tight">{t("brand")}</span>
         </Link>
-        <nav className="flex items-center gap-6 text-sm">
-          <Link href={`/${locale}#features`} className="hidden text-muted transition-colors hover:text-ink sm:block">
-            {t("nav.features")}
-          </Link>
-          <Link href={`/${locale}#channels`} className="hidden text-muted transition-colors hover:text-ink sm:block">
-            {t("nav.channels")}
-          </Link>
-          <Link href={`/${locale}#contacts`} className="hidden text-muted transition-colors hover:text-ink sm:block">
-            {t("nav.contacts")}
-          </Link>
-          <UserNav
-            locale={locale}
-            links={[
-              { href: `/${locale}/overview`, label: t("nav.overview") },
-              { href: `/${locale}/timer`, label: t("nav.timer") },
-              { href: `/${locale}/catalog`, label: t("nav.catalog") },
-              { href: `/${locale}/favorites`, label: t("nav.favorites") },
-              { href: `/${locale}/profile`, label: t("nav.profile") },
-            ]}
-            labels={{
-              login: t("nav.login"),
-              logout: t("nav.logout"),
-            }}
-          />
-          <Link
-            href={`/${other}`}
-            className="rounded-full border border-night-line px-3 py-1 text-xs font-medium text-muted transition-colors hover:text-ink"
-          >
-            {other.toUpperCase()}
-          </Link>
-        </nav>
+        <UserNav
+          locale={locale}
+          landingLinks={[
+            { href: `/${locale}#features`, label: t("nav.features") },
+            { href: `/${locale}#channels`, label: t("nav.channels") },
+            { href: `/${locale}#contacts`, label: t("nav.contacts") },
+          ]}
+          links={[
+            { href: `/${locale}/overview`, label: t("nav.overview") },
+            { href: `/${locale}/timer`, label: t("nav.timer") },
+            { href: `/${locale}/favorites`, label: t("nav.favorites") },
+            { href: `/${locale}/profile`, label: t("nav.profile") },
+          ]}
+          labels={{
+            login: t("nav.login"),
+            logout: t("nav.logout"),
+          }}
+        />
       </div>
     </header>
   );

@@ -14,15 +14,22 @@ export interface UserNavLink {
   label: string;
 }
 
+export interface LandingNavLink {
+  href: string;
+  label: string;
+}
+
 type AuthState = "loading" | "guest" | "user";
 
 export function UserNav({
   locale,
   links,
+  landingLinks,
   labels,
 }: {
   locale: Locale;
   links: UserNavLink[];
+  landingLinks: LandingNavLink[];
   labels: UserNavLabels;
 }) {
   const [state, setState] = useState<AuthState>("loading");
@@ -49,6 +56,16 @@ export function UserNav({
       window.location.assign(`/${locale}`);
     }
   };
+
+  const other: Locale = locale === "ru" ? "en" : "ru";
+  const languageSwitch = (
+    <Link
+      href={`/${other}`}
+      className="rounded-full border border-night-line px-3 py-1 text-xs font-medium text-muted transition-colors hover:text-ink"
+    >
+      {other.toUpperCase()}
+    </Link>
+  );
 
   if (state === "loading") {
     return (
@@ -80,16 +97,29 @@ export function UserNav({
         >
           {labels.logout}
         </button>
+        {languageSwitch}
       </>
     );
   }
 
   return (
-    <Link
-      href={`/${locale}/login`}
-      className="rounded-full border border-night-line px-3 py-1 text-xs font-medium text-muted transition-colors hover:text-ink sm:block"
-    >
-      {labels.login}
-    </Link>
+    <>
+      {landingLinks.map((link) => (
+        <Link
+          key={link.href}
+          href={link.href}
+          className="hidden text-muted transition-colors hover:text-ink sm:block"
+        >
+          {link.label}
+        </Link>
+      ))}
+      <Link
+        href={`/${locale}/login`}
+        className="rounded-full border border-night-line px-3 py-1 text-xs font-medium text-muted transition-colors hover:text-ink sm:block"
+      >
+        {labels.login}
+      </Link>
+      {languageSwitch}
+    </>
   );
 }

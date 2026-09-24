@@ -176,3 +176,24 @@ export function MailIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function BookIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base(props)}>
+      <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5Z" />
+      <path d="M4 4.5v17" />
+      <path d="M8 7h8" />
+      <path d="M8 10.5h8" />
+    </svg>
+  );
+}
+
+export function LayersIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base(props)}>
+      <path d="m12 3 9 5-9 5-9-5 9-5Z" />
+      <path d="m3 13 9 5 9-5" />
+      <path d="m3 18 9 5 9-5" />
+    </svg>
+  );
+}

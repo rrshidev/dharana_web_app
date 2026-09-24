@@ -557,5 +557,21 @@
     "limitTitle": "Daily limit reached",
     "limitText": "Free users can generate one practice per day. Get Premium and practice without limits.",
     "limitCta": "Get Premium"
+  },
+  "basics": {
+    "title": "Yoga basics",
+    "subtitle": "Basic yoga concepts and terms",
+    "metaDescription": "Yoga basics: chakras, bandhas, breath and other concepts of the tradition. Clear explanations from Dharana.",
+    "listError": "Couldn't load the sections. Please try again later.",
+    "backToList": "← All yoga basics",
+    "itemNotFound": "Section not found"
+  },
+  "steps": {
+    "title": "8 limbs of yoga",
+    "subtitle": "The eight branches of classical yoga — from Yama to Samadhi",
+    "metaDescription": "The 8 limbs of yoga by Patanjali: Yama, Niyama, Asana, Pranayama, Pratyahara, Dharana, Dhyana, Samadhi.",
+    "listError": "Couldn't load the limbs. Please try again later.",
+    "backToList": "← All yoga limbs",
+    "itemNotFound": "Limb not found"
   }
 }

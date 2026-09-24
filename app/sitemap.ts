@@ -27,6 +27,10 @@ async function fetchAllAsanas(): Promise<{ name: string }[]> {
 
 export const dynamic = "force-dynamic";
 
+// Реальная дата последнего массового изменения контента страниц
+// (деплой SEO-фиксов canonical/robots 2026-09-21). Стабильная, не каждый день.
+const contentUpdatedAt = new Date("2026-09-21T00:00:00.000Z");
+
 type Page = {
   url: string;
   priority: number;
@@ -72,6 +76,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       : langPath.replace(/^\/en/, "/ru");
     return {
       url,
+      lastModified: contentUpdatedAt,
       priority,
       changeFrequency,
       alternates: {

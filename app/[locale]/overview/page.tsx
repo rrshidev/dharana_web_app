@@ -13,7 +13,14 @@ import {
 import { getProfile } from "@/lib/api/user";
 import { AsanaCard } from "@/components/catalog/asana-card";
 import { Greeting } from "@/components/overview/greeting";
-import { GridIcon, FilmIcon, WandIcon, ChevronRightIcon } from "@/components/icons";
+import {
+  GridIcon,
+  FilmIcon,
+  WandIcon,
+  BookIcon,
+  LayersIcon,
+  ChevronRightIcon,
+} from "@/components/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -56,6 +63,8 @@ export default async function OverviewPage({ params }: Props) {
 
   const quick = [
     { href: `/${locale}/catalog`, icon: GridIcon, label: t("catalog.title") },
+    { href: `/${locale}/basics`, icon: BookIcon, label: t("basics.title") },
+    { href: `/${locale}/steps`, icon: LayersIcon, label: t("steps.title") },
     { href: `/${locale}/complexes`, icon: FilmIcon, label: t("complexes.title") },
     { href: `/${locale}/generator`, icon: WandIcon, label: t("generator.title") },
   ];
@@ -76,7 +85,7 @@ export default async function OverviewPage({ params }: Props) {
       />
       <p className="mt-1 text-sm text-muted">{t("overview.subtitle")}</p>
 
-      <div className="mt-6 grid grid-cols-3 gap-3">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {quick.map((q) => (
           <Link
             key={q.href}
