@@ -91,6 +91,14 @@ export default async function TimerPage({ params }: Props) {
         activeSession={activeSession}
         isAuthed={hasToken}
         locale={locale}
+        share={{
+          data: {
+            title: t("timer.title"),
+            text: t("share.timerText"),
+            url: `${siteUrl}/${locale}/timer`,
+          },
+          labels: { share: t("share.button"), copied: t("share.copied") },
+        }}
         labels={{
           title: t("timer.title"),
           defaultTime: t("timer.defaultTime"),

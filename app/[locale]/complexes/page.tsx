@@ -6,6 +6,7 @@ import { getServerTranslation } from "@/lib/i18n/server";
 import { getSequenceVideos, type SequenceVideo } from "@/lib/api/timer";
 import { API_URL } from "@/lib/constants";
 import { FilmIcon, SparkleIcon } from "@/components/icons";
+import { ShareButton } from "@/components/share/share-button";
 
 export const dynamic = "force-dynamic";
 
@@ -40,8 +41,20 @@ export default async function ComplexesPage({ params }: Props) {
 
   return (
     <section className="mx-auto max-w-3xl px-6 py-12">
-      <h1 className="text-3xl font-semibold tracking-tight">{t("complexes.title")}</h1>
-      <p className="mt-2 text-sm text-muted">{t("complexes.subtitle")}</p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight">{t("complexes.title")}</h1>
+          <p className="mt-2 text-sm text-muted">{t("complexes.subtitle")}</p>
+        </div>
+        <ShareButton
+          data={{
+            title: t("complexes.title"),
+            text: t("share.complexesText"),
+            url: `${siteUrl}/${locale}/complexes`,
+          }}
+          labels={{ share: t("share.button"), copied: t("share.copied") }}
+        />
+      </div>
 
       {error ? (
         <p className="mt-8 rounded-2xl border border-night-line p-8 text-center text-muted">

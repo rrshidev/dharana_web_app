@@ -16,6 +16,7 @@ import { mediaUrl, AUTH_COOKIE } from "@/lib/api/media";
 import { AsanaPhoto } from "@/components/asana/asana-photo";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { FavoriteGate } from "@/components/favorites/favorite-gate";
+import { ShareButton } from "@/components/share/share-button";
 import { SparkleIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
@@ -179,29 +180,39 @@ export default async function AsanaPage({ params }: Props) {
                 <h1 className="text-3xl font-semibold tracking-tight">{displayName}</h1>
                 <p className="mt-1 text-sm text-muted">{asana.category_name}</p>
               </div>
-              {hasToken ? (
-                <FavoriteButton
-                  name={asana.name}
-                  initial={isFavorite}
-                  size="lg"
-                  labels={{
-                    add: t("asana.addToFavorites"),
-                    remove: t("asana.removeFromFavorites"),
+              <div className="flex items-center gap-2">
+                <ShareButton
+                  data={{
+                    title: displayName,
+                    text: t("share.asanaText").replace("%name%", displayName),
+                    url: asanaUrl,
                   }}
+                  labels={{ share: t("share.button"), copied: t("share.copied") }}
                 />
-              ) : (
-                <FavoriteGate
-                  locale={locale}
-                  next={`/${locale}/asana/${asana.name}`}
-                  labels={{
-                    title: t("favorites.gateTitle"),
-                    text: t("favorites.gateText"),
-                    login: t("favorites.gateLogin"),
-                    register: t("favorites.gateRegister"),
-                  }}
-                  size="lg"
-                />
-              )}
+                {hasToken ? (
+                  <FavoriteButton
+                    name={asana.name}
+                    initial={isFavorite}
+                    size="lg"
+                    labels={{
+                      add: t("asana.addToFavorites"),
+                      remove: t("asana.removeFromFavorites"),
+                    }}
+                  />
+                ) : (
+                  <FavoriteGate
+                    locale={locale}
+                    next={`/${locale}/asana/${asana.name}`}
+                    labels={{
+                      title: t("favorites.gateTitle"),
+                      text: t("favorites.gateText"),
+                      login: t("favorites.gateLogin"),
+                      register: t("favorites.gateRegister"),
+                    }}
+                    size="lg"
+                  />
+                )}
+              </div>
             </div>
 
             <div>

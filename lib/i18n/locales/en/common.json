@@ -573,5 +573,13 @@
     "listError": "Couldn't load the limbs. Please try again later.",
     "backToList": "← All yoga limbs",
     "itemNotFound": "Limb not found"
+  },
+  "share": {
+    "button": "Share",
+    "copied": "Link copied",
+    "catalogText": "Yoga asana catalog with instructions, benefits and contraindications — Dharana",
+    "complexesText": "Ready-made yoga sequences — practice along with video lessons using Dharana",
+    "timerText": "Build an asana sequence and practice with the timer — Dharana",
+    "asanaText": "Practice %name% with Dharana"
   }
 }

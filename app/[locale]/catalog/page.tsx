@@ -10,6 +10,7 @@ import { AUTH_COOKIE } from "@/lib/api/media";
 import { AsanaCard } from "@/components/catalog/asana-card";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { FavoriteGate } from "@/components/favorites/favorite-gate";
+import { ShareButton } from "@/components/share/share-button";
 
 export const dynamic = "force-dynamic";
 
@@ -150,7 +151,17 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       )}
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <h1 className="text-3xl font-semibold tracking-tight">{t("catalog.title")}</h1>
-        <p className="text-sm text-muted">{list.total}</p>
+        <div className="flex items-center gap-3">
+          <p className="text-sm text-muted">{list.total}</p>
+          <ShareButton
+            data={{
+              title: t("catalog.title"),
+              text: t("share.catalogText"),
+              url: `${siteUrl}${nextPath}`,
+            }}
+            labels={{ share: t("share.button"), copied: t("share.copied") }}
+          />
+        </div>
       </div>
 
       <div className="mb-6 flex flex-col gap-4">

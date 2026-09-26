@@ -7,6 +7,7 @@ import type { Locale } from "@/lib/i18n/settings";
 import { TimerScreen, type TimerScreenLabels } from "./timer-screen";
 import { PracticeGate, type PracticeGateLabels } from "./practice-gate";
 import { addGuestPractice, getGuestPractices } from "./guest-timer";
+import { ShareButton, type ShareData, type ShareLabels } from "@/components/share/share-button";
 
 export interface TimerGuestLabels {
   conversionTitle: string;
@@ -45,6 +46,11 @@ export interface TimerAppLabels {
   screen: TimerScreenLabels;
 }
 
+export interface TimerShare {
+  data: ShareData;
+  labels: ShareLabels;
+}
+
 interface Props {
   asanas: Array<{
     name: string;
@@ -57,6 +63,7 @@ interface Props {
   isAuthed: boolean;
   locale: Locale;
   labels: TimerAppLabels;
+  share?: TimerShare;
 }
 
 const DURATION_OPTIONS = [5, 10, 15, 30, 45, 60, 90, 120, 180, 300];
@@ -68,7 +75,7 @@ function fmtDur(seconds: number, secShort: string, minShort: string): string {
   return s > 0 ? `${m} ${minShort} ${s} ${secShort}` : `${m} ${minShort}`;
 }
 
-export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Props) {
+export function TimerApp({ asanas, activeSession, isAuthed, locale, labels, share }: Props) {
   const [selected, setSelected] = useState<PracticeAsanaStep[]>([]);
   const [defaultAsana, setDefaultAsana] = useState(60);
   const [defaultRest, setDefaultRest] = useState(15);
@@ -238,7 +245,10 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Pr
   if (active) {
     return (
       <div className="mx-auto flex max-w-2xl flex-col px-6 py-8">
-        <h1 className="text-2xl font-semibold tracking-tight">{labels.title}</h1>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-2xl font-semibold tracking-tight">{labels.title}</h1>
+          {share && <ShareButton data={share.data} labels={share.labels} />}
+        </div>
         <div className="mt-6 rounded-2xl border border-night-line bg-night/60 p-6">
           <div className="flex flex-col items-center text-center">
             <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/15 text-accent">
@@ -304,7 +314,10 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels }: Pr
   return (
     <>
       <div className="mx-auto flex max-w-2xl flex-col px-6 py-8">
-        <h1 className="text-2xl font-semibold tracking-tight">{labels.title}</h1>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-2xl font-semibold tracking-tight">{labels.title}</h1>
+          {share && <ShareButton data={share.data} labels={share.labels} />}
+        </div>
 
         <div className="mt-6 rounded-2xl border border-night-line bg-night/60 p-4">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">
