@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { ShareIcon } from "@/components/icons";
+import { Toast } from "@/components/ui/toast";
 
 export interface ShareData {
   title: string;
@@ -52,14 +53,17 @@ export function ShareButton({
   const icon = size === "lg" ? "h-5 w-5" : "h-4 w-4";
 
   return (
-    <button
-      type="button"
-      onClick={share}
-      aria-label={copied ? labels.copied : labels.share}
-      title={copied ? labels.copied : labels.share}
-      className={`flex ${pad} shrink-0 items-center justify-center rounded-full bg-night/70 text-ink/70 backdrop-blur transition-all duration-200 hover:text-ink`}
-    >
-      <ShareIcon className={`${icon} ${copied ? "text-accent" : ""}`} />
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={share}
+        aria-label={copied ? labels.copied : labels.share}
+        title={copied ? labels.copied : labels.share}
+        className={`flex ${pad} shrink-0 items-center justify-center rounded-full bg-night/70 text-ink/70 backdrop-blur transition-all duration-200 hover:text-ink`}
+      >
+        <ShareIcon className={`${icon} ${copied ? "text-accent" : ""}`} />
+      </button>
+      {copied && <Toast>{labels.copied}</Toast>}
+    </>
   );
 }
