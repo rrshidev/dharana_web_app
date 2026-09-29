@@ -78,7 +78,7 @@ export default async function AdminUsersPage({ params, searchParams }: Props) {
             <li key={u.id}>
               <Link
                 href={`/${locale}/admin/users/${u.id}`}
-                className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 transition-colors hover:bg-white/[0.03]"
+                className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 transition-colors hover:bg-night-highlight"
               >
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium">

@@ -27,7 +27,7 @@ export function AreaTrendChart({
   metric?: string;
 }) {
   if (data.length === 0) return <Empty height={height} />;
-  const gradientId = `gradient-${color.replace("#", "")}-${data.length}`;
+  const gradientId = `gradient-${color.replace(/[^a-z0-9]/gi, "")}-${data.length}`;
 
   return (
     <div style={{ height }}>

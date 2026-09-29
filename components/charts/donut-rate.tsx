@@ -30,7 +30,7 @@ export function DonutRate({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="rgba(46,47,74,0.9)"
+          stroke="var(--color-track)"
           strokeWidth={stroke}
         />
         <circle

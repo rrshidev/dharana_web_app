@@ -94,6 +94,11 @@ export default async function LocaleLayout({
     >
       <head>
         <script
+          dangerouslySetInnerHTML={{
+            __html: `(()=>{try{var t=localStorage.getItem("dharana:theme");if(t==="light"){document.documentElement.dataset.theme="light";}}catch(e){}})();`,
+          }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />

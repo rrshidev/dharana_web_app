@@ -1,11 +1,11 @@
 export const CHART = {
-  accent: "#e8a87c",
-  sage: "#85c88a",
+  accent: "var(--color-accent)",
+  sage: "var(--color-sage)",
   blue: "#6fa8dc",
   danger: "#e85d5d",
-  ink: "#edeaf2",
-  muted: "#a8a5bc",
-  grid: "rgba(237,234,242,0.08)",
-  tooltipBg: "#edeaf2",
-  tooltipText: "#1a1b2e",
+  ink: "var(--color-ink)",
+  muted: "var(--color-muted)",
+  grid: "var(--color-night-line)",
+  tooltipBg: "var(--color-tooltip-bg)",
+  tooltipText: "var(--color-tooltip-text)",
 } as const;

@@ -67,7 +67,7 @@ export function LinkTelegram({ labels }: { labels: LinkTelegramLabels }) {
       <button
         type="button"
         onClick={() => { setOpen(true); setCode(""); setError(null); setSuccess(null); }}
-        className="flex w-full items-center justify-between rounded-2xl border border-night-line bg-white/[0.02] px-4 py-3.5 text-left transition-colors hover:bg-white/[0.04]"
+        className="flex w-full items-center justify-between rounded-2xl border border-night-line bg-night-highlight px-4 py-3.5 text-left transition-colors hover:bg-night-highlight"
       >
         <span className="flex items-center gap-3">
           <svg viewBox="0 0 24 24" fill="#0088CC" className="h-5 w-5 shrink-0">
@@ -87,7 +87,7 @@ export function LinkTelegram({ labels }: { labels: LinkTelegramLabels }) {
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-sm rounded-2xl border border-night-line bg-[#1a1b2e] p-5">
+          <div className="w-full max-w-sm rounded-2xl border border-night-line bg-night p-5">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-base font-semibold">{labels.title}</h3>
               <button
@@ -110,7 +110,7 @@ export function LinkTelegram({ labels }: { labels: LinkTelegramLabels }) {
               href={`${TELEGRAM_BOT_URL}?start=auth`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mb-4 flex w-full items-center justify-center gap-2 rounded-xl border border-night-line bg-transparent px-4 py-2.5 text-sm font-semibold text-[#0088CC] transition-colors hover:bg-white/[0.03]"
+              className="mb-4 flex w-full items-center justify-center gap-2 rounded-xl border border-night-line bg-transparent px-4 py-2.5 text-sm font-semibold text-[#0088CC] transition-colors hover:bg-night-highlight"
             >
               {labels.openBot}
             </a>

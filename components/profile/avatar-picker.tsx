@@ -74,7 +74,7 @@ export function ProfileAvatar({
           <img
             src={avatarUrl}
             alt={labels.title}
-            className="h-24 w-24 rounded-full object-cover ring-2 ring-white/10"
+            className="h-24 w-24 rounded-full object-cover ring-2 ring-night-line"
           />
         ) : (
           <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-accent/70 to-accent/40 text-4xl font-bold text-night">
@@ -105,7 +105,7 @@ export function ProfileAvatar({
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-sm rounded-2xl border border-night-line bg-[#1a1b2e] p-5">
+          <div className="w-full max-w-sm rounded-2xl border border-night-line bg-night p-5">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-base font-semibold">{labels.title}</h3>
               <button
@@ -160,7 +160,7 @@ export function ProfileAvatar({
               type="button"
               disabled={busy}
               onClick={() => fileRef.current?.click()}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-night-line bg-transparent px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-white/[0.03]"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-night-line bg-transparent px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-night-highlight"
             >
               {busy ? "…" : labels.uploadBtn}
             </button>

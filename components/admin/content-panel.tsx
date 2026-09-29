@@ -214,17 +214,17 @@ export function ContentPanel({
                     className="h-16 w-16 shrink-0 rounded-xl object-cover"
                   />
                 ) : (
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-white/5 text-lg font-bold text-muted">
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-night-highlight text-lg font-bold text-muted">
                     {a.name[0]?.toUpperCase()}
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-1.5">
                     <p className="font-medium">{a.name}</p>
-                    <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px] text-muted">
+                    <span className="rounded-full bg-night-highlight px-2 py-0.5 text-[10px] text-muted">
                       {categories.find((c) => c.id === a.category_id)?.name ?? a.category_id}
                     </span>
-                    <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px] text-muted">
+                    <span className="rounded-full bg-night-highlight px-2 py-0.5 text-[10px] text-muted">
                       {labels.difficulty}: {a.difficulty}
                     </span>
                     {a.has_video && (
@@ -466,7 +466,7 @@ function Modal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="w-full max-w-md rounded-2xl border border-night-line bg-[#1a1b2e] p-5">
+      <div className="w-full max-w-md rounded-2xl border border-night-line bg-night p-5">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-base font-semibold">{title}</h3>
           <button

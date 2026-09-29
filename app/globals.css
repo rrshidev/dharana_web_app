@@ -4,11 +4,15 @@
   --color-night: #1a1b2e;
   --color-night-soft: #252640;
   --color-night-line: rgb(237 234 242 / 0.08);
+  --color-night-highlight: rgb(255 255 255 / 0.04);
   --color-accent: #e8a87c;
   --color-sage: #85c88a;
   --color-ink: #edeaf2;
   --color-muted: #a8a5bc;
   --color-telegram: #2aabee;
+  --color-track: rgba(46, 47, 74, 0.9);
+  --color-tooltip-bg: #edeaf2;
+  --color-tooltip-text: #1a1b2e;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --animate-toast-in: toast-in 0.25s ease-out;
@@ -21,6 +25,21 @@
       opacity: 1;
     }
   }
+}
+
+:root[data-theme="light"] {
+  --color-night: #f6f1ea;
+  --color-night-soft: #ffffff;
+  --color-night-line: rgb(26 27 46 / 0.1);
+  --color-night-highlight: rgb(26 27 46 / 0.05);
+  --color-accent: #e8a87c;
+  --color-sage: #6fb47a;
+  --color-ink: #1a1b2e;
+  --color-muted: #6b6b7d;
+  --color-telegram: #2aabee;
+  --color-track: rgba(26, 27, 46, 0.12);
+  --color-tooltip-bg: #ffffff;
+  --color-tooltip-text: #1a1b2e;
 }
 
 body {

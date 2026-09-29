@@ -31,6 +31,8 @@ export function Header({ locale, t }: { locale: Locale; t: T }) {
           labels={{
             login: t("nav.login"),
             logout: t("nav.logout"),
+            themeLight: t("nav.themeLight"),
+            themeDark: t("nav.themeDark"),
           }}
         />
       </div>

@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Locale } from "@/lib/i18n/settings";
+import { ThemeToggle } from "./theme-toggle";
 
 export interface UserNavLabels {
   login: string;
   logout: string;
+  themeLight: string;
+  themeDark: string;
 }
 
 export interface UserNavLink {
@@ -58,6 +61,9 @@ export function UserNav({
   };
 
   const other: Locale = locale === "ru" ? "en" : "ru";
+  const themeToggle = (
+    <ThemeToggle lightLabel={labels.themeLight} darkLabel={labels.themeDark} />
+  );
   const languageSwitch = (
     <Link
       href={`/${other}`}
@@ -69,10 +75,13 @@ export function UserNav({
 
   if (state === "loading") {
     return (
-      <span
-        className="hidden h-6 w-20 animate-pulse rounded-full bg-night-line sm:block"
-        aria-hidden
-      />
+      <span className="flex items-center gap-2">
+        {themeToggle}
+        <span
+          className="hidden h-6 w-20 animate-pulse rounded-full bg-night-line sm:block"
+          aria-hidden
+        />
+      </span>
     );
   }
 
@@ -88,16 +97,19 @@ export function UserNav({
             {link.label}
           </Link>
         ))}
-        <button
-          type="button"
-          onClick={() => {
-            void handleLogout();
-          }}
-          className="rounded-full border border-night-line px-3 py-1 text-xs font-medium text-muted transition-colors hover:text-ink"
-        >
-          {labels.logout}
-        </button>
-        {languageSwitch}
+        <span className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => {
+              void handleLogout();
+            }}
+            className="rounded-full border border-night-line px-3 py-1 text-xs font-medium text-muted transition-colors hover:text-ink"
+          >
+            {labels.logout}
+          </button>
+          {languageSwitch}
+          {themeToggle}
+        </span>
       </>
     );
   }
@@ -113,13 +125,16 @@ export function UserNav({
           {link.label}
         </Link>
       ))}
-      <Link
-        href={`/${locale}/login`}
-        className="rounded-full border border-night-line px-3 py-1 text-xs font-medium text-muted transition-colors hover:text-ink sm:block"
-      >
-        {labels.login}
-      </Link>
-      {languageSwitch}
+      <span className="flex items-center gap-1.5">
+        <Link
+          href={`/${locale}/login`}
+          className="rounded-full border border-night-line px-3 py-1 text-xs font-medium text-muted transition-colors hover:text-ink sm:block"
+        >
+          {labels.login}
+        </Link>
+        {languageSwitch}
+        {themeToggle}
+      </span>
     </>
   );
 }

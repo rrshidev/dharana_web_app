@@ -10,7 +10,9 @@
     "favorites": "Избранное",
     "profile": "Профиль",
     "login": "Войти",
-    "logout": "Выйти"
+    "logout": "Выйти",
+    "themeLight": "Светлая тема",
+    "themeDark": "Тёмная тема"
   },
   "hero": {
     "eyebrow": "Йога-ассистент",
