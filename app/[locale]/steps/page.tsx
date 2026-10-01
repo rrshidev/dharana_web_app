@@ -64,7 +64,7 @@ export default async function StepsPage({ params }: Props) {
                 className="flex items-center justify-between rounded-2xl border border-night-line bg-night/60 px-5 py-4 transition-colors hover:border-accent/50"
               >
                 <span className="flex items-center gap-3">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent/15 text-xs font-semibold text-accent">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent/15 text-xs font-semibold text-accent-ink">
                     {i + 1}
                   </span>
                   <span className="text-sm font-medium">{displayName}</span>

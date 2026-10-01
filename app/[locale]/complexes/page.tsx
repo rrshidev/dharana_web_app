@@ -88,7 +88,7 @@ export default async function ComplexesPage({ params }: Props) {
                     <p className="mt-4 px-6 text-sm font-medium">{t("complexes.premiumLocked")}</p>
                     <Link
                       href={`/${locale}/profile/subscription`}
-                      className="mt-4 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-night transition-opacity hover:opacity-90"
+                      className="mt-4 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90"
                     >
                       {t("complexes.getPremium")}
                     </Link>
@@ -98,7 +98,7 @@ export default async function ComplexesPage({ params }: Props) {
               <div className="flex items-center justify-between gap-3 px-5 py-4">
                 <h2 className="text-base font-semibold leading-snug">{video.name}</h2>
                 {video.is_premium && (
-                  <span className="shrink-0 rounded-full bg-accent/15 px-3 py-1 text-[11px] font-semibold text-accent">
+                  <span className="shrink-0 rounded-full bg-accent/15 px-3 py-1 text-[11px] font-semibold text-accent-ink">
                     Premium
                   </span>
                 )}

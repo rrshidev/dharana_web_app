@@ -59,7 +59,7 @@ export default async function VerifyEmailPage({ params, searchParams }: Props) {
     <section className="mx-auto flex max-w-md flex-col items-center px-6 py-16 text-center">
       <span
         className={`flex h-14 w-14 items-center justify-center rounded-full ${
-          status === "success" ? "bg-sage/15 text-sage" : "bg-accent/15 text-accent"
+          status === "success" ? "bg-sage/15 text-sage-ink" : "bg-accent/15 text-accent-ink"
         }`}
       >
         {status === "success" ? (
@@ -74,7 +74,7 @@ export default async function VerifyEmailPage({ params, searchParams }: Props) {
       <p className="mt-3 text-sm leading-6 text-muted">{copy.text}</p>
       <Link
         href={`/${locale}/profile`}
-        className="mt-8 inline-flex h-11 items-center justify-center rounded-full bg-sage px-6 text-sm font-semibold text-night transition-colors hover:bg-sage/90"
+        className="mt-8 inline-flex h-11 items-center justify-center rounded-full bg-sage px-6 text-sm font-semibold text-sage-on transition-colors hover:bg-sage/90"
       >
         {t("verifyEmail.goProfile")}
       </Link>

@@ -61,7 +61,7 @@ export function ShareButton({
         title={copied ? labels.copied : labels.share}
         className={`flex ${pad} shrink-0 items-center justify-center rounded-full bg-night/70 text-ink/70 backdrop-blur transition-all duration-200 hover:text-ink`}
       >
-        <ShareIcon className={`${icon} ${copied ? "text-accent" : ""}`} />
+        <ShareIcon className={`${icon} ${copied ? "text-accent-ink" : ""}`} />
       </button>
       {copied && <Toast>{labels.copied}</Toast>}
     </>

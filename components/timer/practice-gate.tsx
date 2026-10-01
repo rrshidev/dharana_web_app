@@ -53,14 +53,14 @@ export function PracticeGate({
         >
           ✕
         </button>
-        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent/15 text-accent">
+        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-accent/15 text-accent-ink">
           <SparkleIcon className="h-6 w-6" />
         </span>
         <h2 className="mt-4 text-lg font-semibold tracking-tight">{labels.title}</h2>
         <p className="mt-2 text-sm leading-relaxed text-muted">{labels.text}</p>
         <Link
           href={labels.primaryHref}
-          className="mt-6 block rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-night transition-opacity hover:opacity-90"
+          className="mt-6 block rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90"
         >
           {labels.primary}
         </Link>

@@ -203,7 +203,7 @@ export function GeneratorApp({
       onClick={onClick}
       className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
         active
-          ? "border-accent bg-accent/10 text-accent"
+          ? "border-accent bg-accent/10 text-accent-ink"
           : "border-night-line text-muted hover:text-ink"
       }`}
     >
@@ -223,7 +223,7 @@ export function GeneratorApp({
           <p className="mt-1 text-sm text-muted">{labels.limitText}</p>
           <Link
             href={`/${locale}/profile/subscription`}
-            className="mt-4 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-night transition-opacity hover:opacity-90"
+            className="mt-4 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90"
           >
             {labels.limitCta}
           </Link>
@@ -291,7 +291,7 @@ export function GeneratorApp({
             type="button"
             disabled={generating}
             onClick={generate}
-            className="mt-8 w-full rounded-full bg-accent px-5 py-3 text-sm font-semibold text-night transition-opacity hover:opacity-90 disabled:opacity-60"
+            className="mt-8 w-full rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90 disabled:opacity-60"
           >
             {generating ? labels.generating : labels.generate}
           </button>
@@ -347,7 +347,7 @@ export function GeneratorApp({
                 type="button"
                 disabled={starting}
                 onClick={start}
-                className="mt-4 w-full rounded-full bg-accent px-5 py-3 text-sm font-semibold text-night transition-opacity hover:opacity-90 disabled:opacity-60"
+                className="mt-4 w-full rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90 disabled:opacity-60"
               >
                 {starting ? labels.starting : labels.startPractice}
               </button>

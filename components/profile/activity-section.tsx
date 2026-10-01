@@ -65,7 +65,7 @@ export function ActivitySection({
               aria-pressed={isActive}
               className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                 isActive
-                  ? "bg-accent text-night"
+                  ? "bg-accent text-accent-on"
                   : "border border-night-line text-muted hover:text-ink"
               }`}
             >

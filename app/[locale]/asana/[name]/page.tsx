@@ -165,7 +165,7 @@ export default async function AsanaPage({ params }: Props) {
                   <p className="mt-4 px-6 text-sm font-medium">{t("asana.videoPremium")}</p>
                   <Link
                     href={`/${locale}/profile/subscription`}
-                    className="mt-4 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-night transition-opacity hover:opacity-90"
+                    className="mt-4 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90"
                   >
                     {t("asana.videoCta")}
                   </Link>

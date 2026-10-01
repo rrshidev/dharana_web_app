@@ -33,7 +33,7 @@ export function PeriodSelector({
             aria-pressed={active}
             className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
               active
-                ? "bg-accent text-night"
+                ? "bg-accent text-accent-on"
                 : "border border-night-line text-muted hover:text-ink"
             }`}
           >

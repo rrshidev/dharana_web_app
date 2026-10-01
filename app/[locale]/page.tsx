@@ -70,7 +70,7 @@ export default async function LandingPage({ params }: Props) {
         </div>
 
         <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 pb-24 pt-20 text-center sm:pt-28">
-          <span className="mb-6 rounded-full border border-sage/30 bg-sage/10 px-4 py-1.5 text-xs font-medium tracking-wide text-sage">
+          <span className="mb-6 rounded-full border border-sage/30 bg-sage/10 px-4 py-1.5 text-xs font-medium tracking-wide text-sage-ink">
             {t("hero.eyebrow")}
           </span>
           <h1 className="max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
@@ -93,7 +93,7 @@ export default async function LandingPage({ params }: Props) {
               href={APK_URL}
               className="flex h-12 items-center justify-center gap-2 rounded-full border border-night-line bg-night-soft px-6 text-sm font-semibold text-ink transition-colors hover:border-sage/40"
             >
-              <AndroidIcon className="h-5 w-5 text-sage" />
+              <AndroidIcon className="h-5 w-5 text-sage-ink" />
               {t("hero.appCta")}
             </a>
           </div>
@@ -132,7 +132,7 @@ export default async function LandingPage({ params }: Props) {
           <div className="mt-12 grid gap-6 sm:grid-cols-2">
             <div className="flex flex-col rounded-2xl border border-night-line bg-night p-8">
               <div className="flex items-center gap-3">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-telegram/15 text-telegram">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-telegram/15 text-telegram-ink">
                   <TelegramIcon className="h-6 w-6" />
                 </span>
                 <h3 className="text-lg font-semibold">{t("channels.botTitle")}</h3>
@@ -150,7 +150,7 @@ export default async function LandingPage({ params }: Props) {
             </div>
             <div className="flex flex-col rounded-2xl border border-night-line bg-night p-8">
               <div className="flex items-center gap-3">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-sage/15 text-sage">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-sage/15 text-sage-ink">
                   <AndroidIcon className="h-6 w-6" />
                 </span>
                 <h3 className="text-lg font-semibold">{t("channels.appTitle")}</h3>
@@ -160,7 +160,7 @@ export default async function LandingPage({ params }: Props) {
                 href={APK_URL}
                 className="mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-full border border-night-line bg-night-soft px-5 text-sm font-semibold text-ink transition-colors hover:border-sage/40"
               >
-                <AndroidIcon className="h-4 w-4 text-sage" />
+                <AndroidIcon className="h-4 w-4 text-sage-ink" />
                 {t("hero.appCta")}
               </a>
             </div>
@@ -174,7 +174,7 @@ export default async function LandingPage({ params }: Props) {
           <p className="mt-4 text-base leading-7 text-muted">{t("contacts.text")}</p>
           <a
             href="mailto:support@dharana.ru"
-            className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-sage px-6 text-sm font-semibold text-night transition-colors hover:bg-sage/90"
+            className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-sage px-6 text-sm font-semibold text-sage-on transition-colors hover:bg-sage/90"
           >
             <MailIcon className="h-5 w-5" />
             {t("contacts.emailCta")}

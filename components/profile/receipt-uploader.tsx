@@ -73,13 +73,13 @@ export function ReceiptUploader({
         type="button"
         disabled={uploading}
         onClick={() => inputRef.current?.click()}
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-night transition-opacity hover:opacity-90 disabled:opacity-50"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         <CameraIcon className="h-4 w-4" />
         {uploading ? labels.uploading : labels.payButton}
       </button>
       {error && <p className="mt-3 text-center text-sm text-red-400">{error}</p>}
-      {message && <p className="mt-3 text-center text-sm text-sage">{message}</p>}
+      {message && <p className="mt-3 text-center text-sm text-sage-ink">{message}</p>}
     </div>
   );
 }

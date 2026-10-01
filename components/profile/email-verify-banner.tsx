@@ -60,13 +60,13 @@ export function EmailVerifyBanner({ labels }: { labels: EmailVerifyBannerLabels 
       role="status"
       className="flex items-start gap-3 rounded-2xl border border-accent/30 bg-accent/5 p-4"
     >
-      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/15 text-accent">
+      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/15 text-accent-ink">
         <MailIcon className="h-4 w-4" />
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold">{labels.title}</p>
         <p className="mt-0.5 text-xs leading-5 text-muted">{labels.hint}</p>
-        {message && <p className="mt-2 text-xs font-medium text-sage">{message}</p>}
+        {message && <p className="mt-2 text-xs font-medium text-sage-ink">{message}</p>}
         <button
           type="button"
           onClick={resend}

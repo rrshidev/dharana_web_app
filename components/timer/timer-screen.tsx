@@ -316,7 +316,7 @@ export function TimerScreen({
             : labels.ready;
 
 const strokeClass =
-  mode === "asana" ? "text-accent" : mode === "rest" ? "text-emerald-400" : mode === "compensation" ? "text-indigo-400" : "text-muted";
+  mode === "asana" ? "text-accent-ink" : mode === "rest" ? "text-emerald-400" : mode === "compensation" ? "text-indigo-400" : "text-muted";
 
   const progress = total > 0 ? (total - remaining) / total : 0;
   const circumference = 2 * Math.PI * 90;
@@ -346,7 +346,7 @@ const strokeClass =
               onClick={() => {
                 onRestart();
               }}
-              className="h-12 w-full rounded-full bg-accent text-sm font-semibold text-night transition-opacity hover:opacity-90"
+              className="h-12 w-full rounded-full bg-accent text-sm font-semibold text-accent-on transition-opacity hover:opacity-90"
             >
               {labels.again}
             </button>
@@ -435,7 +435,7 @@ const strokeClass =
               onClick={running ? (paused ? handleResume : handlePause) : handleStart}
               className="flex flex-col items-center gap-1.5 text-muted transition-colors hover:text-ink"
             >
-              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-night">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-accent-on">
                 {running ? (
                   paused ? (
                     <svg viewBox="0 0 24 24" fill="currentColor" className="h-8 w-8" aria-hidden>
@@ -492,7 +492,7 @@ const strokeClass =
                       isCompleted
                         ? "text-emerald-400"
                         : isCurrent
-                          ? "text-accent"
+                          ? "text-accent-ink"
                           : "text-muted/50"
                     }`}
                   >

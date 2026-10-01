@@ -251,7 +251,7 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels, shar
         </div>
         <div className="mt-6 rounded-2xl border border-night-line bg-night/60 p-6">
           <div className="flex flex-col items-center text-center">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/15 text-accent">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/15 text-accent-ink">
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -276,7 +276,7 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels, shar
               onClick={() => {
                 void handleAbandon();
               }}
-              className="mt-6 h-14 w-full max-w-sm rounded-full bg-accent text-base font-semibold text-night transition-opacity hover:opacity-90 disabled:opacity-40"
+              className="mt-6 h-14 w-full max-w-sm rounded-full bg-accent text-base font-semibold text-accent-on transition-opacity hover:opacity-90 disabled:opacity-40"
             >
               {abandoning ? "…" : labels.resumeAction}
             </button>
@@ -427,7 +427,7 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels, shar
                         🧘
                       </span>
                     )}
-                    <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-bold text-night">
+                    <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-bold text-accent-on">
                       +
                     </span>
                   </span>
@@ -453,7 +453,7 @@ export function TimerApp({ asanas, activeSession, isAuthed, locale, labels, shar
           onClick={() => {
             void handleStart();
           }}
-          className="mt-6 h-14 w-full rounded-full bg-accent text-base font-semibold text-night transition-opacity hover:opacity-90 disabled:opacity-40"
+          className="mt-6 h-14 w-full rounded-full bg-accent text-base font-semibold text-accent-on transition-opacity hover:opacity-90 disabled:opacity-40"
         >
           {labels.start.replace("{count}", String(selected.length))}
         </button>

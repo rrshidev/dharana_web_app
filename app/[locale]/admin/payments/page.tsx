@@ -62,7 +62,7 @@ export default async function AdminPaymentsPage({ params, searchParams }: Props)
               href={`/${locale}/admin/payments${st === "all" ? "" : `?${statusTo(st)}`}`}
               className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                 status === st
-                  ? "bg-accent text-night"
+                  ? "bg-accent text-accent-on"
                   : "border border-night-line text-muted hover:text-ink"
               }`}
             >

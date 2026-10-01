@@ -72,7 +72,7 @@ export default async function FavoritesPage({ params }: Props) {
           <p className="mt-2 max-w-sm text-sm leading-6 text-muted">{t("favorites.emptyHint")}</p>
           <Link
             href={`/${locale}/catalog`}
-            className="mt-8 h-11 rounded-full bg-accent px-6 text-sm font-semibold text-night transition-opacity hover:opacity-90 inline-flex items-center"
+            className="mt-8 h-11 rounded-full bg-accent px-6 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90 inline-flex items-center"
           >
             {t("favorites.catalogCta")}
           </Link>

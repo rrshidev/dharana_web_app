@@ -97,7 +97,7 @@ export default async function FilterPage({ params, searchParams }: Props) {
       href={toggleHref(key, value)}
       className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
         active
-          ? "border-accent bg-accent/10 text-accent"
+          ? "border-accent bg-accent/10 text-accent-ink"
           : "border-night-line text-muted hover:text-ink"
       }`}
     >

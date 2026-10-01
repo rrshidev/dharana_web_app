@@ -35,7 +35,7 @@ function ToggleChip({
       aria-pressed={active}
       className={`rounded-full px-3 py-1.5 text-sm font-semibold transition-colors ${
         active
-          ? "bg-accent text-night"
+          ? "bg-accent text-accent-on"
           : "border border-night-line text-muted hover:text-ink"
       }`}
     >
@@ -133,7 +133,7 @@ export function BroadcastPanel({ labels }: { labels: BroadcastLabels }) {
           type="button"
           disabled={busy}
           onClick={() => submit(false)}
-          className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-night disabled:opacity-50"
+          className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-on disabled:opacity-50"
         >
           {busy && !isTest ? labels.sending : labels.send}
         </button>
@@ -146,7 +146,7 @@ export function BroadcastPanel({ labels }: { labels: BroadcastLabels }) {
           {busy && isTest ? labels.testing : labels.test}
         </button>
         {status === "sent" && (
-          <span className="text-xs font-medium text-sage">{labels.sent}</span>
+          <span className="text-xs font-medium text-sage-ink">{labels.sent}</span>
         )}
         {status === "failed" && (
           <span className="text-xs font-medium text-[#e85d5d]">{labels.failed}</span>

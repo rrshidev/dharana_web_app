@@ -9,6 +9,16 @@
   --color-night-highlight: rgb(58 53 46 / 0.045);
   --color-accent: #e8a87c;
   --color-sage: #6fb47a;
+  /* Текстовые варианты акцента и шалфея: на пастельном фоне пастельный
+     текст даёт контраст 1.8–2.2 и не читается. Эти — затемнённые,
+     контраст 4.56 и 4.57 к фону страницы. */
+  --color-accent-ink: #9c5f34;
+  --color-sage-ink: #3f7a49;
+  /* Текст НА заливке акцентом/шалфеем: пастельный text-night давал 1.8–2.2.
+     Затемнённые глубокие варианты дают 7.07 и 4.76. */
+  --color-accent-on: #33281c;
+  --color-sage-on: #1e3f1b;
+  --color-telegram-ink: #186f97;
   /* Глубокий графитово-кофейный вместо почти чёрного #1a1b2e */
   --color-ink: #3a352e;
   --color-muted: #736b60;
@@ -41,6 +51,11 @@
   --color-night-highlight: rgb(255 255 255 / 0.04);
   --color-accent: #e8a87c;
   --color-sage: #85c88a;
+  --color-accent-ink: #e8a87c;
+  --color-sage-ink: #85c88a;
+  --color-accent-on: #1a1b2e;
+  --color-sage-on: #1a1b2e;
+  --color-telegram-ink: #2aabee;
   --color-ink: #edeaf2;
   --color-muted: #a8a5bc;
   --color-telegram: #2aabee;

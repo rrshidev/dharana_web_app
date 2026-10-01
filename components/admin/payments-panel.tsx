@@ -127,7 +127,7 @@ export function PaymentsPanel({
                   type="button"
                   disabled={busy === p.id}
                   onClick={() => review(p.id, "confirmed")}
-                  className="rounded-lg bg-sage/15 px-3.5 py-1.5 text-xs font-semibold text-sage transition-colors hover:bg-sage/25 disabled:opacity-50"
+                  className="rounded-lg bg-sage/15 px-3.5 py-1.5 text-xs font-semibold text-sage-ink transition-colors hover:bg-sage/25 disabled:opacity-50"
                 >
                   {labels.confirm}
                 </button>

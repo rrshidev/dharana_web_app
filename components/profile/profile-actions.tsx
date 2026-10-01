@@ -44,7 +44,7 @@ export function ProfileActions({
         onClick={() => setEditing(true)}
         className="flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-night-soft/60"
       >
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent-ink">
           <EditIcon className="h-5 w-5" />
         </span>
         <span className="flex-1 text-sm font-medium">{labels.edit}</span>

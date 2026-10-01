@@ -75,14 +75,14 @@ export default async function SubscriptionPage({ params }: Props) {
       </Link>
 
       <div className="mt-5 flex items-center gap-4 rounded-2xl border border-night-line bg-night/60 p-5">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-accent/15 text-accent">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-accent/15 text-accent-ink">
           <SparkleIcon className="h-6 w-6" />
         </span>
         <div>
           <h1 className="text-lg font-semibold">{t("subscription.title")}</h1>
           <p
             className={`mt-0.5 text-sm font-medium ${
-              sub.is_premium ? "text-accent" : "text-muted"
+              sub.is_premium ? "text-accent-ink" : "text-muted"
             }`}
           >
             {sub.is_premium

@@ -173,7 +173,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             href={chipHref(undefined)}
             className={`rounded-full border px-3 py-1 text-sm transition-colors ${
               !category
-                ? "border-accent bg-accent/10 text-accent"
+                ? "border-accent bg-accent/10 text-accent-ink"
                 : "border-night-line text-muted hover:text-ink"
             }`}
           >
@@ -187,7 +187,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                 href={chipHref(cat.id)}
                 className={`rounded-full border px-3 py-1 text-sm transition-colors ${
                   active
-                    ? "border-accent bg-accent/10 text-accent"
+                    ? "border-accent bg-accent/10 text-accent-ink"
                     : "border-night-line text-muted hover:text-ink"
                 }`}
               >
@@ -216,7 +216,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
           />
           <button
             type="submit"
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-night transition-opacity hover:opacity-90"
+            className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90"
           >
             {t("catalog.search")}
           </button>

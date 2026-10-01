@@ -62,7 +62,7 @@ export default async function AdminUsersPage({ params, searchParams }: Props) {
         />
         <button
           type="submit"
-          className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-night"
+          className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-on"
         >
           {t("admin.users.search")}
         </button>
@@ -115,7 +115,7 @@ export default async function AdminUsersPage({ params, searchParams }: Props) {
 function Badge({ tone, children }: { tone: "sage" | "danger"; children: React.ReactNode }) {
   const cls =
     tone === "sage"
-      ? "bg-sage/15 text-sage"
+      ? "bg-sage/15 text-sage-ink"
       : "bg-[#e85d5d]/15 text-[#e85d5d]";
   return (
     <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${cls}`}>

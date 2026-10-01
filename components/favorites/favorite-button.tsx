@@ -61,7 +61,7 @@ export function FavoriteButton({
       title={active ? labels.remove : labels.add}
       className={`flex ${pad} shrink-0 items-center justify-center rounded-full transition-all duration-200 ${
         active
-          ? "bg-accent/20 text-accent"
+          ? "bg-accent/20 text-accent-ink"
           : "bg-night/70 text-ink/70 backdrop-blur hover:text-ink"
       } ${busy ? "opacity-60" : ""}`}
     >

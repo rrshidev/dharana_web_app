@@ -182,7 +182,7 @@ export function AuthForm({
 
       {labels.forgotHref && labels.forgotLabel && (
         <p className="mt-2 text-right text-sm">
-          <a href={labels.forgotHref} className="text-accent hover:underline">
+          <a href={labels.forgotHref} className="text-accent-ink hover:underline">
             {labels.forgotLabel}
           </a>
         </p>
@@ -197,7 +197,7 @@ export function AuthForm({
       <button
         type="submit"
         disabled={loading}
-        className="mt-6 w-full rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-night transition-opacity hover:opacity-90 disabled:opacity-50"
+        className="mt-6 w-full rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         {loading ? "…" : labels.submitLabel}
       </button>
@@ -205,7 +205,7 @@ export function AuthForm({
       {labels.switchText && labels.switchHref && labels.switchLabel && (
         <p className="mt-4 text-center text-sm text-muted">
           {labels.switchText}{" "}
-          <a href={labels.switchHref} className="text-accent hover:underline">
+          <a href={labels.switchHref} className="text-accent-ink hover:underline">
             {labels.switchLabel}
           </a>
         </p>

@@ -38,7 +38,7 @@ export function CopyButton({
       <span className="font-mono text-base tracking-wider">{value}</span>
       <span
         className={`shrink-0 text-xs font-medium transition-colors ${
-          copied ? "text-sage" : "text-muted group-hover:text-ink"
+          copied ? "text-sage-ink" : "text-muted group-hover:text-ink"
         }`}
       >
         {copied ? labels.copied : labels.copyHint}

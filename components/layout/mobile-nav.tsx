@@ -72,7 +72,7 @@ export function MobileNav({ locale, labels }: { locale: Locale; labels: MobileNa
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={`flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium transition-colors ${
-                  active ? "text-accent" : "text-muted hover:text-ink"
+                  active ? "text-accent-ink" : "text-muted hover:text-ink"
                 }`}
               >
                 <Icon className="h-5 w-5" />

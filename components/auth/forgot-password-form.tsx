@@ -70,7 +70,7 @@ export function ForgotPasswordForm({
   if (state === "sent") {
     return (
       <div className="mx-auto w-full max-w-sm rounded-2xl border border-night-line bg-night/60 p-8 text-center">
-        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-sage/15 text-sage">
+        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-sage/15 text-sage-ink">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7" aria-hidden="true">
             <path d="m4.5 12.5 5 5 10-11" />
           </svg>
@@ -79,7 +79,7 @@ export function ForgotPasswordForm({
         <p className="mt-3 text-sm leading-6 text-muted">{labels.sentHint}</p>
         <a
           href={`/${locale}/login`}
-          className="mt-6 inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-semibold text-night transition-opacity hover:opacity-90"
+          className="mt-6 inline-flex h-11 items-center justify-center rounded-full bg-accent px-6 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90"
         >
           {labels.goLogin}
         </a>
@@ -112,7 +112,7 @@ export function ForgotPasswordForm({
       <button
         type="submit"
         disabled={state === "sending"}
-        className="mt-6 w-full rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-night transition-opacity hover:opacity-90 disabled:opacity-50"
+        className="mt-6 w-full rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         {state === "sending" ? "…" : labels.sendButton}
       </button>

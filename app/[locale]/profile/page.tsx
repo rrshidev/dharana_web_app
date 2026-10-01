@@ -180,14 +180,14 @@ export default async function ProfilePage({ params, searchParams }: Props) {
           href={`/${locale}/profile/subscription`}
           className="group flex items-center gap-3 rounded-2xl border border-night-line bg-night/60 p-4 transition-colors hover:border-accent/50"
         >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent-ink">
             <SparkleIcon className="h-5 w-5" />
           </span>
           <span className="flex-1 text-left">
             <span className="block text-sm font-medium">{t("profile.subscription")}</span>
             <span
               className={`mt-0.5 block text-xs ${
-                sub?.is_premium ? "text-accent" : "text-muted"
+                sub?.is_premium ? "text-accent-ink" : "text-muted"
               }`}
             >
               {sub?.is_premium ? t("profile.premiumActive") : t("profile.freePlan")}
@@ -203,7 +203,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             href={`/${locale}/admin`}
             className="group flex items-center gap-3 rounded-2xl border border-night-line bg-night/60 p-4 transition-colors hover:border-accent/50"
           >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent-ink">
               <CreditCardIcon className="h-5 w-5" />
             </span>
             <span className="flex-1 text-left">

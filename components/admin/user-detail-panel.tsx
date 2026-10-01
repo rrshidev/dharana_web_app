@@ -127,7 +127,7 @@ export function UserDetailPanel({
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-xl font-semibold">{name}</h1>
-              <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${flagCls(isPremium, "bg-sage/15 text-sage")}`}>
+              <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${flagCls(isPremium, "bg-sage/15 text-sage-ink")}`}>
                 {isPremium ? labels.premium : labels.free}
               </span>
               {user.is_banned && (
@@ -141,7 +141,7 @@ export function UserDetailPanel({
                 </span>
               )}
               {user.is_admin && (
-                <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${flagCls(true, "bg-accent/15 text-accent")}`}>
+                <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${flagCls(true, "bg-accent/15 text-accent-ink")}`}>
                   {labels.adminBadge}
                 </span>
               )}
@@ -279,7 +279,7 @@ export function UserDetailPanel({
                 onClick={() => setChannel(c.v)}
                 className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                   channel === c.v
-                    ? "bg-accent text-night"
+                    ? "bg-accent text-accent-on"
                     : "border border-night-line text-muted hover:text-ink"
                 }`}
               >
@@ -363,7 +363,7 @@ function ActionBtn({
     tone === "danger"
       ? "bg-[#e85d5d]/15 text-[#e85d5d] hover:bg-[#e85d5d]/25"
       : tone === "sage"
-        ? "bg-sage/15 text-sage hover:bg-sage/25"
+        ? "bg-sage/15 text-sage-ink hover:bg-sage/25"
         : "border border-night-line text-muted hover:text-ink";
   return (
     <button

@@ -159,7 +159,7 @@ export function ContentPanel({
 
   const tabBtnCls = (active: boolean) =>
     `rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors ${
-      active ? "bg-accent text-night" : "border border-night-line text-muted hover:text-ink"
+      active ? "bg-accent text-accent-on" : "border border-night-line text-muted hover:text-ink"
     }`;
 
   return (
@@ -180,7 +180,7 @@ export function ContentPanel({
         <button
           type="button"
           onClick={() => (tab === "asanas" ? setShowAddAsana(true) : setShowAddSeq(true))}
-          className="rounded-xl bg-accent px-3.5 py-2 text-sm font-semibold text-night"
+          className="rounded-xl bg-accent px-3.5 py-2 text-sm font-semibold text-accent-on"
         >
           {tab === "asanas" ? labels.addAsana : labels.addSequence}
         </button>
@@ -228,7 +228,7 @@ export function ContentPanel({
                       {labels.difficulty}: {a.difficulty}
                     </span>
                     {a.has_video && (
-                      <span className="rounded-full bg-sage/15 px-2 py-0.5 text-[10px] font-semibold text-sage">
+                      <span className="rounded-full bg-sage/15 px-2 py-0.5 text-[10px] font-semibold text-sage-ink">
                         {labels.video}
                       </span>
                     )}
@@ -362,7 +362,7 @@ export function ContentPanel({
                 type="button"
                 disabled={busy === "add-asana"}
                 onClick={addAsana}
-                className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-night disabled:opacity-50"
+                className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-on disabled:opacity-50"
               >
                 {busy === "add-asana" ? labels.saving : labels.save}
               </button>
@@ -394,7 +394,7 @@ export function ContentPanel({
                 type="button"
                 disabled={busy === "edit-desc"}
                 onClick={saveDesc}
-                className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-night disabled:opacity-50"
+                className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-on disabled:opacity-50"
               >
                 {busy === "edit-desc" ? labels.saving : labels.save}
               </button>
@@ -443,7 +443,7 @@ export function ContentPanel({
                 type="button"
                 disabled={busy === "upload-seq"}
                 onClick={uploadSequence}
-                className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-night disabled:opacity-50"
+                className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-accent-on disabled:opacity-50"
               >
                 {busy === "upload-seq" ? labels.uploading : labels.upload}
               </button>

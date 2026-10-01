@@ -77,7 +77,7 @@ export function ProfileAvatar({
             className="h-24 w-24 rounded-full object-cover ring-2 ring-night-line"
           />
         ) : (
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-accent/70 to-accent/40 text-4xl font-bold text-night">
+          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-accent/70 to-accent/40 text-4xl font-bold text-accent-on">
             {initials}
           </div>
         )}
@@ -85,7 +85,7 @@ export function ProfileAvatar({
           type="button"
           onClick={() => setOpen(true)}
           aria-label={labels.title}
-          className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-accent text-night shadow-md transition-opacity hover:opacity-90"
+          className="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-accent text-accent-on shadow-md transition-opacity hover:opacity-90"
         >
           <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
             <path d="M12 15.2a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4z" />

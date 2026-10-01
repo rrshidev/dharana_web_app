@@ -25,7 +25,7 @@ export function AdminTabs({
             href={href}
             className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${
               isActive
-                ? "bg-accent text-night"
+                ? "bg-accent text-accent-on"
                 : "border border-night-line text-muted hover:text-ink"
             }`}
           >

@@ -14,7 +14,7 @@ export function Toast({ children }: { children: ReactNode }) {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="h-4 w-4 text-accent"
+          className="h-4 w-4 text-accent-ink"
           aria-hidden
         >
           <path d="m4 12 5 5L20 6" />

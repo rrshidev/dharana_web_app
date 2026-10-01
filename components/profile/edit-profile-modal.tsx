@@ -123,7 +123,7 @@ export function EditProfileModal({
             type="button"
             onClick={save}
             disabled={loading}
-            className="rounded-full bg-accent px-6 py-2 text-sm font-semibold text-night transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="rounded-full bg-accent px-6 py-2 text-sm font-semibold text-accent-on transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             {loading ? labels.saving : labels.save}
           </button>

@@ -92,7 +92,7 @@ export default async function OverviewPage({ params }: Props) {
             href={q.href}
             className="flex flex-col items-center gap-2 rounded-2xl border border-night-line bg-night/60 px-2 py-5 text-center transition-colors hover:border-accent/50"
           >
-            <q.icon className="h-6 w-6 text-accent" />
+            <q.icon className="h-6 w-6 text-accent-ink" />
             <span className="text-sm font-medium">{q.label}</span>
           </Link>
         ))}
