@@ -8,13 +8,19 @@ const THEME_EVENT = "dharana:themechange";
 
 export type Theme = "dark" | "light";
 
+// Светлая тема — дефолтная (в globals.css палитра по умолчанию светлая,
+// тёмная включается атрибутом data-theme="dark").
 function getInitialTheme(): Theme {
-  if (typeof document === "undefined") return "dark";
-  return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+  if (typeof document === "undefined") return "light";
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 }
 
 function applyTheme(theme: Theme) {
-  document.documentElement.dataset.theme = theme;
+  if (theme === "light") {
+    delete document.documentElement.dataset.theme;
+  } else {
+    document.documentElement.dataset.theme = "dark";
+  }
   if (typeof window !== "undefined") {
     try {
       window.localStorage.setItem(STORAGE_KEY, theme);
@@ -32,7 +38,7 @@ export function ThemeToggle({
   lightLabel: string;
   darkLabel: string;
 }) {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
     setTheme(getInitialTheme());

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Script from "next/script";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Inter, Cormorant_Garamond } from "next/font/google";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { injectMetrica, metricaNoscript, METRIKA_ID } from "@/lib/analytics/metrica";
@@ -11,7 +11,19 @@ import { MobileNav } from "@/components/layout/mobile-nav";
 import { APK_URL, TELEGRAM_BOT_URL } from "@/lib/constants";
 import "../globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+// Основной текст — Inter (чистый гротеск), заголовки — Cormorant Garamond (тонкая антиква).
+// subsets: ["latin", "cyrillic"] обязательны — контент двуязычный (ru/en).
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
+});
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+});
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 const siteUrl = "https://dharana.ru";
@@ -90,12 +102,12 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${cormorant.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(()=>{try{var t=localStorage.getItem("dharana:theme");if(t==="light"){document.documentElement.dataset.theme="light";}}catch(e){}})();`,
+            __html: `(()=>{try{var t=localStorage.getItem("dharana:theme");if(t==="dark"){document.documentElement.dataset.theme="dark";}}catch(e){}})();`,
           }}
         />
         <script

@@ -1,20 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  --color-night: #1a1b2e;
-  --color-night-soft: #252640;
-  --color-night-line: rgb(237 234 242 / 0.08);
-  --color-night-highlight: rgb(255 255 255 / 0.04);
+  /* Палитра по умолчанию — СВЕТЛАЯ (в wellness-дизайне она идёт первой).
+     Тёмная палитра переопределяется в :root[data-theme="dark"] ниже. */
+  --color-night: #f6f1ea;
+  --color-night-soft: #fffefc;
+  --color-night-line: rgb(58 53 46 / 0.12);
+  --color-night-highlight: rgb(58 53 46 / 0.045);
   --color-accent: #e8a87c;
-  --color-sage: #85c88a;
-  --color-ink: #edeaf2;
-  --color-muted: #a8a5bc;
+  --color-sage: #6fb47a;
+  /* Глубокий графитово-кофейный вместо почти чёрного #1a1b2e */
+  --color-ink: #3a352e;
+  --color-muted: #736b60;
   --color-telegram: #2aabee;
-  --color-track: rgba(46, 47, 74, 0.9);
-  --color-tooltip-bg: #edeaf2;
-  --color-tooltip-text: #1a1b2e;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-track: rgba(58, 53, 46, 0.1);
+  --color-tooltip-bg: #fffefc;
+  --color-tooltip-text: #3a352e;
+
+  /* Типографика: тонкая антиква на заголовках + чистый гротеск в тексте */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cormorant), ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
   --animate-toast-in: toast-in 0.25s ease-out;
 
   @keyframes toast-in {
@@ -27,22 +34,39 @@
   }
 }
 
-:root[data-theme="light"] {
-  --color-night: #f6f1ea;
-  --color-night-soft: #ffffff;
-  --color-night-line: rgb(26 27 46 / 0.1);
-  --color-night-highlight: rgb(26 27 46 / 0.05);
+:root[data-theme="dark"] {
+  --color-night: #1a1b2e;
+  --color-night-soft: #252640;
+  --color-night-line: rgb(237 234 242 / 0.08);
+  --color-night-highlight: rgb(255 255 255 / 0.04);
   --color-accent: #e8a87c;
-  --color-sage: #6fb47a;
-  --color-ink: #1a1b2e;
-  --color-muted: #6b6b7d;
+  --color-sage: #85c88a;
+  --color-ink: #edeaf2;
+  --color-muted: #a8a5bc;
   --color-telegram: #2aabee;
-  --color-track: rgba(26, 27, 46, 0.12);
-  --color-tooltip-bg: #ffffff;
+  --color-track: rgba(46, 47, 74, 0.9);
+  --color-tooltip-bg: #edeaf2;
   --color-tooltip-text: #1a1b2e;
 }
 
 body {
   background: var(--color-night);
   color: var(--color-ink);
+}
+
+/* Заголовки — антиква Cormorant Garamond.
+   Правила вне @layer: в Tailwind v4 они приоритетнее утилит, поэтому
+   снимают font-semibold (600) с заголовков, не трогая разметку. */
+h1,
+h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+/* Микро-лейблы секций (uppercase tracking-wide) остаются гротеском:
+   антиква в 12–14px caps читается плохо. */
+h1.uppercase,
+h2.uppercase {
+  font-family: var(--font-sans);
+  font-weight: 600;
 }
