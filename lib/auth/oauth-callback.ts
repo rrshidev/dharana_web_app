@@ -24,15 +24,14 @@ const COOKIE_OPTIONS = {
 export const dynamic = "force-dynamic";
 
 function redirectTo(req: NextRequest, target: string, dropStateCookie: boolean) {
-  // Именно nextUrl.clone(), а не new URL(..., req.url): req.url внутри контейнера
-  // содержит внутренний адрес (http://0.0.0.0:3000/...), а nextUrl учитывает
-  // x-forwarded-host/proto от Caddy — редирект уходит на dharana.ru (так же,
-  // как в middleware.ts).
-  const [pathname, search = ""] = target.split("?");
-  const url = req.nextUrl.clone();
-  url.pathname = pathname;
-  url.search = search;
-  const res = NextResponse.redirect(url, 303);
+  // Location относительный — иначе уходим на внутренний адрес контейнера
+  // (в standalone req.url и nextUrl содержат http://0.0.0.0:3000/..., Caddy
+  // снаружи отдаёт dharana.ru). Браузер сам разрезолвит путь относительно
+  // текущей страницы, поэтому редирект всегда уходит на dharana.ru.
+  const res = new NextResponse(null, {
+    status: 303,
+    headers: { Location: target },
+  });
   if (dropStateCookie) res.cookies.delete(OAUTH_STATE_COOKIE);
   return res;
 }
