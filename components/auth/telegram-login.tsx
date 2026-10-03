@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { TELEGRAM_BOT_URL } from "@/lib/constants";
+import { SocialButton, SocialLink } from "@/components/brand/social-button";
 
 export interface TelegramLoginLabels {
   or: string;
@@ -78,16 +79,9 @@ export function TelegramLogin({
       )}
 
       <div className="mx-auto w-full max-w-sm">
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-night-line bg-transparent px-6 py-2.5 text-sm font-semibold text-muted transition-colors hover:bg-night-highlight hover:text-ink"
-        >
-          <svg viewBox="0 0 24 24" fill="#0088CC" className="h-5 w-5 shrink-0">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
-          </svg>
+        <SocialButton network="telegram" width="full" onClick={() => setOpen(true)}>
           {labels.button}
-        </button>
+        </SocialButton>
       </div>
 
       {open && (
@@ -115,14 +109,16 @@ export function TelegramLogin({
               <li>{labels.step3}</li>
             </ol>
 
-            <a
-              href={`${TELEGRAM_BOT_URL}?start=auth`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mb-4 flex w-full items-center justify-center gap-2 rounded-xl border border-night-line bg-transparent px-4 py-2.5 text-sm font-semibold text-[#0088CC] transition-colors hover:bg-night-highlight"
-            >
-              {labels.openBot}
-            </a>
+            <div className="mb-4">
+              <SocialLink
+                network="telegram"
+                external
+                width="full"
+                href={`${TELEGRAM_BOT_URL}?start=auth`}
+              >
+                {labels.openBot}
+              </SocialLink>
+            </div>
 
             <label className="block">
               <input

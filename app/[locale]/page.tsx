@@ -4,14 +4,8 @@ import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { APK_URL, TELEGRAM_BOT_URL } from "@/lib/constants";
-
-function TelegramIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M21.9 4.1c.3-.1.6.3.5.6l-3.2 15.3c-.2.9-1.2 1.3-2 .9l-5.2-3.9a1.4 1.4 0 0 0-1.8 0l-3.4 2.7c-.5.4-1.2.3-1.5-.3L2.3 7.7C1.7 6.7 2.5 5.4 3.6 5.4l18.3-.9zM8.6 9.5l7.6-4.3a.4.4 0 0 1 .5.6l-5.4 6.3a2 2 0 0 0-.7 1.4l-.1 2.8c0 .4-.4.6-.7.4l-.8-2-1-1.3a.5.5 0 0 1 .6-.9z" />
-    </svg>
-  );
-}
+import { SocialIcon } from "@/components/brand/social-icon";
+import { SocialLink } from "@/components/brand/social-button";
 
 function AndroidIcon({ className }: { className?: string }) {
   return (
@@ -80,15 +74,14 @@ export default async function LandingPage({ params }: Props) {
             {t("hero.subtitle")}
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-            <a
+            <SocialLink
+              network="telegram"
+              external
+              tone="accent"
               href={TELEGRAM_BOT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-12 items-center justify-center gap-2 rounded-full bg-telegram px-6 text-sm font-semibold text-white transition-colors hover:bg-[#229ed9]"
             >
-              <TelegramIcon className="h-5 w-5" />
               {t("hero.botCta")}
-            </a>
+            </SocialLink>
             <a
               href={APK_URL}
               className="flex h-12 items-center justify-center gap-2 rounded-full border border-night-line bg-night-soft px-6 text-sm font-semibold text-ink transition-colors hover:border-sage/40"
@@ -132,21 +125,21 @@ export default async function LandingPage({ params }: Props) {
           <div className="mt-12 grid gap-6 sm:grid-cols-2">
             <div className="flex flex-col rounded-2xl border border-night-line bg-night p-8">
               <div className="flex items-center gap-3">
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-telegram/15 text-telegram-ink">
-                  <TelegramIcon className="h-6 w-6" />
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 ring-1 ring-inset ring-accent/30">
+                  <SocialIcon network="telegram" className="h-6 w-6 text-muted" />
                 </span>
                 <h3 className="text-lg font-semibold">{t("channels.botTitle")}</h3>
               </div>
               <p className="mt-4 flex-1 text-sm leading-6 text-muted">{t("channels.botText")}</p>
-              <a
+              <SocialLink
+                network="telegram"
+                external
+                size="sm"
                 href={TELEGRAM_BOT_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 inline-flex h-11 items-center justify-center gap-2 rounded-full bg-telegram px-5 text-sm font-semibold text-white transition-colors hover:bg-[#229ed9]"
+                className="mt-6"
               >
-                <TelegramIcon className="h-4 w-4" />
                 {t("channels.botCta")}
-              </a>
+              </SocialLink>
             </div>
             <div className="flex flex-col rounded-2xl border border-night-line bg-night p-8">
               <div className="flex items-center gap-3">
