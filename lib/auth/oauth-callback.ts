@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { API_URL, API_PREFIX } from "@/lib/constants";
 import { AUTH_COOKIE } from "@/lib/api/media";
 import { OAUTH_STATE_COOKIE } from "@/components/auth/oauth-login";
@@ -23,15 +23,27 @@ const COOKIE_OPTIONS = {
 
 export const dynamic = "force-dynamic";
 
-function loginRedirect(req: NextRequest, locale: string, query: string) {
-  const res = NextResponse.redirect(new URL(`/${locale}/login?${query}`, req.url), 303);
-  res.cookies.delete(OAUTH_STATE_COOKIE);
+function redirectTo(req: NextRequest, target: string, dropStateCookie: boolean) {
+  // Именно nextUrl.clone(), а не new URL(..., req.url): req.url внутри контейнера
+  // содержит внутренний адрес (http://0.0.0.0:3000/...), а nextUrl учитывает
+  // x-forwarded-host/proto от Caddy — редирект уходит на dharana.ru (так же,
+  // как в middleware.ts).
+  const [pathname, search = ""] = target.split("?");
+  const url = req.nextUrl.clone();
+  url.pathname = pathname;
+  url.search = search;
+  const res = NextResponse.redirect(url, 303);
+  if (dropStateCookie) res.cookies.delete(OAUTH_STATE_COOKIE);
   return res;
+}
+
+function loginRedirect(req: NextRequest, locale: string, code: string) {
+  return redirectTo(req, `/${locale}/login?error=${code}`, true);
 }
 
 function successRedirect(req: NextRequest, locale: string, nextUrl: string) {
   const target = nextUrl && nextUrl.startsWith(`/${locale}/`) ? nextUrl : `/${locale}/catalog`;
-  return NextResponse.redirect(new URL(target, req.url), 303);
+  return redirectTo(req, target, true);
 }
 
 export async function handleOAuthCallback(req: NextRequest, provider: "vk" | "yandex") {
@@ -42,13 +54,13 @@ export async function handleOAuthCallback(req: NextRequest, provider: "vk" | "ya
 
   // Пользователь отказался на экране провайдера — возвращаем с понятной ошибкой.
   if (params.get("error")) {
-    return loginRedirect(req, safeLocale, "error=oauth_denied");
+    return loginRedirect(req, safeLocale, "oauth_denied");
   }
 
   const code = params.get("code") ?? "";
   const state = params.get("state") ?? "";
   if (!code || !nonce || !state || state !== nonce) {
-    return loginRedirect(req, safeLocale, "error=oauth_invalid_state");
+    return loginRedirect(req, safeLocale, "oauth_invalid_state");
   }
 
   let nextUrl = "";
@@ -73,9 +85,9 @@ export async function handleOAuthCallback(req: NextRequest, provider: "vk" | "ya
       // ignore
     }
     if (detail.endsWith("NOT_CONFIGURED")) {
-      return loginRedirect(req, safeLocale, "error=oauth_not_configured");
+      return loginRedirect(req, safeLocale, "oauth_not_configured");
     }
-    return loginRedirect(req, safeLocale, "error=oauth_failed");
+    return loginRedirect(req, safeLocale, "oauth_failed");
   }
 
   const data = (await res.json()) as { access_token: string };
