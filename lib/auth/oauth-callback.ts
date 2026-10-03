@@ -1,7 +1,7 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import { API_URL, API_PREFIX } from "@/lib/constants";
 import { AUTH_COOKIE } from "@/lib/api/media";
-import { OAUTH_STATE_COOKIE } from "@/components/auth/oauth-login";
+import { OAUTH_STATE_COOKIE, type OAuthProvider } from "@/lib/auth/oauth";
 
 /**
  * Общая часть колбэков OAuth-провайдеров с редиректом (VK ID, Яндекс).
@@ -45,7 +45,7 @@ function successRedirect(req: NextRequest, locale: string, nextUrl: string) {
   return redirectTo(req, target, true);
 }
 
-export async function handleOAuthCallback(req: NextRequest, provider: "vk" | "yandex") {
+export async function handleOAuthCallback(req: NextRequest, provider: OAuthProvider) {
   const params = req.nextUrl.searchParams;
   const rawState = req.cookies.get(OAUTH_STATE_COOKIE)?.value ?? "";
   const [nonce, locale = "ru", encodedNext = ""] = rawState.split(":");

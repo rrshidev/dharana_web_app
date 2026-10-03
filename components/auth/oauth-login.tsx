@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { SocialButton } from "@/components/brand/social-button";
 import type { SocialNetwork } from "@/components/brand/social-icon";
+import {
+  buildStateCookieValue,
+  OAUTH_PROVIDERS,
+  OAUTH_STATE_COOKIE,
+  type OAuthProvider,
+} from "@/lib/auth/oauth";
+
+export type { OAuthProvider };
 
 /**
  * Вход через провайдера с редиректом (VK ID, Яндекс) — в отличие от Google,
@@ -15,30 +23,11 @@ import type { SocialNetwork } from "@/components/brand/social-icon";
  * CSRF: перед уходом кладём nonce в куку dharana_oauth_state (double submit),
  * колбэк сверяет его с `state` из ответа провайдера. Провайдеры возвращают
  * пользователя top-level редиректом, поэтому SameSite=Lax куку пропускает.
+ *
+ * Константы OAuth живут в `lib/auth/oauth` — их импортирует и серверный
+ * колбэк, а этот файл помечен "use client" (импорт отсюда на сервере ломает
+ * чтение куки, см. lib/auth/oauth.ts).
  */
-export type OAuthProvider = "vk" | "yandex";
-
-const PROVIDER_CONFIG: Record<
-  OAuthProvider,
-  { authorizeUrl: string; scope: string; callbackPath: string }
-> = {
-  vk: {
-    authorizeUrl: "https://id.vk.com/oauth2/authorize",
-    scope: "email",
-    callbackPath: "/api/auth/vk/callback",
-  },
-  yandex: {
-    authorizeUrl: "https://oauth.yandex.ru/authorize",
-    scope: "login:email login:info",
-    callbackPath: "/api/auth/yandex/callback",
-  },
-};
-
-export const OAUTH_STATE_COOKIE = "dharana_oauth_state";
-
-export function buildStateCookieValue(nonce: string, locale: string, nextUrl?: string) {
-  return `${nonce}:${locale}:${encodeURIComponent(nextUrl ?? "")}`;
-}
 
 export function OAuthLogin({
   provider,
@@ -72,7 +61,7 @@ export function OAuthLogin({
         nextUrl,
       )}; Path=/; Max-Age=600; SameSite=Lax${secure}`;
 
-      const config = PROVIDER_CONFIG[provider];
+      const config = OAUTH_PROVIDERS[provider];
       const url = new URL(config.authorizeUrl);
       url.searchParams.set("client_id", clientId);
       url.searchParams.set("redirect_uri", `${window.location.origin}${config.callbackPath}`);
