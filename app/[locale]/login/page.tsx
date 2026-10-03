@@ -5,13 +5,18 @@ import { getServerTranslation } from "@/lib/i18n/server";
 import { AuthForm, type AuthFormLabels } from "@/components/auth/auth-form";
 import { GoogleLogin, type GoogleLoginLabels } from "@/components/auth/google-login";
 import { TelegramLogin, type TelegramLoginLabels } from "@/components/auth/telegram-login";
-import { GOOGLE_CLIENT_ID } from "@/lib/constants";
+import { OAuthLogin } from "@/components/auth/oauth-login";
+import {
+  GOOGLE_CLIENT_ID,
+  VK_CLIENT_ID,
+  YANDEX_CLIENT_ID,
+} from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; error?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -29,6 +34,15 @@ export default async function LoginPage({ params, searchParams }: Props) {
     sp.next && sp.next.startsWith(`/${locale}`) ? sp.next : undefined;
 
   const { t } = await getServerTranslation(locale);
+
+  // Ошибки колбэков OAuth-провайдеров приходят как ?error=oauth_*.
+  const oauthErrorKeys: Record<string, string> = {
+    oauth_denied: "auth.oauthDenied",
+    oauth_invalid_state: "auth.oauthInvalidState",
+    oauth_not_configured: "auth.oauthNotConfigured",
+    oauth_failed: "auth.oauthFailed",
+  };
+  const oauthErrorKey = sp.error ? oauthErrorKeys[sp.error] : undefined;
   const labels: AuthFormLabels = {
     emailLabel: t("auth.emailLabel"),
     passwordLabel: t("auth.passwordLabel"),
@@ -74,6 +88,11 @@ export default async function LoginPage({ params, searchParams }: Props) {
       <h1 className="mb-8 text-center text-3xl font-semibold tracking-tight">
         {t("auth.loginTitle")}
       </h1>
+      {oauthErrorKey ? (
+        <p className="mx-auto mb-6 w-full max-w-sm rounded-lg bg-red-500/10 px-3 py-2 text-center text-sm text-red-400">
+          {t(oauthErrorKey)}
+        </p>
+      ) : null}
       <AuthForm locale={locale} mode="login" labels={labels} nextUrl={nextUrl} />
       <div className="mx-auto my-6 flex w-full max-w-sm items-center gap-3">
         <div className="h-px flex-1 bg-night-line" />
@@ -83,6 +102,39 @@ export default async function LoginPage({ params, searchParams }: Props) {
       <div className="space-y-3">
         {GOOGLE_CLIENT_ID ? (
           <GoogleLogin locale={locale} clientId={GOOGLE_CLIENT_ID} labels={googleLabels} nextUrl={nextUrl} hideDivider />
+        ) : null}
+        {VK_CLIENT_ID ? (
+          <>
+            <OAuthLogin
+              provider="vk"
+              network="vk"
+              clientId={VK_CLIENT_ID}
+              label={t("auth.vkButton")}
+              errorLabel={t("auth.oauthFailed")}
+              locale={locale}
+              nextUrl={nextUrl}
+            />
+            <OAuthLogin
+              provider="vk"
+              network="max"
+              clientId={VK_CLIENT_ID}
+              label={t("auth.maxButton")}
+              errorLabel={t("auth.oauthFailed")}
+              locale={locale}
+              nextUrl={nextUrl}
+            />
+          </>
+        ) : null}
+        {YANDEX_CLIENT_ID ? (
+          <OAuthLogin
+            provider="yandex"
+            network="yandex"
+            clientId={YANDEX_CLIENT_ID}
+            label={t("auth.yandexButton")}
+            errorLabel={t("auth.oauthFailed")}
+            locale={locale}
+            nextUrl={nextUrl}
+          />
         ) : null}
         <TelegramLogin locale={locale} labels={tgLabels} nextUrl={nextUrl} hideDivider />
       </div>
