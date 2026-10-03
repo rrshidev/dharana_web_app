@@ -25,6 +25,8 @@ type CommonProps = {
   tone?: keyof typeof TONE;
   width?: "full" | "auto";
   className?: string;
+  /** Убирает кнопку из порядка табуляции (когда реальный контрол — поверх, напр. GSI iframe). */
+  tabIndex?: number;
 };
 
 function classes({ size = "md", tone = "default", width = "auto", className }: CommonProps) {
@@ -64,11 +66,13 @@ export function SocialLink({
   href,
   children,
   external = false,
+  tabIndex,
   ...rest
 }: CommonProps & { href: string; children: ReactNode; external?: boolean }) {
   return (
     <a
       href={href}
+      tabIndex={tabIndex}
       className={classes({ network, ...rest })}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
@@ -83,10 +87,17 @@ export function SocialButton({
   children,
   onClick,
   disabled,
+  tabIndex,
   ...rest
 }: CommonProps & { children: ReactNode; onClick?: () => void; disabled?: boolean }) {
   return (
-    <button type="button" onClick={onClick} disabled={disabled} className={classes({ network, ...rest })}>
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      tabIndex={tabIndex}
+      className={classes({ network, ...rest })}
+    >
       <Badge network={network} />
       {children}
     </button>

@@ -19,7 +19,6 @@ declare global {
             callback: (resp: { credential?: string }) => void;
           }) => void;
           renderButton: (el: HTMLElement, opts?: Record<string, unknown>) => void;
-          prompt: (cb?: (res: unknown) => void) => void;
         };
       };
     };
@@ -63,7 +62,8 @@ export function GoogleLogin({
   nextUrl?: string;
   hideDivider?: boolean;
 }) {
-  const hiddenRef = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const gsiRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
 
@@ -73,6 +73,8 @@ export function GoogleLogin({
       return;
     }
     let cancelled = false;
+    let raf = 0;
+    let lastWidth = 0;
 
     const handleCredential = async (resp: { credential?: string }) => {
       const idToken = resp?.credential;
@@ -99,6 +101,24 @@ export function GoogleLogin({
       }
     };
 
+    // Ловушка GSI (обсуждали 2026-09-09): renderButton рисует iframe своей
+    // естественной ширины — кнопка съезжает. Поэтому меряем контейнер и
+    // перерисовываем при изменении ширины.
+    const renderButtonAtWidth = () => {
+      if (!window.google?.accounts?.id || !gsiRef.current) return;
+      const width =
+        Math.max(280, Math.floor(wrapRef.current?.getBoundingClientRect().width ?? 0) || 280);
+      if (Math.abs(width - lastWidth) < 1) return;
+      lastWidth = width;
+      window.google.accounts.id.renderButton(gsiRef.current, {
+        theme: "outline",
+        size: "large",
+        shape: "pill",
+        text: "signin_with",
+        width,
+      });
+    };
+
     loadGsiScript()
       .then(() => {
         if (cancelled || !window.google?.accounts?.id) return;
@@ -106,45 +126,25 @@ export function GoogleLogin({
           client_id: clientId,
           callback: handleCredential,
         });
-        // Запасной путь: официальная кнопка живёт невидимой (см. handleClick).
-        if (hiddenRef.current) {
-          window.google.accounts.id.renderButton(hiddenRef.current, {
-            theme: "outline",
-            size: "large",
-            shape: "pill",
-            text: "signin_with",
-            width: 280,
-          });
-        }
+        renderButtonAtWidth();
         setReady(true);
       })
       .catch(() => {
         if (!cancelled) setReady(false);
       });
 
+    const ro = new ResizeObserver(() => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(renderButtonAtWidth);
+    });
+    if (wrapRef.current) ro.observe(wrapRef.current);
+
     return () => {
       cancelled = true;
+      cancelAnimationFrame(raf);
+      ro.disconnect();
     };
   }, [clientId, labels, locale, nextUrl]);
-
-  /**
-   * Кнопку Google рисуем сами (контурный знак в стиле остальных соцкнопок),
-   * а официальный renderButton держим рядом невидимым: по клику сначала
-   * пробуем prompt() (аккаунт-выбор/One Tap), а если его нет — кликаем iframe.
-   * Так мы не зависим от фирменного вида iframe, но и не теряем флоу Google.
-   */
-  const handleClick = () => {
-    const gsi = window.google?.accounts?.id;
-    if (!gsi) {
-      setError(labels.failed);
-      return;
-    }
-    if (typeof gsi.prompt === "function") {
-      gsi.prompt();
-      return;
-    }
-    hiddenRef.current?.querySelector("iframe")?.click();
-  };
 
   if (!clientId) return null;
 
@@ -158,20 +158,30 @@ export function GoogleLogin({
         </div>
       )}
 
-      <div className="mx-auto w-full max-w-sm">
-        <SocialButton network="google" width="full" disabled={!ready} onClick={handleClick}>
-          {labels.button}
-        </SocialButton>
+      <div
+        ref={wrapRef}
+        className="relative mx-auto w-full max-w-sm focus-within:outline-none focus-within:ring-2 focus-within:ring-accent/60 rounded-full"
+      >
+        {/* Слой 1 — настоящая кнопка Google: прозрачная, но кликабельная.
+            Так клик настоящий (не синтетический), поэтому вход работает во всех
+            браузерах, включая Firefox, где One Tap/prompt молча ничего не
+            показывает. Клавиатура и скринридер работают с этим же iframe. */}
+        <div
+          ref={gsiRef}
+          className="absolute inset-0 z-20 flex items-center justify-center opacity-0"
+        />
+        {/* Слой 2 — наш контурный вид: клики пропускает слою 1, из табуляции
+            убран (tabIndex -1), чтобы не было второго фокусируемого контрола. */}
+        <div className="pointer-events-none relative z-10" aria-hidden="true">
+          <SocialButton network="google" width="full" disabled={!ready} tabIndex={-1}>
+            {labels.button}
+          </SocialButton>
+        </div>
         {error && (
           <p className="mt-3 rounded-lg bg-red-500/10 px-3 py-2 text-center text-sm text-red-400">
             {error}
           </p>
         )}
-        <div
-          ref={hiddenRef}
-          aria-hidden="true"
-          className="pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0"
-        />
       </div>
     </>
   );
