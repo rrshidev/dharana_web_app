@@ -7,6 +7,8 @@ import {
   buildStateCookieValue,
   OAUTH_PROVIDERS,
   OAUTH_STATE_COOKIE,
+  pkceChallengeFrom,
+  randomCodeVerifier,
   type OAuthProvider,
 } from "@/lib/auth/oauth";
 
@@ -51,23 +53,31 @@ export function OAuthLogin({
 
   if (!clientId) return null;
 
-  const start = () => {
+  const start = async () => {
     try {
       const nonce = crypto.randomUUID();
+      const config = OAUTH_PROVIDERS[provider];
+      // PKCE (обязателен для VK ID): verifier хранится в куке состояния,
+      // challenge уходит в authorize-запрос.
+      const codeVerifier = config.pkce ? randomCodeVerifier() : "";
       const secure = window.location.protocol === "https:" ? "; Secure" : "";
       document.cookie = `${OAUTH_STATE_COOKIE}=${buildStateCookieValue(
         nonce,
         locale,
         nextUrl,
+        codeVerifier,
       )}; Path=/; Max-Age=600; SameSite=Lax${secure}`;
 
-      const config = OAUTH_PROVIDERS[provider];
       const url = new URL(config.authorizeUrl);
       url.searchParams.set("client_id", clientId);
       url.searchParams.set("redirect_uri", `${window.location.origin}${config.callbackPath}`);
       url.searchParams.set("response_type", "code");
       url.searchParams.set("scope", config.scope);
       url.searchParams.set("state", nonce);
+      if (codeVerifier) {
+        url.searchParams.set("code_challenge", await pkceChallengeFrom(codeVerifier));
+        url.searchParams.set("code_challenge_method", "S256");
+      }
       window.location.assign(url.toString());
     } catch {
       setFailed(true);

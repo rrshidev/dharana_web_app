@@ -1,7 +1,7 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import { API_URL, API_PREFIX } from "@/lib/constants";
 import { AUTH_COOKIE } from "@/lib/api/media";
-import { OAUTH_STATE_COOKIE, type OAuthProvider } from "@/lib/auth/oauth";
+import { OAUTH_STATE_COOKIE, parseStateCookieValue, type OAuthProvider } from "@/lib/auth/oauth";
 
 /**
  * Общая часть колбэков OAuth-провайдеров с редиректом (VK ID, Яндекс).
@@ -48,7 +48,7 @@ function successRedirect(req: NextRequest, locale: string, nextUrl: string) {
 export async function handleOAuthCallback(req: NextRequest, provider: OAuthProvider) {
   const params = req.nextUrl.searchParams;
   const rawState = req.cookies.get(OAUTH_STATE_COOKIE)?.value ?? "";
-  const [nonce, locale = "ru", encodedNext = ""] = rawState.split(":");
+  const { nonce, locale, nextUrl: encodedNext, codeVerifier } = parseStateCookieValue(rawState);
   const safeLocale = locale === "en" ? "en" : "ru";
 
   // Пользователь отказался на экране провайдера — возвращаем с понятной ошибкой.
@@ -72,7 +72,8 @@ export async function handleOAuthCallback(req: NextRequest, provider: OAuthProvi
   const res = await fetch(`${API_URL}${API_PREFIX}/auth/${provider}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ code }),
+    // code_verifier обязателен для VK ID (PKCE S256), Яндекс его игнорирует.
+    body: JSON.stringify(codeVerifier ? { code, code_verifier: codeVerifier } : { code }),
     cache: "no-store",
   });
 
