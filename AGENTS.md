@@ -145,3 +145,31 @@
 - **Проверка/сервис**: пересборка `sudo docker compose -f /opt/dharana/mail/docker-compose.yml up -d --build`; логи `sudo docker logs -f dharana-mail`; письма `sudo ls /var/lib/docker/volumes/mail_vmail/_data/dharana.ru/support/Maildir/new|cur`; посмотреть очередь `sudo docker exec dharana-mail postqueue -p`.
 - **TTL писем 14 дней** (root cron, на хосте): `find /var/lib/docker/volumes/mail_vmail/_data -type f \( -path '*/Maildir/new/*' -o -path '*/Maildir/cur/*' \) -mtime +14 -delete` (ежедневно 04:30) + чистка `Maildir/tmp` старше 1 дня (04:40).
 - **⚠ НЕ РАБОТАЕТ ИЗ INTERNET**: порты 25/143/993 блокируются на edge-фаерволе провайдера (с хоста через публичный IP — reachable; извне, включая локальную машину — BLOCKED; исходящий 993 с той же машины наружу — OPEN ⇒ блок не у ISP, а у провайдера VPS). ufw внутри открыт, docker DNAT есть. Требуется открыть порты в панели/тикете провайдера. До этого MX-приём внешних писем невозможен.
+
+---
+
+# Вход в мобильном приложении через Яндекс/VK (добавлено 2026-10-05)
+
+- Приложение возвращается из браузера по App Link `https://dharana.ru/app/auth/{provider}/callback`, но autoVerify-App Links **на части прошивок не верифицируются**: на realme/Android 11 `adb shell am start -a VIEW -d https://dharana.ru/app/auth/...` открывал `ResolverActivity` (ОС не отдаёт ссылку приложению, показывает выбор приложения). `assetlinks.json` при этом валиден, отпечаток совпадает с установленным APK — проблема на стороне ОС/прошивки, не в сервере.
+- Рабочий обход — **мост через собственную схему**: `app/app/auth/[provider]/callback/route.ts` отдаёт HTML с редиректом на `dharana://app/auth/{provider}/callback?code=…&state=…&device_id=…`, а в `AndroidManifest.xml` есть `intent-filter` со схемой `dharana` БЕЗ autoVerify (схема работает всегда). Вход через Яндекс подтверждён на телефоне.
+- **Ловушка middleware (реальная причина, почему вход не работал)**: `/app/auth/*` нельзя заворачивать в `/ru`. Next.js отдавал 307 на `/ru/app/auth/...`, а этот путь не матчится в manifest (`pathPrefix /app/auth`) → ОС не открывала приложение, пользователь видел 404. В `matcher` middleware `app/auth` добавлен как исключение — не убирать.
+- Bridge-route: пробрасывает только `code`, `state`, `error`, `error_description`, `device_id` (остальные параметры VK не уходят в приложение), неизвестный provider → 404, ответ с `cache-control: no-store` (в URL одноразовый код авторизации).
+- VK в приложении обменивает код на токен **сам** (`POST https://id.vk.ru/oauth2/auth` с `device_id` из ссылки + PKCE S256) — серверный обмен невозможен, клиентский secret приложения недоступен. Если в логах `OAUTH_NO_DEVICE_ID` — VK не прислал `device_id`, нужен официальный SDK.
+- **Ловушка `docker compose up -d` без `--build`**: контейнер пересоздаётся на СТАРОМ образе — свежий код из репозитория НЕ применяется (реальный баг 2026-10-04: полдня в проде была старая версия `/auth/yandex`). Всегда `up -d --build`.
+- Проверка моста с сервера: `curl -s 'https://dharana.ru/app/auth/vk/callback?code=x&state=y' | grep dharana://`. Сам App Link проверить с сервера нельзя — только на устройстве.
+
+# CI/CD (добавлено 2026-10-05)
+
+Три репозитория, деплой по `push` в `main` (+ `workflow_dispatch`), секреты `DHARANA_SSH_HOST/PORT/USER/KEY` общие для web и API:
+
+| репозиторий | workflow | что делает |
+|---|---|---|
+| `dharana_web_app` | Deploy Web | `tsc --noEmit` → `npm run build` → tar через `git archive` на VPS → `docker compose build/up web` → дымовые проверки |
+| `dharana_api` | Deploy API | `pytest -q` (гейт) → tar на VPS → build → `alembic upgrade head` → `up -d` → проверки |
+| `dharana_app` | Build APK | `flutter analyze` → `flutter build apk --release` с dart-define из переменных репозитория → проверка, что defines реально в `libapp.so` → артефакт (только QA) |
+
+- **Гейт здоровья (главное)**: web роняет деплой, если не 200 на `/ru/login`, не 200 на `api.dharana.ru/api/v1/health` или в ответе `/app/auth/vk/callback` нет `dharana://`; API роняет деплой, если не 200 `/health` или `POST /api/v1/auth/yandex` без тела вернул не 422 (значит, новый код не развернулся). Раньше проверки заканчивались на `|| true` — мёртвый сайт считался успешным деплоем, из-за этого правки middleware и `/auth/yandex` пришлось катить руками.
+- Порядок в API важен: build → миграции → старт. Иначе новый код стартует против старой схемы БД.
+- **Ловушка sudo у CI-пользователя**: sudo ограничен списком команд, `sudo find`/`sudo rm` для чистки каталога требуют пароля и валят деплой (проверено 2026-10-04). Распаковка тарбола поверх каталога НЕ удаляет файлы, удалённые в репозитории, — они попадают в build context (реальный кейс 2026-09-07: старый `app/favicon.ico` победил новый `icon.svg`). После удаления файла в репо чистить на сервере вручную: `ssh dharana_ai 'sudo rm -f /opt/dharana/dharana-web-app/<path>'`.
+- APK: публичные Client ID лежат в **переменных** репозитория `dharana_app` (`YANDEX_CLIENT_ID`, `VK_CLIENT_ID`), не в secrets. Workflow падает, если они не заданы (иначе APK внешне идентичен рабочему, но БЕЗ кнопок входа — именно этот случай разбирали вручную 2026-10-05), и проверяет, что `api.dharana.ru`, `dharana.ru` и оба client id попали в `lib/arm64-v8a/libapp.so`.
+- Артефакт CI подписан СВЕЖИМ debug-keystore, его отпечатки не совпадают ни с `assetlinks.json`, ни с Android OAuth-клиентом Google → годится только для QA. Публичный APK собирается локально `.\build_apk.ps1` (client id по умолчанию, сборка без них падает, есть `-InstallUsb`).
