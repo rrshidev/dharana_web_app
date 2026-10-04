@@ -11,9 +11,13 @@ on:
 #   DHARANA_SSH_PORT   - SSH-порт (7020)
 #   DHARANA_SSH_USER   - пользователь deploy
 #   DHARANA_SSH_KEY    - приватный ключ ~/.ssh/dharana_ci (BEGIN/END ED25519 без пароля)
-# Деплой копирует исходники тарболом (без node_modules/.next/.git) и пересобирает
-# контейнер. NEXT_PUBLIC_* запекаются docker-сборкой из build.args в compose на VPS.
-# Тар-деплой НЕ удаляет удалённые файлы — после удаления файла в репо сносить вручную.
+# Деплой копирует исходники тарболом и пересобирает контейнер. NEXT_PUBLIC_*
+# запекаются docker-сборкой из build.args в compose на VPS.
+
+# Не даём двум пушам подряд пересобирать контейнер одновременно.
+concurrency:
+  group: web-deploy
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -30,6 +34,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
 
       - name: Build
         run: npm run build
@@ -58,6 +65,10 @@ jobs:
           source: "dharana-web-app.tar.gz"
           target: "/tmp/dharana_deploy_${{ github.run_id }}"
 
+      # Перед распаковкой чистим каталог: распаковка поверх НЕ удаляет файлы,
+      # удалённые в репозитории, и они потом попадают в docker build context
+      # (реальный кейс 2026-09-07 — старый app/favicon.ico победил новый icon.svg).
+      # .env не трогаем: в нём NEXT_PUBLIC_* и секреты для compose.
       - name: Extract, rebuild, restart, verify
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -68,8 +79,20 @@ jobs:
           script: |
             set -e
             cd /opt/dharana
+            sudo find ./dharana-web-app -mindepth 1 -maxdepth 1 ! -name '.env' -exec rm -rf {} +
             sudo tar -xzf /tmp/dharana_deploy_${{ github.run_id }}/dharana-web-app.tar.gz -C ./dharana-web-app
             sudo docker compose build web
             sudo docker compose up -d web
-            sleep 10
-            curl -fsS -o /dev/null https://dharana.ru/ru/login || true
+            sleep 12
+
+            # Дымовые проверки. Без них деплой «успешен» даже при мёртвом сайте —
+            # именно поэтому 2026-10-05 пришлось катить правки middleware вручную.
+            set -e
+            curl -fsS -o /dev/null https://dharana.ru/ru/login
+            curl -fsS -o /dev/null https://api.dharana.ru/api/v1/health
+
+            # Мост возврата из браузера в приложение (App Link-схема dharana://).
+            # Если middleware снова начнёт заворачивать /app/auth/* в /ru, здесь будет 404.
+            curl -fsS 'https://dharana.ru/app/auth/vk/callback?code=smoke&state=smoke' \
+              | grep -q 'dharana://app/auth/vk/callback'
+            echo "web deploy OK"
