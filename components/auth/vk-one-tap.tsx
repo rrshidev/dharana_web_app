@@ -15,24 +15,29 @@ import { useEffect, useRef, useState } from "react";
 
 const SDK_URL = "https://unpkg.com/@vkid/sdk@%3C3.0.0/dist-sdk/umd/index.js";
 
+interface OneTapWidget {
+  // Внимание: аргумент обязателен (внутри читается t.fastAuthEnabled), а
+  // `container` — это DOM-элемент: базовый renderTemplate делает
+  // container.insertAdjacentHTML(...). height допустим 32..56.
+  render: (opts: {
+    container: HTMLElement;
+    lang?: number;
+    scheme?: string;
+    styles?: { width?: number; height?: number; borderRadius?: number };
+    fastAuthEnabled?: boolean;
+  }) => unknown;
+  on: (event: string, handler: (payload: unknown) => void) => unknown;
+  off?: (event: string, handler: (payload: unknown) => void) => unknown;
+  close?: () => void;
+}
+
 interface VkIdSdk {
   Config: { init: (opts: Record<string, unknown>) => void };
   Languages: Record<string, number>;
   Scheme: Record<string, string>;
-  OneTap: {
-    // Внимание: аргумент обязателен (внутри читается t.fastAuthEnabled), а
-    // `container` — это DOM-элемент: базовый renderTemplate делает
-    // container.insertAdjacentHTML(...). height допустим 32..56.
-    render: (opts: {
-      container: HTMLElement;
-      lang?: number;
-      scheme?: string;
-      styles?: { width?: number; height?: number; borderRadius?: number };
-      fastAuthEnabled?: boolean;
-    }) => void;
-    on: (event: string, handler: (payload: unknown) => void) => void;
-    off?: (event: string, handler: (payload: unknown) => void) => void;
-  };
+  // В 2.6.8 это КЛАСС (`export class OneTap`), а в некоторых сборках — уже
+  // готовый инстанс (так написано в сниппете из консоли VK ID).
+  OneTap: OneTapWidget & (new () => OneTapWidget);
   OneTapInternalEvents: Record<string, string>;
   WidgetEvents: Record<string, string>;
   Auth: {
@@ -52,6 +57,12 @@ declare global {
 function getSdk(): VkIdSdk | undefined {
   const sdk = window.VKIDSDK ?? window.VKID;
   return sdk?.OneTap ? sdk : undefined;
+}
+
+/** OneTap бывает классом (2.6.8) и готовым инстансом — приводим к инстансу. */
+function oneTapInstance(sdk: VkIdSdk): OneTapWidget {
+  const exported = sdk.OneTap;
+  return typeof exported?.render === "function" ? exported : new exported();
 }
 
 function loadVkScript(): Promise<VkIdSdk> {
@@ -103,6 +114,7 @@ export function VkOneTap({
   const [error, setError] = useState<string | null>(null);
   const [state, setState] = useState<State>("loading");
   const slotRef = useRef<HTMLDivElement>(null);
+  const widgetRef = useRef<OneTapWidget | null>(null);
 
   useEffect(() => {
     if (!clientId) return;
@@ -157,15 +169,17 @@ export function VkOneTap({
           source: "LOWCODE",
           scope: "",
         });
+        const widget = oneTapInstance(sdk);
+        widgetRef.current = widget;
         const events = sdk.OneTapInternalEvents;
-        sdk.OneTap.on(events.LOGIN_SUCCESS, onSuccess);
-        if (events.NOT_AUTHORIZED) sdk.OneTap.on(events.NOT_AUTHORIZED, onDenied);
-        if (sdk.WidgetEvents?.ERROR) sdk.OneTap.on(sdk.WidgetEvents.ERROR, onWidgetError);
+        widget.on(events.LOGIN_SUCCESS, onSuccess);
+        if (events.NOT_AUTHORIZED) widget.on(events.NOT_AUTHORIZED, onDenied);
+        if (sdk.WidgetEvents?.ERROR) widget.on(sdk.WidgetEvents.ERROR, onWidgetError);
         const width = Math.max(
           240,
           Math.floor(slotRef.current.getBoundingClientRect().width) || 320,
         );
-        sdk.OneTap.render({
+        widget.render({
           container: slotRef.current,
           lang: sdk.Languages?.RUS ?? 0,
           scheme: "light",
@@ -182,16 +196,19 @@ export function VkOneTap({
       cancelled = true;
       clearTimeout(watchdog);
       const sdk = getSdk();
-      if (sdk?.OneTap?.off) {
+      const widget = widgetRef.current;
+      if (sdk && widget) {
         try {
-          sdk.OneTap.off(sdk.OneTapInternalEvents.LOGIN_SUCCESS, onSuccess);
+          widget.off?.(sdk.OneTapInternalEvents.LOGIN_SUCCESS, onSuccess);
           if (sdk.OneTapInternalEvents.NOT_AUTHORIZED) {
-            sdk.OneTap.off(sdk.OneTapInternalEvents.NOT_AUTHORIZED, onDenied);
+            widget.off?.(sdk.OneTapInternalEvents.NOT_AUTHORIZED, onDenied);
           }
+          widget.close?.();
         } catch {
           // ignore
         }
       }
+      widgetRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientId, redirectUrl, locale]);
