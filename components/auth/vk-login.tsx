@@ -7,27 +7,31 @@ import { OAUTH_STATE_COOKIE, buildStateCookieValue } from "@/lib/auth/oauth";
 /**
  * Вход через VK ID (`@vkid/sdk`, https://id.vk.ru) по полной авторизации.
  *
- * Почему не OneTap: виджет OneTap (`OneTapInternalEvents.NOT_AUTHORIZED`, проверено
- * postMessage-логом на проде) для гостя без активной сессии VK **вообще не рисует
- * кнопку** — VK отвечает `onetap: not authorized`, SDK удаляет iframe, остаётся пустое
- * место. OneTap годится только для «быстрого входа» тех, кто уже авторизован в VK,
- * поэтому как единственная кнопка входа он непригоден.
+ * Почему не OneTap: виджет OneTap для гостя без активной сессии VK **вообще не рисует
+ * кнопку** — VK отвечает `onetap: not authorized` (bridge-сообщение
+ * `OneTapInternalEvents.NOT_AUTHORIZED`, проверено логом postMessage на проде), SDK
+ * удаляет iframe, остаётся пустое место. OneTap — только «быстрый вход» для уже
+ * авторизованных в VK, как единственная кнопка входа он непригоден.
  *
- * Что делаем вместо: наша кнопка -> `VKID.Auth.login()` (mode `new_tab`,
- * responseMode `callback`) -> VK открывает страницу авторизации в новой вкладке и
- * возвращает payload (`code` + `device_id`) postMessage'ом со своего origin'а
- * (`isDomainAllowed` в SDK принимает только `*.vk.com|*.vk.ru`, поэтому payload
- * приходит именно от VK, а наш callback-route в этом флоу не грузится) ->
+ * Схема: наша кнопка -> `VKID.Auth.login()` (mode `new_tab`, responseMode `callback`)
+ * -> VK открывает страницу авторизации и возвращает payload (`code` + `device_id`)
+ * postMessage'ом со своего origin'а (`isDomainAllowed` в SDK принимает только
+ * `*.vk.com|*.vk.ru`, поэтому payload приходит именно от VK) ->
  * `VKID.Auth.exchangeCode(code, device_id)` (public client, без client_secret) ->
  * `access_token` -> `POST /api/auth/vk` -> JWT в httpOnly-куке.
  *
- * SDK по-прежнему генерирует `code_verifier`/`state` в своих куках
- * (`vkid_sdk:*`, SameSite=Strict, домен `.dharana.ru`) и сам подставляет их в
- * authorize и в обмен кода, поэтому серверный обмен `code` без `device_id`
- * (классический `oauth.vk.ru/access_token` -> invalid_grant) больше не нужен.
+ * Фолбэки (2026-10-04, после жалоб на Chrome):
+ *   * SDK грузится с unpkg, а если он не ответил — с jsDelivr; кнопка НЕ блокируется
+ *     наглухо при неудачной загрузке (клик догружает SDK сам);
+ *   * если браузер запретил popup (`cannot_create_new_tab`), переключаемся на
+ *     `mode: 'redirect'` + `responseMode: 'redirect'` — тогда VK возвращает payload
+ *     в наш `/api/auth/vk/callback`, который завершает вход на клиенте.
  */
 
-const SDK_URL = "https://unpkg.com/@vkid/sdk@%3C3.0.0/dist-sdk/umd/index.js";
+const SDK_URLS = [
+  "https://unpkg.com/@vkid/sdk@%3C3.0.0/dist-sdk/umd/index.js",
+  "https://cdn.jsdelivr.net/npm/@vkid/sdk@2/dist-sdk/umd/index.js",
+];
 
 interface VkAuthPayload {
   code?: string;
@@ -36,7 +40,10 @@ interface VkAuthPayload {
 }
 
 interface VkIdSdk {
-  Config: { init: (opts: Record<string, unknown>) => unknown };
+  Config: {
+    init: (opts: Record<string, unknown>) => unknown;
+    update: (opts: Record<string, unknown>) => unknown;
+  };
   Languages: Record<string, number>;
   Auth: {
     login: (params?: { lang?: number; scheme?: string }) => Promise<VkAuthPayload>;
@@ -57,31 +64,49 @@ function getSdk(): VkIdSdk | undefined {
   return sdk?.Auth ? sdk : undefined;
 }
 
-function loadVkScript(): Promise<VkIdSdk> {
+function loadFrom(url: string): Promise<VkIdSdk> {
   return new Promise((resolve, reject) => {
-    const ready = getSdk();
-    if (ready) {
-      resolve(ready);
-      return;
-    }
-    const finish = () => {
+    const script = document.createElement("script");
+    script.src = url;
+    script.async = true;
+    script.onload = () => {
       const sdk = getSdk();
       if (sdk) resolve(sdk);
       else reject(new Error("vk_sdk_namespace"));
     };
-    const existing = document.querySelector<HTMLScriptElement>(`script[src="${SDK_URL}"]`);
-    if (existing) {
-      existing.addEventListener("load", finish);
-      existing.addEventListener("error", () => reject(new Error("vk_sdk_load")));
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = SDK_URL;
-    script.async = true;
-    script.onload = finish;
-    script.onerror = () => reject(new Error("vk_sdk_load"));
+    script.onerror = () => reject(new Error(`vk_sdk_load:${url}`));
     document.head.appendChild(script);
   });
+}
+
+let sdkPromise: Promise<VkIdSdk> | null = null;
+
+/** Последовательно пробуем CDN'ы; уже загруженный SDK отдаём сразу. */
+function ensureSdk(): Promise<VkIdSdk> {
+  const ready = getSdk();
+  if (ready) return Promise.resolve(ready);
+  if (!sdkPromise) {
+    sdkPromise = (async () => {
+      let lastError: unknown;
+      for (const url of SDK_URLS) {
+        if (getSdk()) return getSdk() as VkIdSdk;
+        try {
+          return await loadFrom(url);
+        } catch (e) {
+          lastError = e;
+        }
+      }
+      sdkPromise = null;
+      throw lastError ?? new Error("vk_sdk_load");
+    })();
+  }
+  return sdkPromise;
+}
+
+function isPopupBlocked(e: unknown): boolean {
+  const code = (e as { code?: string })?.code ?? "";
+  const text = String((e as { error?: string })?.error ?? "") + String((e as Error)?.message ?? "");
+  return /cannot_create_new_tab|new_tab|Cannot create new tab/i.test(`${code} ${text}`);
 }
 
 export function VkLogin({
@@ -100,47 +125,55 @@ export function VkLogin({
   errorLabel: string;
   nextUrl?: string;
 }) {
-  const [ready, setReady] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!clientId) return;
-    let cancelled = false;
-    loadVkScript()
+    // Прогреваем SDK заранее: `Auth.login()` открывает вкладку синхронным
+    // `window.open`, и любое ожидание перед ним срезает popup.
+    ensureSdk()
       .then((sdk) => {
-        if (cancelled) return;
         sdk.Config.init({
           app: Number(clientId),
           redirectUrl,
-          // `callback` + `new_tab`: payload приходит postMessage'ом в текущую вкладку.
           responseMode: "callback",
           mode: "new_tab",
           // LOWCODE не принимает scope/redirectUrl, поэтому передаём их только здесь.
           source: "LOWCODE",
           scope: "",
         });
-        setReady(true);
       })
-      .catch((e) => {
-        console.warn("[vk-login] sdk load failed", e);
-        if (!cancelled) setReady(false);
-      });
-    return () => {
-      cancelled = true;
-    };
+      .catch((e) => console.warn("[vk-login] sdk preload failed", e));
   }, [clientId, redirectUrl]);
 
-  // Вызывается только из обработчика клика: `Auth.login()` открывает новую вкладку
-  // синхронным `window.open`, любой await до него срезает всплывающие окна.
-  const start = async () => {
+  const finish = async (payload: VkAuthPayload) => {
     const sdk = getSdk();
-    if (!sdk || pending) return;
+    const code = payload?.code;
+    const deviceId = payload?.device_id;
+    if (!sdk) throw new Error("vk_sdk_namespace");
+    if (!code || !deviceId) throw new Error("vk_auth_payload");
+
+    const token = await sdk.Auth.exchangeCode(code, deviceId);
+    const accessToken = token?.access_token;
+    if (!accessToken) throw new Error("vk_access_token");
+
+    const res = await fetch("/api/auth/vk", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ access_token: accessToken }),
+    });
+    if (!res.ok) throw new Error(`vk_api_${res.status}`);
+  };
+
+  // Вызывается только из обработчика клика.
+  const start = async () => {
+    if (pending) return;
     setPending(true);
     setError(null);
     try {
-      // locale/next на случай, если VK всё же редиректнет на наш callback-route
-      // (например, при отказе) — по ним вернём гостя на нужную страницу логина.
+      const sdk = await ensureSdk();
+      // locale/next нужны серверному callback-route в фолбэке с редиректом.
       const secure = window.location.protocol === "https:" ? "; Secure" : "";
       document.cookie = `${OAUTH_STATE_COOKIE}=${buildStateCookieValue(
         crypto.randomUUID(),
@@ -148,26 +181,23 @@ export function VkLogin({
         nextUrl,
       )}; Path=/; Max-Age=600; SameSite=Lax${secure}`;
 
-      const payload = await sdk.Auth.login({ lang: sdk.Languages?.RUS, scheme: "light" });
-      const code = payload?.code;
-      const deviceId = payload?.device_id;
-      if (!code || !deviceId) throw new Error("vk_auth_payload");
+      let payload: VkAuthPayload;
+      try {
+        payload = await sdk.Auth.login({ lang: sdk.Languages?.RUS, scheme: "light" });
+      } catch (e) {
+        if (!isPopupBlocked(e)) throw e;
+        // Popup запрещён настройками браузера — уходим на полную перезагрузку
+        // страницы: payload вернётся в /api/auth/vk/callback, вход завершит он.
+        sdk.Config.update({ mode: "redirect", responseMode: "redirect" });
+        await sdk.Auth.login({ lang: sdk.Languages?.RUS, scheme: "light" });
+        return;
+      }
 
-      const token = await sdk.Auth.exchangeCode(code, deviceId);
-      const accessToken = token?.access_token;
-      if (!accessToken) throw new Error("vk_access_token");
-
-      const res = await fetch("/api/auth/vk", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ access_token: accessToken }),
-      });
-      if (!res.ok) throw new Error(`vk_api_${res.status}`);
-
+      await finish(payload);
       window.location.assign(nextUrl || `/${locale}/catalog`);
     } catch (e) {
       // Типовые причины: пользователь закрыл вкладку (`new_tab_has_been_closed`),
-      // popup заблокирован (`cannot_create_new_tab`), отказ/ошибка VK.
+      // отказ/ошибка VK, недоступность SDK, 401 от бэкенда.
       console.warn("[vk-login] auth failed", e);
       setError(errorLabel);
       setPending(false);
@@ -178,7 +208,7 @@ export function VkLogin({
 
   return (
     <div className="mx-auto w-full max-w-sm">
-      <SocialButton network="vk" width="full" onClick={start} disabled={!ready || pending}>
+      <SocialButton network="vk" width="full" onClick={start} disabled={pending}>
         {label}
       </SocialButton>
       {error && (
