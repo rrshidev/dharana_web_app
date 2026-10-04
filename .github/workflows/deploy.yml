@@ -65,10 +65,12 @@ jobs:
           source: "dharana-web-app.tar.gz"
           target: "/tmp/dharana_deploy_${{ github.run_id }}"
 
-      # Перед распаковкой чистим каталог: распаковка поверх НЕ удаляет файлы,
-      # удалённые в репозитории, и они потом попадают в docker build context
-      # (реальный кейс 2026-09-07 — старый app/favicon.ico победил новый icon.svg).
-      # .env не трогаем: в нём NEXT_PUBLIC_* и секреты для compose.
+      # ВНИМАНИЕ: распаковка поверх НЕ удаляет файлы, удалённые в репозитории, и
+      # они попадают в docker build context (реальный кейс 2026-09-07 — старый
+      # app/favicon.ico победил новый icon.svg). Автоматическую чистку каталога
+      # сделать нельзя: у CI-пользователя sudo ограничен списком команд, `find`
+      # требует пароля и валит деплой. После удаления файла в репо сносить его
+      # на сервере вручную: ssh dharana_ai 'sudo rm -f /opt/dharana/dharana-web-app/<path>'.
       - name: Extract, rebuild, restart, verify
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -79,7 +81,6 @@ jobs:
           script: |
             set -e
             cd /opt/dharana
-            sudo find ./dharana-web-app -mindepth 1 -maxdepth 1 ! -name '.env' -exec rm -rf {} +
             sudo tar -xzf /tmp/dharana_deploy_${{ github.run_id }}/dharana-web-app.tar.gz -C ./dharana-web-app
             sudo docker compose build web
             sudo docker compose up -d web
