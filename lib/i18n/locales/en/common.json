@@ -590,5 +590,10 @@
     "complexesText": "Ready-made yoga sequences — practice along with video lessons using Dharana",
     "timerText": "Build an asana sequence and practice with the timer — Dharana",
     "asanaText": "Practice %name% with Dharana"
+  },
+  "appAuthCallback": {
+    "title": "Continue in the app",
+    "text": "This link is for signing in through the Dharana app. Open the app on your phone and sign in there — it does not work on the website.",
+    "toLogin": "Go to sign in"
   }
 }
