@@ -17,7 +17,7 @@ export const OAUTH_PROVIDERS: Record<
   { authorizeUrl: string; scope: string; callbackPath: string }
 > = {
   vk: {
-    authorizeUrl: "https://id.vk.com/oauth2/authorize",
+    authorizeUrl: "https://id.vk.ru/authorize",
     scope: "email",
     callbackPath: "/api/auth/vk/callback",
   },
