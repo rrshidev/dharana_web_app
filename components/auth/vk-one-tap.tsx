@@ -119,11 +119,11 @@ export function VkOneTap({
   useEffect(() => {
     if (!clientId) return;
     let cancelled = false;
-    // Если SDK не пришёл/не отрисовал кнопку — не оставляем вечный «скелет»:
-    // через 8 секунд показываем ошибку вместо пустого места.
+    // Страховка: если SDK не пришёл или render() не случился — не оставляем
+    // вечный «скелет». Снимается сразу после успешного render().
     const watchdog = setTimeout(() => {
       if (!cancelled) setState("error");
-    }, 8000);
+    }, 10000);
 
     const onSuccess = async (payload: unknown) => {
       const data = (payload ?? {}) as { code?: string; device_id?: string };
@@ -185,6 +185,7 @@ export function VkOneTap({
           scheme: "light",
           styles: { width, height: 48, borderRadius: 24 },
         });
+        clearTimeout(watchdog);
         setState("ready");
       })
       .catch((e) => {
