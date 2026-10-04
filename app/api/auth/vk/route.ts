@@ -3,9 +3,9 @@ import { API_URL, API_PREFIX } from "@/lib/constants";
 import { AUTH_COOKIE } from "@/lib/api/media";
 
 /**
- * Вход по VK ID из виджета OneTap.
+ * Вход по VK ID (полная авторизация, компонент components/auth/vk-login.tsx).
  *
- * Клиент (components/auth/vk-one-tap.tsx) сам меняет код на access_token через
+ * Клиент сам меняет код на access_token через
  * `VKID.Auth.exchangeCode` — это публичный клиентский обмен (VK ID требует
  * device_id, который выдаёт только их SDK), поэтому client_secret не нужен и
  * секрет в браузер не попадает. Мы проверяем присланный токен на бэкенде
