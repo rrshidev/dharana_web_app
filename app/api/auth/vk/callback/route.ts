@@ -33,10 +33,14 @@ export async function GET(req: NextRequest) {
   const vkError = params.get("error") ?? "";
 
   const fail = (kind: "oauth_denied" | "oauth_failed") => {
-    const url = new URL(`/${safeLocale}/login`, req.nextUrl.origin);
-    url.searchParams.set("error", kind);
-    if (nextUrl && nextUrl.startsWith(`/${safeLocale}/`)) url.searchParams.set("next", nextUrl);
-    const res = NextResponse.redirect(url, 303);
+    // Location относительный: в standalone req.nextUrl.origin даёт
+    // http://0.0.0.0:3000 (внутренний хост), абсолютный Location увёл бы гостя туда.
+    const search = new URLSearchParams({ error: kind });
+    if (nextUrl && nextUrl.startsWith(`/${safeLocale}/`)) search.set("next", nextUrl);
+    const res = new NextResponse(null, {
+      status: 303,
+      headers: { Location: `/${safeLocale}/login?${search.toString()}` },
+    });
     res.cookies.delete(OAUTH_STATE_COOKIE);
     return res;
   };
