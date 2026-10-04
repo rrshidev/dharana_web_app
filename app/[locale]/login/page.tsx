@@ -6,8 +6,10 @@ import { AuthForm, type AuthFormLabels } from "@/components/auth/auth-form";
 import { GoogleLogin, type GoogleLoginLabels } from "@/components/auth/google-login";
 import { TelegramLogin, type TelegramLoginLabels } from "@/components/auth/telegram-login";
 import { OAuthLogin } from "@/components/auth/oauth-login";
+import { VkOneTap } from "@/components/auth/vk-one-tap";
 import {
   GOOGLE_CLIENT_ID,
+  SITE_URL,
   VK_CLIENT_ID,
   YANDEX_CLIENT_ID,
 } from "@/lib/constants";
@@ -104,26 +106,13 @@ export default async function LoginPage({ params, searchParams }: Props) {
           <GoogleLogin locale={locale} clientId={GOOGLE_CLIENT_ID} labels={googleLabels} nextUrl={nextUrl} hideDivider />
         ) : null}
         {VK_CLIENT_ID ? (
-          <>
-            <OAuthLogin
-              provider="vk"
-              network="vk"
-              clientId={VK_CLIENT_ID}
-              label={t("auth.vkButton")}
-              errorLabel={t("auth.oauthFailed")}
-              locale={locale}
-              nextUrl={nextUrl}
-            />
-            <OAuthLogin
-              provider="vk"
-              network="max"
-              clientId={VK_CLIENT_ID}
-              label={t("auth.maxButton")}
-              errorLabel={t("auth.oauthFailed")}
-              locale={locale}
-              nextUrl={nextUrl}
-            />
-          </>
+          <VkOneTap
+            locale={locale}
+            clientId={VK_CLIENT_ID}
+            redirectUrl={`${SITE_URL}/api/auth/vk/callback`}
+            labels={{ failed: t("auth.oauthFailed") }}
+            nextUrl={nextUrl}
+          />
         ) : null}
         {YANDEX_CLIENT_ID ? (
           <OAuthLogin

@@ -6,11 +6,14 @@ export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000
 
 export const API_PREFIX = "/api/v1";
 
+// Публичный адрес сайта — для redirectUri, который VK ID сверяет с консолью.
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dharana.ru";
+
 // Google OAuth Web Client ID (Google Identity Services). Пусто — кнопка прячется.
 export const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
-// VK ID Client ID (https://id.vk.com). Пусто — кнопки VK и MAX прячутся.
-// Отдельного OAuth у MAX нет: обе кнопки идут в один и тот же вход VK ID.
+// VK ID Client ID (https://id.vk.ru). Пусто — виджет входа не показывается.
+// MAX отдельного OAuth не имеет, поэтому вход один — официальный виджет OneTap.
 export const VK_CLIENT_ID = process.env.NEXT_PUBLIC_VK_CLIENT_ID ?? "";
 
 // Яндекс OAuth Client ID (https://oauth.yandex.ru). Пусто — кнопка прячется.
