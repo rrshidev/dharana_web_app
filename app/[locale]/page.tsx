@@ -76,7 +76,7 @@ export default async function LandingPage({ params }: Props) {
           <h1 className="max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
             {t("hero.title")}
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-7 text-muted sm:text-lg">
+          <p className="mt-6 max-w-2xl text-base leading-7 text-ink sm:text-lg">
             {t("hero.subtitle")}
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
