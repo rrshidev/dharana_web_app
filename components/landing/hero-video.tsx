@@ -93,7 +93,7 @@ export default function HeroVideo({ soundOnLabel, soundOffLabel }: Props) {
     <div className="absolute inset-0 bg-night">
       <video
         ref={videoRef}
-        className="h-full w-full object-cover md:object-[50%_80%]"
+        className="h-full w-full object-cover md:object-[50%_85%]"
         autoPlay
         loop
         muted
