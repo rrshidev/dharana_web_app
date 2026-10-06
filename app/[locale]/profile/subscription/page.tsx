@@ -6,7 +6,7 @@ import { getServerTranslation } from "@/lib/i18n/server";
 import { requireAuth } from "@/lib/api/guard";
 import { getSubscriptionStatus, getPaymentRequisites, type PaymentRequisite } from "@/lib/api/user";
 import { CopyButton } from "@/components/profile/copy-button";
-import { ReceiptUploader } from "@/components/profile/receipt-uploader";
+import { PlanPayment } from "@/components/subscription/plan-payment";
 import { SparkleIcon, ChevronLeftIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
@@ -140,25 +140,21 @@ export default async function SubscriptionPage({ params }: Props) {
             })()}
           </div>
 
-          <div>
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">
-              {t("subscription.payButton")}
-            </h2>
-            <div className="mt-3">
-              <ReceiptUploader
-                locale={locale}
-                method={t("subscription.price")}
-                amount="499"
-                contact={currentContact}
-                labels={{
-                  payButton: t("subscription.payButton"),
-                  uploading: t("subscription.uploading"),
-                  payedToast: t("subscription.payedToast"),
-                  error: t("subscription.error"),
-                }}
-              />
-            </div>
-          </div>
+          <PlanPayment
+            locale={locale}
+            contact={currentContact}
+            plans={[
+              { id: "month", label: t("subscription.planMonth"), amount: "349" },
+              { id: "quarter", label: t("subscription.planQuarter"), amount: "890" },
+              { id: "year", label: t("subscription.planYear"), amount: "2690" },
+            ]}
+            labels={{
+              payButton: t("subscription.payButton"),
+              uploading: t("subscription.uploading"),
+              payedToast: t("subscription.payedToast"),
+              error: t("subscription.error"),
+            }}
+          />
         </div>
       )}
     </section>
