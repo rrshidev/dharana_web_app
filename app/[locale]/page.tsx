@@ -6,6 +6,7 @@ import { getServerTranslation } from "@/lib/i18n/server";
 import { APK_URL, TELEGRAM_BOT_URL } from "@/lib/constants";
 import { SocialIcon } from "@/components/brand/social-icon";
 import { SocialLink } from "@/components/brand/social-button";
+import HeroVideo from "@/components/landing/hero-video";
 
 function AndroidIcon({ className }: { className?: string }) {
   return (
@@ -54,17 +55,22 @@ export default async function LandingPage({ params }: Props) {
 
   return (
     <div className="overflow-hidden">
-      <section className="relative">
+      <section className="relative flex min-h-[100svh] items-end overflow-hidden md:items-center">
+        <HeroVideo
+          soundOnLabel={t("hero.soundOn")}
+          soundOffLabel={t("hero.soundOff")}
+        />
         <div
-          className="pointer-events-none absolute inset-0"
+          className="pointer-events-none absolute inset-0 z-[1] bg-night/25"
           aria-hidden="true"
-        >
-          <div className="absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-accent/15 blur-3xl" />
-          <div className="absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-sage/10 blur-3xl" />
-        </div>
+        />
+        <div
+          className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-night via-night/10 to-night/55"
+          aria-hidden="true"
+        />
 
-        <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 pb-24 pt-20 text-center sm:pt-28">
-          <span className="mb-6 rounded-full border border-sage/30 bg-sage/10 px-4 py-1.5 text-xs font-medium tracking-wide text-sage-ink">
+        <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center px-6 pb-20 pt-28 text-center md:pb-28">
+          <span className="mb-6 rounded-full border border-sage/30 bg-sage/10 px-4 py-1.5 text-xs font-medium tracking-wide text-sage-ink backdrop-blur-sm">
             {t("hero.eyebrow")}
           </span>
           <h1 className="max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">
