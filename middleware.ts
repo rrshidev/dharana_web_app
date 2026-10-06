@@ -19,5 +19,5 @@ export const config = {
   // колбэка OAuth для приложения. Редирект 307 на `/ru/app/auth/...` уводил
   // браузер на путь, который не матчится в AndroidManifest (pathPrefix `/app/auth`),
   // поэтому приложение не открывалось и вход не завершался.
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|icon.svg|og.png|robots.txt|sitemap.xml|download|app/auth|\\.well-known|.*\\.html$).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|icon.svg|og.png|robots.txt|sitemap.xml|download|img|video|app/auth|\\.well-known|.*\\.html$).*)"],
 };
