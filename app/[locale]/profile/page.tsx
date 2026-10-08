@@ -17,6 +17,7 @@ import { ProfileActions } from "@/components/profile/profile-actions";
 import { ProfileAvatar } from "@/components/profile/avatar-picker";
 import { LinkTelegram } from "@/components/profile/link-telegram";
 import { EmailVerifyBanner } from "@/components/profile/email-verify-banner";
+import { DailyAsanaSettings } from "@/components/profile/daily-asana-settings";
 import {
   ActivitySection,
   type PracticeTypeFilter,
@@ -237,6 +238,25 @@ export default async function ProfilePage({ params, searchParams }: Props) {
           />
         </div>
       )}
+
+      <div className="mt-3">
+        <DailyAsanaSettings
+          labels={{
+            title: t("profile.dailyAsanaTitle"),
+            hint: t("profile.dailyAsanaHint"),
+            enable: t("profile.dailyAsanaEnable"),
+            time: t("profile.dailyAsanaTime"),
+            timezone: t("profile.dailyAsanaTimezone"),
+            notLinked: t("profile.dailyAsanaNotLinked"),
+            saved: t("profile.dailyAsanaSaved"),
+            saveFailed: t("profile.dailyAsanaSaveFailed"),
+          }}
+          initialEnabled={profile.daily_asana_enabled}
+          initialTime={profile.daily_asana_time}
+          initialTimezone={profile.timezone}
+          telegramLinked={profile.telegram_id != null}
+        />
+      </div>
 
       <ActivitySection
         days={days}

@@ -16,6 +16,9 @@ export interface ProfileData {
   longest_streak: number;
   last_practice_at: string | null;
   created_at: string | null;
+  daily_asana_enabled: boolean;
+  daily_asana_time: string | null;
+  timezone: string;
 }
 
 export interface PracticeStats {

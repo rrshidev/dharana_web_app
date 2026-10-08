@@ -69,6 +69,16 @@ export async function getRandomAsana(lang?: string): Promise<AsanaDetail | null>
   return data.error ? null : data;
 }
 
+/**
+ * «Асана дня»: для юзера с рассылкой в боте — та, что пришла в логе,
+ * иначе детерминированная асана суток (одна на всех).
+ */
+export async function getAsanaOfDay(lang?: string): Promise<AsanaDetail | null> {
+  const qs = lang ? `?lang=${encodeURIComponent(lang)}` : "";
+  const data = await apiFetch<AsanaDetail & MaybeError>(`/asanas/day${qs}`);
+  return data.error ? null : data;
+}
+
 export async function getAsanaDetail(
   name: string,
   lang?: string,

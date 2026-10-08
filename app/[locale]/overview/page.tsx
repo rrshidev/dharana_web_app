@@ -6,7 +6,7 @@ import { getServerTranslation } from "@/lib/i18n/server";
 import { requireAuth } from "@/lib/api/guard";
 import {
   getCategories,
-  getRandomAsana,
+  getAsanaOfDay,
   type Category,
   type AsanaDetail,
 } from "@/lib/api/catalog";
@@ -52,7 +52,7 @@ export default async function OverviewPage({ params }: Props) {
   try {
     [categories, daily, userName] = await Promise.all([
       getCategories(locale),
-      getRandomAsana(locale),
+      getAsanaOfDay(locale),
       getProfile()
         .then((p) => p.name)
         .catch(() => null),

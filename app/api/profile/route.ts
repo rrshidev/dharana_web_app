@@ -15,10 +15,13 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "bad_request" }, { status: 400 });
   }
 
-  const cleanBody: Record<string, string | null> = {};
+  const cleanBody: Record<string, string | boolean | null> = {};
   for (const key of ["name", "username", "bio"] as const) {
     if (body[key] !== undefined) cleanBody[key] = typeof body[key] === "string" ? (body[key] as string).trim() : null;
   }
+  if (typeof body.daily_asana_enabled === "boolean") cleanBody.daily_asana_enabled = body.daily_asana_enabled;
+  if (typeof body.daily_asana_time === "string") cleanBody.daily_asana_time = body.daily_asana_time;
+  if (typeof body.timezone === "string") cleanBody.timezone = body.timezone;
 
   try {
     await apiFetch<{ ok: boolean }>("/profile", { method: "PATCH", body: JSON.stringify(cleanBody) }, token);

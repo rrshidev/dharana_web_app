@@ -148,7 +148,15 @@
     "emailVerifySent": "Письмо отправлено — проверьте ящик.",
     "emailVerifyFailed": "Не удалось отправить письмо. Попробуйте позже.",
     "emailVerifyFrequency": "Письмо уже отправлено недавно. Подождите минуту.",
-    "emailVerifyDismiss": "Скрыть"
+    "emailVerifyDismiss": "Скрыть",
+    "dailyAsanaTitle": "Асана дня",
+    "dailyAsanaHint": "Присылаем одну асану в день в Telegram-бот",
+    "dailyAsanaEnable": "Получать рассылку",
+    "dailyAsanaTime": "Время",
+    "dailyAsanaTimezone": "Часовой пояс",
+    "dailyAsanaNotLinked": "Привяжите Telegram в профиле, чтобы получать рассылку в бот",
+    "dailyAsanaSaved": "Сохранено",
+    "dailyAsanaSaveFailed": "Не удалось сохранить"
   },
   "verifyEmail": {
     "title": "Подтверждение почты",
