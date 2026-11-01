@@ -14,9 +14,8 @@ export async function POST(req: NextRequest) {
   let body: { email: string; password: string; name: string };
   try {
     body = await req.json();
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ ok: false, detail: `body_parse_error: ${msg}` }, { status: 400 });
+  } catch {
+    return NextResponse.json({ ok: false, detail: "auth.errorGeneric" }, { status: 400 });
   }
 
   const res = await fetch(`${API_URL}${API_PREFIX}/auth/register`, {
@@ -27,14 +26,12 @@ export async function POST(req: NextRequest) {
   });
 
   if (!res.ok) {
-    let detail = "auth.errorGeneric";
-    try {
-      const body = (await res.json()) as { detail?: unknown };
-      if (typeof body.detail === "string" && body.detail) detail = body.detail;
-    } catch {
-      // no body — keep generic
-    }
-    return NextResponse.json({ ok: false, detail }, { status: res.status });
+    // Не пересказываем ответ бэкенда: он различает «email уже занят» и тем
+    // самым позволяет перечислять аккаунты.
+    return NextResponse.json(
+      { ok: false, detail: "auth.errorGeneric" },
+      { status: res.status },
+    );
   }
 
   const data = (await res.json()) as { access_token: string; user: unknown };

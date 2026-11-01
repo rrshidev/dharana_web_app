@@ -6,6 +6,16 @@ export const dynamic = "force-dynamic";
 
 const SDK_URL = "https://unpkg.com/@vkid/sdk@%3C3.0.0/dist-sdk/umd/index.js";
 
+/** JSON для вставки внутрь <script>: `<`/`>` не должны закрыть тег. */
+function safeJson(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
 /**
  * Зарегистрированный в VK ID redirect URI. Две роли:
  *
@@ -52,7 +62,7 @@ export async function GET(req: NextRequest) {
 
   const redirectUrl = `${SITE_URL}/api/auth/vk/callback`;
   const target = nextUrl && nextUrl.startsWith(`/${safeLocale}/`) ? nextUrl : `/${safeLocale}/catalog`;
-  const cfg = JSON.stringify({
+  const cfg = safeJson({
     clientId: VK_CLIENT_ID,
     redirectUrl,
     code,

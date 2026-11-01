@@ -13,6 +13,15 @@ const COOKIE_OPTIONS = {
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
+  // Только JSON: иначе cross-site форма с text/plain может прислать валидный JSON.
+  const contentType = (req.headers.get("content-type") ?? "").toLowerCase();
+  if (!contentType.startsWith("application/json")) {
+    return NextResponse.json(
+      { ok: false, detail: "auth.errorTelegramInvalid" },
+      { status: 415 },
+    );
+  }
+
   let body: { code: string };
   try {
     body = await req.json();

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+// Не даём данным из БД вырваться из </script> (stored XSS).
+import { serializeJsonLd } from "@/lib/seo/json-ld";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
@@ -127,7 +129,7 @@ export default async function AsanaPage({ params }: Props) {
       {ldJson && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJson) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(ldJson) }}
         />
       )}
 

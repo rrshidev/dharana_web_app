@@ -13,11 +13,30 @@ async function authToken(): Promise<string | null> {
   return (await cookies()).get(AUTH_COOKIE)?.value ?? null;
 }
 
+/**
+ * Проверка is_admin на стороне Next (в дополнение к проверке бэкенда).
+ * Раньше хватало любой валидной куки: страницы админки проверяли is_admin,
+ * а route-handlers — нет, поэтому не-админ мог дёргать /api/admin/* напрямую.
+ */
+async function requireAdmin(): Promise<string> {
+  const token = await authToken();
+  if (!token) throw new ApiError(401, "unauthorized");
+  const res = await fetch(`${API_URL}${API_PREFIX}/auth/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: "no-store",
+  });
+  if (!res.ok) throw new ApiError(res.status === 401 ? 401 : 403, "forbidden");
+  const me = (await res.json().catch(() => null)) as { is_admin?: boolean } | null;
+  if (!me?.is_admin) throw new ApiError(403, "forbidden");
+  return token;
+}
+
 export async function jsonAdmin<T = unknown>(
   path: string,
   body: unknown,
   method: "POST" | "PUT" | "DELETE" = "POST",
 ): Promise<T> {
+  await requireAdmin();
   return apiFetch<T>(path, { method, body: body === undefined ? undefined : JSON.stringify(body) });
 }
 
@@ -27,7 +46,7 @@ export async function forwardForm<T = unknown>(
   form: FormData,
   method: "POST" | "PUT" = "POST",
 ): Promise<T> {
-  const token = await authToken();
+  const token = await requireAdmin();
   if (!token) throw new ApiError(401, "unauthorized");
   const res = await fetch(`${API_URL}${API_PREFIX}${path}`, {
     method,

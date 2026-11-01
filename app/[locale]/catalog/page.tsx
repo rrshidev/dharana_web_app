@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cookies } from "next/headers";
+import { serializeJsonLd } from "@/lib/seo/json-ld";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
 import { getCategories, getAsanas, getAsanaVideoNames, type Category } from "@/lib/api/catalog";
@@ -146,7 +147,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       {itemListLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(itemListLd) }}
         />
       )}
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">

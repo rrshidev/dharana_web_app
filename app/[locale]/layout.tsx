@@ -9,6 +9,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { APK_URL, TELEGRAM_BOT_URL } from "@/lib/constants";
+import { serializeJsonLd } from "@/lib/seo/json-ld";
 import "../globals.css";
 
 // Основной текст — Inter (чистый гротеск), заголовки — Cormorant Garamond (тонкая антиква).
@@ -112,7 +113,7 @@ export default async function LocaleLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
       </head>
       <body className="flex min-h-full flex-col font-sans">
