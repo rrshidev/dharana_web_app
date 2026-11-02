@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAsanaAction } from "@/lib/api/admin-actions";
+import { actionErrorResponse } from "@/lib/api/route-errors";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
       description: body.description?.trim() || "—",
     });
     return NextResponse.json(res);
-  } catch {
-    return NextResponse.json({ error: "create_failed" }, { status: 400 });
+  } catch (e) {
+    return actionErrorResponse(e, "create_failed");
   }
 }

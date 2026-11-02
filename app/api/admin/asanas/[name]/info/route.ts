@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { updateAsanaInfoAction } from "@/lib/api/admin-actions";
+import { actionErrorResponse } from "@/lib/api/route-errors";
 import { normalizePathParam } from "@/lib/api/catalog";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +20,7 @@ export async function PUT(req: Request, { params }: Props) {
   try {
     const res = await updateAsanaInfoAction(name, body.description?.trim() || "—");
     return NextResponse.json(res);
-  } catch {
-    return NextResponse.json({ error: "update_failed" }, { status: 400 });
+  } catch (e) {
+    return actionErrorResponse(e, "update_failed");
   }
 }

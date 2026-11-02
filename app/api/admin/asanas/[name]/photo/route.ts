@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { forwardForm } from "@/lib/api/admin-actions";
+import { actionErrorResponse } from "@/lib/api/route-errors";
 import { normalizePathParam } from "@/lib/api/catalog";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +15,7 @@ export async function POST(req: NextRequest, { params }: Props) {
   try {
     const res = await forwardForm(`/admin/asanas/${encodeURIComponent(name)}/photo`, form);
     return NextResponse.json(res);
-  } catch {
-    return NextResponse.json({ error: "upload_failed" }, { status: 400 });
+  } catch (e) {
+    return actionErrorResponse(e, "upload_failed");
   }
 }

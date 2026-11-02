@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendUserMessageAction } from "@/lib/api/admin-actions";
+import { actionErrorResponse } from "@/lib/api/route-errors";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +28,7 @@ export async function POST(req: Request, { params }: Props) {
       media_url: body.media_url || null,
     });
     return NextResponse.json(res);
-  } catch {
-    return NextResponse.json({ error: "send_failed" }, { status: 400 });
+  } catch (e) {
+    return actionErrorResponse(e, "send_failed");
   }
 }

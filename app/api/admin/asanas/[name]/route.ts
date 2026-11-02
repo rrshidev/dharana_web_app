@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { deleteAsanaAction } from "@/lib/api/admin-actions";
+import { actionErrorResponse } from "@/lib/api/route-errors";
 import { normalizePathParam } from "@/lib/api/catalog";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +14,7 @@ export async function DELETE(_req: Request, { params }: Props) {
   try {
     const res = await deleteAsanaAction(name);
     return NextResponse.json(res);
-  } catch {
-    return NextResponse.json({ error: "delete_failed" }, { status: 400 });
+  } catch (e) {
+    return actionErrorResponse(e, "delete_failed");
   }
 }

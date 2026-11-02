@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { deleteSequenceAction, updateSequenceAction } from "@/lib/api/admin-actions";
+import { actionErrorResponse } from "@/lib/api/route-errors";
 
 export const dynamic = "force-dynamic";
 
@@ -25,8 +26,8 @@ export async function PUT(req: Request, { params }: Props) {
       section: body.section === "premium" ? "premium" : "free",
     });
     return NextResponse.json(res);
-  } catch {
-    return NextResponse.json({ error: "update_failed" }, { status: 400 });
+  } catch (e) {
+    return actionErrorResponse(e, "update_failed");
   }
 }
 
@@ -38,7 +39,7 @@ export async function DELETE(_req: Request, { params }: Props) {
   try {
     const res = await deleteSequenceAction(id);
     return NextResponse.json(res);
-  } catch {
-    return NextResponse.json({ error: "delete_failed" }, { status: 400 });
+  } catch (e) {
+    return actionErrorResponse(e, "delete_failed");
   }
 }

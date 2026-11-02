@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { setUserPremiumAction } from "@/lib/api/admin-actions";
+import { actionErrorResponse } from "@/lib/api/route-errors";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,7 @@ export async function POST(req: Request, { params }: Props) {
       days: Number(body.days) || 30,
     });
     return NextResponse.json(res);
-  } catch {
-    return NextResponse.json({ error: "action_failed" }, { status: 400 });
+  } catch (e) {
+    return actionErrorResponse(e, "action_failed");
   }
 }

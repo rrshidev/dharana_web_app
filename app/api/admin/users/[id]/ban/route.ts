@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { setUserBanAction } from "@/lib/api/admin-actions";
-import { ApiError } from "@/lib/api/server";
+import { actionErrorResponse } from "@/lib/api/route-errors";
 
 export const dynamic = "force-dynamic";
 
@@ -22,10 +22,6 @@ export async function POST(req: Request, { params }: Props) {
     const res = await setUserBanAction(userId, Boolean(body.banned));
     return NextResponse.json(res);
   } catch (e) {
-    const detail = e instanceof ApiError ? e.detail : "";
-    return NextResponse.json(
-      { error: detail === "Cannot ban an admin user" ? "admin_protected" : "action_failed" },
-      { status: e instanceof ApiError ? e.status : 400 },
-    );
+    return actionErrorResponse(e, "action_failed", "Cannot ban an admin user");
   }
 }

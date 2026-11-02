@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { broadcastTestAction } from "@/lib/api/admin-actions";
+import { actionErrorResponse } from "@/lib/api/route-errors";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,7 @@ export async function POST(req: Request) {
   try {
     const res = await broadcastTestAction(body as Parameters<typeof broadcastTestAction>[0]);
     return NextResponse.json(res);
-  } catch {
-    return NextResponse.json({ error: "test_failed" }, { status: 400 });
+  } catch (e) {
+    return actionErrorResponse(e, "test_failed");
   }
 }
