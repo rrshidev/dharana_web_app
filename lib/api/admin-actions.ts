@@ -18,7 +18,7 @@ async function authToken(): Promise<string | null> {
  * Раньше хватало любой валидной куки: страницы админки проверяли is_admin,
  * а route-handlers — нет, поэтому не-админ мог дёргать /api/admin/* напрямую.
  */
-async function requireAdmin(): Promise<string> {
+export async function requireAdmin(): Promise<string> {
   const token = await authToken();
   if (!token) throw new ApiError(401, "unauthorized");
   const res = await fetch(`${API_URL}${API_PREFIX}/auth/me`, {
