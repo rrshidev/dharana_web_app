@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 // Не даём данным из БД вырваться из </script> (stored XSS).
 import { serializeJsonLd } from "@/lib/seo/json-ld";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
@@ -31,16 +31,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, name } = await params;
   const { t } = await getServerTranslation(locale);
   const asanaName = normalizePathParam(name);
-  const asana = await getAsanaDetail(asanaName, locale).catch(() => null);
+  const asana = await getAsanaDetail(asanaName, locale);
+  if (!asana) {
+    // Реальной страницы нет: не даём Google индексировать soft-404 и не
+    // указываем canonical на несуществующий URL.
+    return {
+      title: `${t("asana.notFound")} — ${t("brand")}`,
+      robots: { index: false, follow: false },
+    };
+  }
   const displayName =
     locale === "en"
-      ? asana?.name_en || asana?.name || asanaName
-      : asana?.name_ru || asana?.name || asanaName;
-  const path = `asana/${encodeURIComponent(asanaName)}`;
+      ? asana.name_en || asana.name
+      : asana.name_ru || asana.name;
+  const path = `asana/${encodeURIComponent(asana.name)}`;
   return {
     title: `${displayName} — ${t("catalog.title")} — ${t("brand")}`,
     description:
-      asana?.description?.slice(0, 160) || t("asana.noDescription"),
+      asana.description?.slice(0, 160) || t("asana.noDescription"),
     robots: { index: true, follow: true },
     alternates: {
       canonical: `${siteUrl}/${locale}/${path}`,
@@ -63,14 +71,16 @@ export default async function AsanaPage({ params }: Props) {
   const cookieStore = await cookies();
   const hasToken = Boolean(cookieStore.get(AUTH_COOKIE)?.value);
 
-  let asana: Awaited<ReturnType<typeof getAsanaDetail>>;
-  let isFavorite = false;
-  try {
-    asana = await getAsanaDetail(name, locale);
-  } catch {
-    asana = null;
+  const asana = await getAsanaDetail(name, locale);
+
+  // Регистр/пробелы в URL не должны создавать копии страницы: уводим на
+  // каноническое имя из каталога постоянным редиректом.
+  if (!asana) notFound();
+  if (asana.name !== name) {
+    permanentRedirect(`/${locale}/asana/${encodeURIComponent(asana.name)}`);
   }
 
+  let isFavorite = false;
   if (hasToken) {
     try {
       isFavorite = await checkFavorite(name);
@@ -88,15 +98,14 @@ export default async function AsanaPage({ params }: Props) {
     guestHasVideo = videoNames.includes(name);
   }
 
-  const img = mediaUrl(asana?.image_url ?? null);
+  const img = mediaUrl(asana.image_url ?? null);
   const displayName =
     locale === "en"
-      ? asana?.name_en || asana?.name || name
-      : asana?.name_ru || asana?.name || name;
+      ? asana.name_en || asana.name
+      : asana.name_ru || asana.name;
 
-  const asanaUrl = `${siteUrl}/${locale}/asana/${encodeURIComponent(name)}`;
-  const ldJson = asana
-    ? {
+  const asanaUrl = `${siteUrl}/${locale}/asana/${encodeURIComponent(asana.name)}`;
+  const ldJson = {
         "@context": "https://schema.org",
         "@graph": [
           {
@@ -121,8 +130,7 @@ export default async function AsanaPage({ params }: Props) {
             keywords: asana.effects.length ? asana.effects.join(", ") : undefined,
           },
         ],
-      }
-    : null;
+      };
 
   return (
     <article className="mx-auto max-w-4xl px-6 py-12">
@@ -140,12 +148,7 @@ export default async function AsanaPage({ params }: Props) {
         {t("asana.backToCatalog")}
       </Link>
 
-      {!asana ? (
-        <p className="rounded-2xl border border-night-line p-8 text-center text-muted">
-          {t("asana.notFound")}
-        </p>
-      ) : (
-        <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-8">
           <AsanaPhoto src={img} alt={displayName} />
 
           {(video || guestHasVideo) && (
@@ -279,7 +282,6 @@ export default async function AsanaPage({ params }: Props) {
             )}
           </div>
         </div>
-      )}
     </article>
   );
 }

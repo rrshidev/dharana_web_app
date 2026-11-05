@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
-import { getSteps, type TheoryItem } from "@/lib/api/content";
+import { getSteps } from "@/lib/api/content";
 import { normalizePathParam } from "@/lib/api/catalog";
 
 export const dynamic = "force-dynamic";
@@ -16,24 +16,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, name: raw } = await params;
   const name = normalizePathParam(raw);
   const { t } = await getServerTranslation(locale);
-  const item = (await getSteps(locale).catch(() => [] as TheoryItem[])).find(
-    (i) => i.name === name,
-  );
-  const displayName = item
-    ? locale === "en" && item.name_en
-      ? item.name_en
-      : item.name
-    : name;
+  const items = await getSteps(locale);
+  const item =
+    items.find((i) => i.name === name) ??
+    items.find((i) => i.name.toLowerCase() === name.toLowerCase());
+  if (!item) {
+    return {
+      title: `${t("steps.itemNotFound")} — ${t("brand")}`,
+      robots: { index: false, follow: false },
+    };
+  }
+  const displayName =
+    locale === "en" && item.name_en ? item.name_en : item.name;
+  const path = `steps/${encodeURIComponent(item.name)}`;
   return {
     title: `${displayName} — ${t("steps.title")} — ${t("brand")}`,
-    description: item?.content?.slice(0, 160) || t("steps.itemNotFound"),
+    description: item.content?.slice(0, 160) || t("steps.itemNotFound"),
     robots: { index: true, follow: true },
     alternates: {
-      canonical: `${siteUrl}/${locale}/steps/${encodeURIComponent(name)}`,
+      canonical: `${siteUrl}/${locale}/${path}`,
       languages: {
-        ru: `${siteUrl}/ru/steps/${encodeURIComponent(name)}`,
-        en: `${siteUrl}/en/steps/${encodeURIComponent(name)}`,
-        "x-default": `${siteUrl}/ru/steps/${encodeURIComponent(name)}`,
+        ru: `${siteUrl}/ru/${path}`,
+        en: `${siteUrl}/en/${path}`,
+        "x-default": `${siteUrl}/ru/${path}`,
       },
     },
   };
@@ -46,27 +51,14 @@ export default async function StepItemPage({ params }: Props) {
 
   const { t } = await getServerTranslation(locale);
 
-  let item: TheoryItem | undefined;
-  try {
-    item = (await getSteps(locale)).find((i) => i.name === name);
-  } catch {
-    item = undefined;
-  }
+  const items = await getSteps(locale);
+  const item =
+    items.find((i) => i.name === name) ??
+    items.find((i) => i.name.toLowerCase() === name.toLowerCase());
 
-  if (!item) {
-    return (
-      <article className="mx-auto max-w-3xl px-6 py-12">
-        <Link
-          href={`/${locale}/steps`}
-          className="mb-6 inline-block text-sm text-muted transition-colors hover:text-ink"
-        >
-          {t("steps.backToList")}
-        </Link>
-        <p className="rounded-2xl border border-night-line p-8 text-center text-muted">
-          {t("steps.itemNotFound")}
-        </p>
-      </article>
-    );
+  if (!item) notFound();
+  if (item.name !== name) {
+    permanentRedirect(`/${locale}/steps/${encodeURIComponent(item.name)}`);
   }
 
   const displayName = locale === "en" && item.name_en ? item.name_en : item.name;

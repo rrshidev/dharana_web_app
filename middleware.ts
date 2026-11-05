@@ -38,6 +38,14 @@ export function middleware(request: NextRequest) {
     return apiGuard(request) ?? NextResponse.next();
   }
 
+  // Единый вид URL: без завершающего слэша. Иначе `/ru` и `/ru/` — два
+  // одинаковых 200-ответа, и Google выбирает каноническую версию сам.
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace(/\/+$/, "");
+    return NextResponse.redirect(url, 308);
+  }
+
   const first = pathname.split("/")[1];
 
   if (isLocale(first)) {
@@ -46,7 +54,7 @@ export function middleware(request: NextRequest) {
 
   const url = request.nextUrl.clone();
   url.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`;
-  return NextResponse.redirect(url);
+  return NextResponse.redirect(url, 308);
 }
 
 export const config = {
