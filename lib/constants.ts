@@ -5,7 +5,7 @@ export const APK_URL = "/download/dharana.apk";
 // Амбиент-видео лендинга (пальмы, первый экран). Файл отдаёт Caddy
 // `/video/*` с range-запросами (root /opt/dharana/downloads/video).
 // Когда появится объектное хранилище с CDN — заменяется одним URL здесь.
-export const AMBIENT_VIDEO_URL = "https://dharana.ru/video/dharana-ambient.mp4";
+export const AMBIENT_VIDEO_URL = "https://dharana.ru/video/dharana-ambient-v2.mp4";
 
 // Заглушка-постер первого кадра (public/img/landing-hero-poster.jpg, ~125 КБ).
 export const AMBIENT_POSTER_URL = "/img/landing-hero-poster.jpg";
