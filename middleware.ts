@@ -65,7 +65,7 @@ export const config = {
   // `/api/:path*` — отдельный матчер: locale-редирект к API не применяется,
   // внутри обрабатывается только CSRF-guard.
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|icon.svg|og.png|robots.txt|sitemap.xml|download|img|video|app/auth|\\.well-known|.*\\.html$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|icon.svg|og.png|robots.txt|sitemap.xml|download|fonts|img|video|app/auth|\\.well-known|.*\\.html$).*)",
     "/api/:path*",
   ],
 };
