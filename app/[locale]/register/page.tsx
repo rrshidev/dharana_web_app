@@ -45,6 +45,11 @@ export default async function RegisterPage({ params, searchParams }: Props) {
     errorEmailRegistered: t("auth.errorEmailRegistered"),
     errorInvalid: t("auth.errorInvalid"),
     errorGeneric: t("auth.errorGeneric"),
+    consentPrefix: t("legal.authConsentPrefix"),
+    consentLink: t("legal.authConsentLink"),
+    consentMiddle: t("legal.authConsentMiddle"),
+    privacyLink: t("legal.authPrivacyLink"),
+    consentRequired: t("legal.authConsentRequired"),
   };
 
   return (

@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Script from "next/script";
 import { Geist_Mono, Inter, Cormorant_Garamond } from "next/font/google";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
-import { injectMetrica, metricaNoscript, METRIKA_ID } from "@/lib/analytics/metrica";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { CookieConsent } from "@/components/legal/cookie-consent";
+import { YandexMetrica } from "@/components/analytics/yandex-metrica";
 import { APK_URL, TELEGRAM_BOT_URL } from "@/lib/constants";
 import { serializeJsonLd } from "@/lib/seo/json-ld";
 import "../globals.css";
@@ -117,19 +117,21 @@ export default async function LocaleLayout({
         />
       </head>
       <body className="flex min-h-full flex-col font-sans">
-        {METRIKA_ID > 0 && (
-          <>
-            <Script
-              id="metrika"
-              strategy="afterInteractive"
-              dangerouslySetInnerHTML={{ __html: injectMetrica() }}
-            />
-            {metricaNoscript()}
-          </>
-        )}
+        <YandexMetrica />
         <Header locale={locale} t={t} />
         <main className="flex-1">{children}</main>
-        <Footer t={t} />
+        <Footer locale={locale} t={t} />
+        <CookieConsent
+          locale={locale}
+          labels={{
+            title: t("legal.cookieTitle"),
+            text: t("legal.cookieText"),
+            policyLink: t("legal.privacyLink"),
+            acceptAll: t("legal.cookieAccept"),
+            necessaryOnly: t("legal.cookieDecline"),
+            closeLabel: t("legal.cookieClose"),
+          }}
+        />
         <MobileNav
           locale={locale}
           labels={{

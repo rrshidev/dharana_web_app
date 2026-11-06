@@ -29,7 +29,7 @@ export const dynamic = "force-dynamic";
 
 // Реальная дата последнего массового изменения контента страниц
 // (деплой SEO-фиксов canonical/robots 2026-09-21). Стабильная, не каждый день.
-const contentUpdatedAt = new Date("2026-09-21T00:00:00.000Z");
+const contentUpdatedAt = new Date("2026-11-05T00:00:00.000Z");
 
 type Page = {
   url: string;
@@ -59,6 +59,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/en/complexes`, priority: 0.6, changeFrequency: "monthly" as const, langPath: "/en/complexes" },
   ];
 
+  const legalPages = [
+    { url: `${base}/ru/privacy`, priority: 0.3, changeFrequency: "monthly" as const, langPath: "/ru/privacy" },
+    { url: `${base}/en/privacy`, priority: 0.3, changeFrequency: "monthly" as const, langPath: "/en/privacy" },
+    { url: `${base}/ru/consent`, priority: 0.3, changeFrequency: "monthly" as const, langPath: "/ru/consent" },
+    { url: `${base}/en/consent`, priority: 0.3, changeFrequency: "monthly" as const, langPath: "/en/consent" },
+    { url: `${base}/ru/about`, priority: 0.5, changeFrequency: "monthly" as const, langPath: "/ru/about" },
+    { url: `${base}/en/about`, priority: 0.5, changeFrequency: "monthly" as const, langPath: "/en/about" },
+  ];
+
   const asanas = await fetchAllAsanas();
   const asanaPages = asanas.flatMap<Page>((asana) => {
     const slug = encodeURIComponent(asana.name);
@@ -68,7 +77,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
   });
 
-  const pages: Page[] = [...landing, ...catalogPages, ...timerPages, ...complexesPages, ...asanaPages];
+  const pages: Page[] = [...landing, ...catalogPages, ...timerPages, ...complexesPages, ...legalPages, ...asanaPages];
 
   return pages.map(({ url, priority, changeFrequency, langPath }) => {
     const sibling = langPath.startsWith("/ru")

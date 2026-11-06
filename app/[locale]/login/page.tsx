@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
@@ -128,6 +129,17 @@ export default async function LoginPage({ params, searchParams }: Props) {
         ) : null}
         <TelegramLogin locale={locale} labels={tgLabels} nextUrl={nextUrl} hideDivider />
       </div>
+      <p className="mx-auto mt-5 max-w-sm text-center text-xs leading-5 text-muted">
+        {t("legal.legalNotePrefix")}{" "}
+        <Link href={`/${locale}/privacy`} className="text-accent-ink underline underline-offset-2 hover:no-underline">
+          {t("legal.legalNotePrivacy")}
+        </Link>{" "}
+        {t("legal.legalNoteMiddle")}{" "}
+        <Link href={`/${locale}/consent`} className="text-accent-ink underline underline-offset-2 hover:no-underline">
+          {t("legal.legalNoteConsent")}
+        </Link>
+        .
+      </p>
     </section>
   );
 }

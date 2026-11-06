@@ -22,7 +22,7 @@ import {
   ActivitySection,
   type PracticeTypeFilter,
 } from "@/components/profile/activity-section";
-import { SparkleIcon, CreditCardIcon, ChevronRightIcon } from "@/components/icons";
+import { SparkleIcon, CreditCardIcon, ChevronRightIcon, InfoIcon } from "@/components/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -193,6 +193,22 @@ export default async function ProfilePage({ params, searchParams }: Props) {
             >
               {sub?.is_premium ? t("profile.premiumActive") : t("profile.freePlan")}
             </span>
+          </span>
+          <ChevronRightIcon className="h-4 w-4 text-muted/60 transition-transform group-hover:translate-x-0.5" />
+        </Link>
+      </div>
+
+      <div className="mt-3">
+        <Link
+          href={`/${locale}/about`}
+          className="group flex items-center gap-3 rounded-2xl border border-night-line bg-night/60 p-4 transition-colors hover:border-accent/50"
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent-ink">
+            <InfoIcon className="h-5 w-5" />
+          </span>
+          <span className="flex-1 text-left">
+            <span className="block text-sm font-medium">{t("profile.aboutProject")}</span>
+            <span className="mt-0.5 block text-xs text-muted">{t("profile.aboutProjectSubtitle")}</span>
           </span>
           <ChevronRightIcon className="h-4 w-4 text-muted/60 transition-transform group-hover:translate-x-0.5" />
         </Link>

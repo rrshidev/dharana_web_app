@@ -26,10 +26,26 @@
   "features": {
     "title": "Features",
     "items": [
-      { "title": "Asana catalog", "route": "/catalog", "text": "Dozens of asanas with photos, descriptions, breathing technique and contraindications." },
-      { "title": "Ready sequences", "route": "/complexes", "text": "Morning, evening, back and balance sequences — pick one and practice." },
-      { "title": "Practice timer", "route": "/timer", "text": "A built-in timer will guide you from warm-up to savasana." },
-      { "title": "Generator", "route": "/generator", "text": "Build your own sequence for your goals in seconds." }
+      {
+        "title": "Asana catalog",
+        "route": "/catalog",
+        "text": "Dozens of asanas with photos, descriptions, breathing technique and contraindications."
+      },
+      {
+        "title": "Ready sequences",
+        "route": "/complexes",
+        "text": "Morning, evening, back and balance sequences — pick one and practice."
+      },
+      {
+        "title": "Practice timer",
+        "route": "/timer",
+        "text": "A built-in timer will guide you from warm-up to savasana."
+      },
+      {
+        "title": "Generator",
+        "route": "/generator",
+        "text": "Build your own sequence for your goals in seconds."
+      }
     ]
   },
   "channels": {
@@ -46,7 +62,8 @@
     "emailCta": "support@dharana.ru"
   },
   "footer": {
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "legalNav": "Legal information"
   },
   "categories": {
     "sit_lie+": "Seated & lying",
@@ -156,7 +173,9 @@
     "dailyAsanaTimezone": "Time zone",
     "dailyAsanaNotLinked": "Link Telegram in your profile to receive the mailing in the bot",
     "dailyAsanaSaved": "Saved",
-    "dailyAsanaSaveFailed": "Could not save"
+    "dailyAsanaSaveFailed": "Could not save",
+    "aboutProject": "About the project",
+    "aboutProjectSubtitle": "Documents and information about Dharana"
   },
   "verifyEmail": {
     "title": "Email confirmation",
@@ -608,5 +627,54 @@
     "title": "Continue in the app",
     "text": "This link is for signing in through the Dharana app. Open the app on your phone and sign in there — it does not work on the website.",
     "toLogin": "Go to sign in"
+  },
+  "legal": {
+    "updated": "Updated",
+    "version": "Version",
+    "contents": "Contents",
+    "backHome": "Back to home",
+    "privacyLink": "Privacy Policy",
+    "consentLink": "Consent to Personal Data Processing",
+    "aboutLink": "About the project",
+    "cookieSettings": "Cookie settings",
+    "cookieTitle": "We use cookies",
+    "cookieText": "We use cookies to personalise our services and make the website more convenient. Necessary cookies keep the website running, while analytics cookies (Yandex Metrica) are enabled only with your consent. If you disagree, choose “Necessary only”, change your browser settings or leave the website.",
+    "cookieAccept": "Accept all",
+    "cookieDecline": "Necessary only",
+    "cookieClose": "Close and keep only necessary cookies",
+    "authConsentPrefix": "I give",
+    "authConsentLink": "consent to personal data processing",
+    "authConsentMiddle": "and accept the",
+    "authPrivacyLink": "Privacy Policy",
+    "authConsentRequired": "Please confirm consent to personal data processing",
+    "legalNotePrefix": "By continuing, you accept the",
+    "legalNotePrivacy": "Privacy Policy",
+    "legalNoteMiddle": "and give",
+    "legalNoteConsent": "consent to personal data processing"
+  },
+  "about": {
+    "eyebrow": "Dharana",
+    "title": "About the project",
+    "lead": "Dharana is a space for a regular yoga practice: an asana catalogue, ready-made sequences, a practice generator, a timer and Telegram reminders. We make yoga clear and accessible to everyone — without unnecessary fuss or pressure.",
+    "missionTitle": "Why we do this",
+    "missionText": "We believe practice should be simple and regular. That is why we create clear instructions, help you choose a sequence for your goal and remind you to practice — at a convenient time and place.",
+    "whatTitle": "What we already offer",
+    "whatItems": [
+      "An asana catalogue with photos, descriptions and alignment cues.",
+      "Ready-made sequences and a practice generator for your goals.",
+      "A multi-purpose timer for asanas, meditation and pranayama.",
+      "Asana of the day and Telegram reminders.",
+      "Personal statistics, streaks and practice history.",
+      "A mobile app, a website and Telegram bots."
+    ],
+    "teamTitle": "The team",
+    "teamText": "Dharana is a small independent project. It is built by people for whom yoga has become a part of life: development, content, filming and care for the community.",
+    "legalTitle": "Legal information",
+    "legalText": "Here you will find the documents that explain how we handle your data and what rights you have.",
+    "privacyHint": "What data we collect, why, and how to delete it.",
+    "consentHint": "The text of consent to personal data processing.",
+    "contactTitle": "Contacts",
+    "contactText": "For any questions — about the service, partnerships or personal data — write to us.",
+    "operatorText": "The service operator is the Dharana project. Personal data requests are reviewed within 10 business days."
   }
 }

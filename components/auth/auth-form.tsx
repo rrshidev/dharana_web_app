@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import Link from "next/link";
 import type { Locale } from "@/lib/i18n/settings";
 import { reachGoal } from "@/lib/analytics/metrica";
+import { LEGAL } from "@/lib/legal/config";
 
 export interface AuthFormLabels {
   emailLabel: string;
@@ -25,6 +27,11 @@ export interface AuthFormLabels {
   errorEmailRegistered: string;
   errorInvalid: string;
   errorGeneric: string;
+  consentPrefix?: string;
+  consentLink?: string;
+  consentMiddle?: string;
+  privacyLink?: string;
+  consentRequired?: string;
 }
 
 type Mode = "login" | "register";
@@ -44,6 +51,7 @@ export function AuthForm({
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [website, setWebsite] = useState("");
+  const [consent, setConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -92,15 +100,23 @@ export function AuthForm({
       setError(labels.nameTooLong ?? labels.errorGeneric);
       return;
     }
+    if (mode === "register" && !consent) {
+      setError(labels.consentRequired ?? labels.errorGeneric);
+      return;
+    }
 
     setLoading(true);
     try {
-      const payload: Record<string, string> = {
+      const payload: Record<string, string | boolean> = {
         email: email.trim(),
         password,
         name: name.trim(),
       };
-      if (mode === "register") payload.website = website;
+      if (mode === "register") {
+        payload.website = website;
+        payload.consent = true;
+        payload.consent_version = LEGAL.version;
+      }
       const res = await fetch(`/api/auth/${mode}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -179,6 +195,39 @@ export function AuthForm({
           className="w-full rounded-lg border border-night-line bg-night px-3 py-2 text-ink outline-none transition-colors focus:border-accent"
         />
       </label>
+
+      {mode === "register" &&
+        labels.consentPrefix &&
+        labels.consentLink &&
+        labels.consentMiddle &&
+        labels.privacyLink && (
+          <label className="mt-4 flex items-start gap-2 text-xs leading-5 text-muted">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              required
+              className="mt-0.5 h-4 w-4 shrink-0 rounded border-night-line accent-accent"
+            />
+            <span>
+              {labels.consentPrefix}{" "}
+              <Link
+                href={`/${locale}/consent`}
+                className="text-accent-ink underline underline-offset-2 hover:no-underline"
+              >
+                {labels.consentLink}
+              </Link>{" "}
+              {labels.consentMiddle}{" "}
+              <Link
+                href={`/${locale}/privacy`}
+                className="text-accent-ink underline underline-offset-2 hover:no-underline"
+              >
+                {labels.privacyLink}
+              </Link>
+              .
+            </span>
+          </label>
+        )}
 
       {labels.forgotHref && labels.forgotLabel && (
         <p className="mt-2 text-right text-sm">

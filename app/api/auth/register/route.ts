@@ -11,7 +11,14 @@ const COOKIE_OPTIONS = {
 };
 
 export async function POST(req: NextRequest) {
-  let body: { email: string; password: string; name: string };
+  let body: {
+    email: string;
+    password: string;
+    name: string;
+    website?: string;
+    consent?: boolean;
+    consent_version?: string;
+  };
   try {
     body = await req.json();
   } catch {
