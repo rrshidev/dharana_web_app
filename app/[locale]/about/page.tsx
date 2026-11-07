@@ -93,7 +93,11 @@ export default async function AboutPage({ params }: Props) {
         >
           {LEGAL.contactEmail}
         </a>
-        <p className="mt-3 text-xs leading-6 text-muted">{t("about.operatorText")}</p>
+        <p className="mt-3 text-xs leading-6 text-muted">
+          {locale === "en"
+            ? `Operator: ${LEGAL.operator.legalLine.en}`
+            : `Оператор: ${LEGAL.operator.legalLine.ru}`}
+        </p>
       </div>
     </section>
   );

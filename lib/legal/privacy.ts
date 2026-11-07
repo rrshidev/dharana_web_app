@@ -7,7 +7,7 @@ const ru: LegalDocument = {
   updatedAt: LEGAL.effectiveDate.ru,
   version: LEGAL.version,
   intro:
-    "Настоящая Политика конфиденциальности (далее — Политика) описывает, какие персональные данные собирает проект Dharana (далее — Проект, мы), как мы их используем, храним и защищаем, а также какие права есть у пользователя. Политика применяется к сайту dharana.ru, мобильному приложению Dharana, Telegram-ботам проекта и связанным с ними сервисам.",
+    "Настоящая Политика конфиденциальности (далее — Политика) описывает, какие персональные данные собирает Степин Руслан Дмитриевич (далее — Оператор, мы) при работе сайта dharana.ru, мобильного приложения Dharana, Telegram-ботов проекта и связанных с ними сервисов, как мы их используем, храним и защищаем, а также какие права есть у пользователя.",
   sections: [
     {
       id: "general",
@@ -15,7 +15,7 @@ const ru: LegalDocument = {
       blocks: [
         {
           kind: "p",
-          text: "Оператором персональных данных выступает проект Dharana. Контакт по вопросам обработки персональных данных: support@dharana.ru.",
+          text: `Оператором персональных данных выступает ${LEGAL.operator.legalLine.ru}. Контакт по вопросам обработки персональных данных: ${LEGAL.contactEmail}.`,
         },
         {
           kind: "p",
@@ -236,6 +236,7 @@ const ru: LegalDocument = {
         {
           kind: "list",
           items: [
+            `Оператор: ${LEGAL.operator.legalLine.ru}`,
             `Email: ${LEGAL.contactEmail}`,
             `Сайт: ${LEGAL.siteUrl}`,
             "По вопросам персональных данных мы отвечаем в течение 10 рабочих дней.",
@@ -251,7 +252,7 @@ const en: LegalDocument = {
   updatedAt: LEGAL.effectiveDate.en,
   version: LEGAL.version,
   intro:
-    "This Privacy Policy describes what personal data the Dharana project (the “Project”, “we”) collects, how we use, store and protect it, and what rights users have. The Policy applies to the dharana.ru website, the Dharana mobile app, the project’s Telegram bots and related services.",
+    "This Privacy Policy describes what personal data Ruslan Dmitrievich Stepin (the “Operator”, “we”) collects when you use the dharana.ru website, the Dharana mobile app, the project’s Telegram bots and related services, how we use, store and protect it, and what rights users have.",
   sections: [
     {
       id: "general",
@@ -259,7 +260,7 @@ const en: LegalDocument = {
       blocks: [
         {
           kind: "p",
-          text: "The data controller is the Dharana project. Contact for personal data matters: support@dharana.ru.",
+          text: `The data controller is ${LEGAL.operator.legalLine.en}. Contact for personal data matters: ${LEGAL.contactEmail}.`,
         },
         {
           kind: "p",
@@ -480,6 +481,7 @@ const en: LegalDocument = {
         {
           kind: "list",
           items: [
+            `Operator: ${LEGAL.operator.legalLine.en}`,
             `Email: ${LEGAL.contactEmail}`,
             `Website: ${LEGAL.siteUrl}`,
             "We respond to personal data requests within 10 business days.",

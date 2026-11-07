@@ -7,7 +7,7 @@ const ru: LegalDocument = {
   updatedAt: LEGAL.effectiveDate.ru,
   version: LEGAL.version,
   intro:
-    "Я, действуя свободно, своей волей и в своём интересе, даю согласие проекту Dharana (далее — Оператор) на обработку моих персональных данных на условиях, изложенных ниже.",
+    `Я, действуя свободно, своей волей и в своём интересе, даю согласие ${LEGAL.operator.fullNameDative.ru} (далее — Оператор) на обработку моих персональных данных на условиях, изложенных ниже.`,
   sections: [
     {
       id: "data",
@@ -117,6 +117,7 @@ const ru: LegalDocument = {
         {
           kind: "list",
           items: [
+            `Оператор: ${LEGAL.operator.legalLine.ru}`,
             `Email: ${LEGAL.contactEmail}`,
             `Сайт: ${LEGAL.siteUrl}`,
             `Версия согласия: ${LEGAL.version}.`,
@@ -132,7 +133,7 @@ const en: LegalDocument = {
   updatedAt: LEGAL.effectiveDate.en,
   version: LEGAL.version,
   intro:
-    "I, acting freely, of my own will and in my own interest, give my consent to the Dharana project (the “Operator”) to process my personal data on the terms set out below.",
+    "I, acting freely, of my own will and in my own interest, give my consent to Ruslan Dmitrievich Stepin (the “Operator”) to process my personal data on the terms set out below.",
   sections: [
     {
       id: "data",
@@ -242,6 +243,7 @@ const en: LegalDocument = {
         {
           kind: "list",
           items: [
+            `Operator: ${LEGAL.operator.legalLine.en}`,
             `Email: ${LEGAL.contactEmail}`,
             `Website: ${LEGAL.siteUrl}`,
             `Consent version: ${LEGAL.version}.`,
