@@ -7,7 +7,7 @@ const ru: LegalDocument = {
   updatedAt: LEGAL.effectiveDate.ru,
   version: LEGAL.version,
   intro:
-    "Настоящая Политика конфиденциальности (далее — Политика) описывает, какие персональные данные собирает Степин Руслан Дмитриевич (далее — Оператор, мы) при работе сайта dharana.ru, мобильного приложения Dharana, Telegram-ботов проекта и связанных с ними сервисов, как мы их используем, храним и защищаем, а также какие права есть у пользователя.",
+    "Настоящая Политика конфиденциальности (далее — Политика) описывает, какие персональные данные собирает Степин Руслан Дмитриевич (далее — Оператор, мы) при работе сайта dharana.ru, мобильного приложения Dharana, Telegram-ботов, MAX-бота проекта и связанных с ними сервисов, как мы их используем, храним и защищаем, а также какие права есть у пользователя.",
   sections: [
     {
       id: "general",
@@ -58,7 +58,7 @@ const ru: LegalDocument = {
           kind: "list",
           items: [
             "Данные аккаунта: имя, адрес электронной почты, хеш пароля, username, описание профиля, аватар, язык интерфейса и часовой пояс.",
-            "Данные входа через сторонние сервисы: идентификаторы и открытые данные профиля Google, VK, Yandex и Telegram (имя, username, email, аватар) в объёме, который передаёт соответствующий провайдер.",
+            "Данные входа через сторонние сервисы: идентификаторы и открытые данные профиля Google, VK, Yandex, Telegram и MAX (имя, username, email, аватар) в объёме, который передаёт соответствующий провайдер.",
             "Данные практики: выбранные асаны и комплексы, история и длительность сессий, даты практик, серии, избранное, настройки асаны дня и статистика.",
             "Данные подписки и платежей: статус подписки, срок её действия, идентификаторы платежей и чеков. Данные банковской карты обрабатываются платёжным провайдером, мы их не храним.",
             "Технические данные: IP-адрес, тип устройства и браузера, операционная система, язык, часовой пояс, посещённые страницы и элементы интерфейса, дата и время обращения, источник перехода.",
@@ -138,7 +138,7 @@ const ru: LegalDocument = {
         },
         {
           kind: "p",
-          text: "Данные могут передаваться поставщикам, обеспечивающим работу сервиса: хостинг и инфраструктура, платёжный провайдер, сервис отправки email, Яндекс Метрика (аналитика при наличии согласия), Telegram (при использовании ботов). Передача осуществляется в объёме, необходимом для оказания услуг, и на условиях конфиденциальности.",
+          text: "Данные могут передаваться поставщикам, обеспечивающим работу сервиса: хостинг и инфраструктура, платёжный провайдер, сервис отправки email, Яндекс Метрика (аналитика при наличии согласия), Telegram и MAX (при использовании ботов). Передача осуществляется в объёме, необходимом для оказания услуг, и на условиях конфиденциальности.",
         },
         {
           kind: "p",
@@ -252,7 +252,7 @@ const en: LegalDocument = {
   updatedAt: LEGAL.effectiveDate.en,
   version: LEGAL.version,
   intro:
-    "This Privacy Policy describes what personal data Ruslan Dmitrievich Stepin (the “Operator”, “we”) collects when you use the dharana.ru website, the Dharana mobile app, the project’s Telegram bots and related services, how we use, store and protect it, and what rights users have.",
+    "This Privacy Policy describes what personal data Ruslan Dmitrievich Stepin (the “Operator”, “we”) collects when you use the dharana.ru website, the Dharana mobile app, the project’s Telegram bots, the MAX bot and related services, how we use, store and protect it, and what rights users have.",
   sections: [
     {
       id: "general",
@@ -303,7 +303,7 @@ const en: LegalDocument = {
           kind: "list",
           items: [
             "Account data: name, email address, password hash, username, profile bio, avatar, interface language and time zone.",
-            "Third-party sign-in data: identifiers and public profile data from Google, VK, Yandex and Telegram (name, username, email, avatar) to the extent provided by the relevant provider.",
+            "Third-party sign-in data: identifiers and public profile data from Google, VK, Yandex, Telegram and MAX (name, username, email, avatar) to the extent provided by the relevant provider.",
             "Practice data: selected asanas and sequences, session history and duration, practice dates, streaks, favourites, asana-of-the-day settings and statistics.",
             "Subscription and payment data: subscription status, term, payment and receipt identifiers. Bank card details are processed by the payment provider; we do not store them.",
             "Technical data: IP address, device and browser type, operating system, language, time zone, pages and interface elements visited, date and time of access, referral source.",
@@ -383,7 +383,7 @@ const en: LegalDocument = {
         },
         {
           kind: "p",
-          text: "Data may be shared with providers that support the service: hosting and infrastructure, the payment provider, the email delivery service, Yandex Metrica (analytics with consent) and Telegram (when using the bots). Sharing is limited to what is necessary to provide the services and is subject to confidentiality obligations.",
+          text: "Data may be shared with providers that support the service: hosting and infrastructure, the payment provider, the email delivery service, Yandex Metrica (analytics with consent) and Telegram and MAX (when using the bots). Sharing is limited to what is necessary to provide the services and is subject to confidentiality obligations.",
         },
         {
           kind: "p",

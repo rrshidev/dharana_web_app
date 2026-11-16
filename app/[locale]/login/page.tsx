@@ -6,10 +6,12 @@ import { getServerTranslation } from "@/lib/i18n/server";
 import { AuthForm, type AuthFormLabels } from "@/components/auth/auth-form";
 import { GoogleLogin, type GoogleLoginLabels } from "@/components/auth/google-login";
 import { TelegramLogin, type TelegramLoginLabels } from "@/components/auth/telegram-login";
+import { MaxLogin, type MaxLoginLabels } from "@/components/auth/max-login";
 import { OAuthLogin } from "@/components/auth/oauth-login";
 import { VkLogin } from "@/components/auth/vk-login";
 import {
   GOOGLE_CLIENT_ID,
+  MAX_BOT_NAME,
   SITE_URL,
   VK_CLIENT_ID,
   YANDEX_CLIENT_ID,
@@ -80,6 +82,21 @@ export default async function LoginPage({ params, searchParams }: Props) {
     failed: t("auth.telegramFailed"),
   };
 
+  const maxLabels: MaxLoginLabels = {
+    or: t("auth.telegramOr"),
+    button: t("auth.maxButton"),
+    title: t("auth.maxTitle"),
+    step1: t("auth.maxStep1"),
+    step2: t("auth.maxStep2"),
+    step3: t("auth.maxStep3"),
+    open: t("auth.maxOpen"),
+    waiting: t("auth.maxWaiting"),
+    cancel: t("auth.maxCancel"),
+    failed: t("auth.maxFailed"),
+    expired: t("auth.maxExpired"),
+    notConfigured: t("auth.maxNotConfigured"),
+  };
+
   const googleLabels: GoogleLoginLabels = {
     or: t("auth.googleOr"),
     button: t("auth.googleButton"),
@@ -128,6 +145,12 @@ export default async function LoginPage({ params, searchParams }: Props) {
           />
         ) : null}
         <TelegramLogin locale={locale} labels={tgLabels} nextUrl={nextUrl} hideDivider />
+        <MaxLogin
+          locale={locale}
+          labels={maxLabels}
+          nextUrl={nextUrl}
+          enabled={Boolean(MAX_BOT_NAME)}
+        />
       </div>
       <p className="mx-auto mt-5 max-w-sm text-center text-xs leading-5 text-muted">
         {t("legal.legalNotePrefix")}{" "}

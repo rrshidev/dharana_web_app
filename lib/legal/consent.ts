@@ -21,7 +21,7 @@ const ru: LegalDocument = {
           kind: "list",
           items: [
             "Имя, адрес электронной почты, username, описание профиля, аватар, язык интерфейса и часовой пояс.",
-            "Идентификаторы и открытые данные профиля при входе через Google, VK, Yandex и Telegram.",
+            "Идентификаторы и открытые данные профиля при входе через Google, VK, Yandex, Telegram и MAX (MAX ID, имя, username).",
             "Данные практики: выбранные асаны и комплексы, история и длительность сессий, даты практик, серии, избранное, настройки асаны дня и статистика.",
             "Данные подписки и платежей: статус и срок подписки, идентификаторы платежей и чеков.",
             "Технические данные: IP-адрес, устройство, браузер, операционная система, язык, часовой пояс, посещённые страницы, дата и время обращения, источник перехода.",
@@ -64,7 +64,7 @@ const ru: LegalDocument = {
         },
         {
           kind: "p",
-          text: "Данные могут передаваться поставщикам, обеспечивающим работу сервиса (хостинг, платёжный провайдер, доставка email, Яндекс Метрика при согласии, Telegram при использовании ботов), в объёме, необходимом для оказания услуг.",
+          text: "Данные могут передаваться поставщикам, обеспечивающим работу сервиса (хостинг, платёжный провайдер, доставка email, Яндекс Метрика при согласии, Telegram и MAX при использовании ботов), в объёме, необходимом для оказания услуг.",
         },
       ],
     },
@@ -147,7 +147,7 @@ const en: LegalDocument = {
           kind: "list",
           items: [
             "Name, email address, username, profile bio, avatar, interface language and time zone.",
-            "Identifiers and public profile data when signing in via Google, VK, Yandex and Telegram.",
+            "Identifiers and public profile data when signing in via Google, VK, Yandex, Telegram and MAX (MAX ID, name, username).",
             "Practice data: selected asanas and sequences, session history and duration, practice dates, streaks, favourites, asana-of-the-day settings and statistics.",
             "Subscription and payment data: subscription status and term, payment and receipt identifiers.",
             "Technical data: IP address, device, browser, operating system, language, time zone, pages visited, date and time of access, referral source.",
@@ -190,7 +190,7 @@ const en: LegalDocument = {
         },
         {
           kind: "p",
-          text: "Data may be shared with providers that support the service (hosting, payment provider, email delivery, Yandex Metrica with consent, Telegram when using the bots) to the extent necessary to provide the services.",
+          text: "Data may be shared with providers that support the service (hosting, payment provider, email delivery, Yandex Metrica with consent, Telegram and MAX when using the bots) to the extent necessary to provide the services.",
         },
       ],
     },

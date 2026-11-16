@@ -11,10 +11,10 @@ import type { Locale } from "@/lib/i18n/settings";
 export const LEGAL = {
   siteUrl: "https://dharana.ru",
   contactEmail: "support@dharana.ru",
-  version: "1.1",
+  version: "1.2",
   effectiveDate: {
-    ru: "6 ноября 2026 г.",
-    en: "6 November 2026",
+    ru: "16 ноября 2026 г.",
+    en: "16 November 2026",
   } satisfies Record<Locale, string>,
   operator: {
     fullName: {

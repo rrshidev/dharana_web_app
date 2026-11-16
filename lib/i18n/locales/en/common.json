@@ -527,7 +527,25 @@
     "telegramInvalid": "Invalid or expired code",
     "telegramExpired": "Code expired. Request a new one from the bot",
     "telegramFailed": "Couldn't sign in with Telegram",
+    "maxTitle": "MAX sign-in",
+    "maxStep1": "Tap “Open MAX”",
+    "maxStep2": "Confirm sign-in in the mini app",
+    "maxStep3": "The site updates by itself — no code needed",
+    "maxOpen": "Open MAX",
+    "maxWaiting": "Waiting for confirmation in MAX…",
+    "maxCancel": "Cancel",
+    "maxFailed": "Couldn't sign in with MAX",
+    "maxExpired": "Sign-in link expired. Tap “Sign in with MAX” again",
+    "maxNotConfigured": "MAX sign-in is temporarily unavailable",
     "forgotPassword": "Forgot password?"
+  },
+  "max": {
+    "confirming": "Confirming sign-in…",
+    "success": "Done! Go back to the site — sign-in completes automatically.",
+    "already": "This sign-in is already confirmed. Go back to the site.",
+    "error": "Couldn't confirm sign-in. Go back to the site and try again.",
+    "notInMax": "This page only works inside MAX. Open the sign-in link from Dharana again.",
+    "openBot": "Open the bot in MAX"
   },
   "resetPassword": {
     "title": "Password reset",
