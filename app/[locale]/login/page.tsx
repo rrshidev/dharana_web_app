@@ -150,6 +150,7 @@ export default async function LoginPage({ params, searchParams }: Props) {
           labels={maxLabels}
           nextUrl={nextUrl}
           enabled={Boolean(MAX_BOT_NAME)}
+          hideDivider
         />
       </div>
       <p className="mx-auto mt-5 max-w-sm text-center text-xs leading-5 text-muted">
