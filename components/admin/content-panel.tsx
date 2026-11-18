@@ -86,8 +86,14 @@ export function ContentPanel({
         body: body instanceof FormData ? body : JSON.stringify(body),
       });
       if (!res.ok) {
-        const data = (await res.json().catch(() => ({}))) as { error?: string };
-        alert(data.error === "invalid_body" ? labels.fieldsRequired : labels.actionFailed);
+        const data = (await res.json().catch(() => ({}))) as { error?: string; detail?: string };
+        const message =
+          data.error === "invalid_body"
+            ? labels.uploadFailed
+            : typeof data.detail === "string" && data.detail
+              ? data.detail
+              : labels.actionFailed;
+        alert(message);
         return false;
       }
       router.refresh();
@@ -239,12 +245,14 @@ export function ContentPanel({
                   <div className="mt-2 flex flex-wrap items-center gap-1.5">
                     <LabeledUpload
                       label={labels.photo}
+                      accept="image/*"
                       busy={busy === `upload-photo-${a.name}`}
                       disabled={busy !== null}
                       onFile={(f) => uploadAsanaMedia(a.name, "photo", f)}
                     />
                     <LabeledUpload
                       label={labels.video}
+                      accept="video/*"
                       busy={busy === `upload-video-${a.name}`}
                       disabled={busy !== null}
                       onFile={(f) => uploadAsanaMedia(a.name, "video", f)}
@@ -495,11 +503,13 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function LabeledUpload({
   label,
+  accept,
   busy,
   disabled,
   onFile,
 }: {
   label: string;
+  accept: string;
   busy: boolean;
   disabled: boolean;
   onFile: (file: File) => void;
@@ -513,7 +523,7 @@ function LabeledUpload({
       {busy ? "…" : label}
       <input
         type="file"
-        accept={label.toLowerCase().includes("video") ? "video/*" : "image/*"}
+        accept={accept}
         className="hidden"
         disabled={disabled || busy}
         onChange={(e) => {
