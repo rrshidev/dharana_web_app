@@ -61,6 +61,39 @@ export async function forwardForm<T = unknown>(
   return data as T;
 }
 
+/**
+ * Проксирует тело запроса как поток (multipart) без разбора formData в Next.js.
+ * Нужен для больших загрузок: иначе упираемся в лимит размера тела route handler.
+ * requireAdmin() должен быть вызван до чтения тела запроса.
+ */
+export async function forwardStream<T = unknown>(
+  path: string,
+  req: Request,
+  token: string,
+  method: "POST" | "PUT" = "POST",
+): Promise<T> {
+  const headers: Record<string, string> = { Authorization: `Bearer ${token}` };
+  const contentType = req.headers.get("content-type");
+  if (contentType) headers["Content-Type"] = contentType;
+  const contentLength = req.headers.get("content-length");
+  if (contentLength) headers["Content-Length"] = contentLength;
+
+  const res = await fetch(`${API_URL}${API_PREFIX}${path}`, {
+    method,
+    headers,
+    body: req.body,
+    cache: "no-store",
+    // Node/undici требует duplex при потоковом теле запроса.
+    duplex: "half",
+  } as RequestInit & { duplex: "half" });
+
+  const data = (await res.json().catch(() => ({}))) as { detail?: string };
+  if (!res.ok) {
+    throw new ApiError(res.status, typeof data.detail === "string" ? data.detail : "server_error");
+  }
+  return data as T;
+}
+
 /** Превращает JSON-поля в multipart (endpoint'ы, принимающие Form(...)). */
 export async function formAdmin<T = unknown>(
   path: string,

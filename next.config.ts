@@ -25,6 +25,9 @@ const miniAppHeaders = [
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
+  // Админка загружает видео асан/комплексов (десятки/сотни МБ) через route handlers.
+  // По умолчанию Next.js ограничивает тело запроса ~10MB.
+  middlewareClientMaxBodySize: "300mb",
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
