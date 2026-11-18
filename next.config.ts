@@ -26,8 +26,12 @@ const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
   // Админка загружает видео асан/комплексов (десятки/сотни МБ) через route handlers.
-  // По умолчанию Next.js ограничивает тело запроса ~10MB.
+  // По умолчанию Next.js ограничивает тело запроса ~10MB. В Next 15.5 значение
+  // также должно быть в experimental, иначе runtime берёт дефолт 10MB.
   middlewareClientMaxBodySize: "300mb",
+  experimental: {
+    middlewareClientMaxBodySize: "300mb",
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
