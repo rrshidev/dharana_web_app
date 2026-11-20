@@ -3,7 +3,15 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { isLocale } from "@/lib/i18n/settings";
 import { getServerTranslation } from "@/lib/i18n/server";
-import { APK_URL, TELEGRAM_BOT_URL } from "@/lib/constants";
+import {
+  APK_URL,
+  INSTAGRAM_URL,
+  MAX_BOT_URL,
+  TELEGRAM_BOT_URL,
+  TELEGRAM_CHANNEL_URL,
+  TIKTOK_URL,
+  YOUTUBE_URL,
+} from "@/lib/constants";
 import { SocialIcon } from "@/components/brand/social-icon";
 import { SocialLink } from "@/components/brand/social-button";
 import HeroVideo from "@/components/landing/hero-video";
@@ -50,6 +58,8 @@ export default async function LandingPage({ params }: Props) {
   if (!isLocale(locale)) notFound();
   const { t } = await getServerTranslation(locale);
 
+  const maxBotUrl = MAX_BOT_URL || "https://max.ru/se15040381_bot";
+
   const features = t("features.items", { returnObjects: true }) as Array<
     { title: string; route: string; text: string }
   >;
@@ -80,7 +90,7 @@ export default async function LandingPage({ params }: Props) {
           <p className="mt-6 max-w-2xl text-base leading-7 text-ink sm:text-lg">
             {t("hero.subtitle")}
           </p>
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:justify-center">
             <SocialLink
               network="telegram"
               external
@@ -88,6 +98,14 @@ export default async function LandingPage({ params }: Props) {
               href={TELEGRAM_BOT_URL}
             >
               {t("hero.botCta")}
+            </SocialLink>
+            <SocialLink
+              network="max"
+              external
+              tone="accent"
+              href={maxBotUrl}
+            >
+              {t("hero.maxBotCta")}
             </SocialLink>
             <a
               href={APK_URL}
@@ -129,7 +147,7 @@ export default async function LandingPage({ params }: Props) {
       <section id="channels" className="border-t border-night-line">
         <div className="mx-auto max-w-6xl px-6 py-20">
           <h2 className="text-center text-3xl font-semibold tracking-tight">{t("channels.title")}</h2>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <div className="flex flex-col rounded-2xl border border-night-line bg-night p-8">
               <div className="flex items-center gap-3">
                 <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 ring-1 ring-inset ring-accent/30">
@@ -150,6 +168,24 @@ export default async function LandingPage({ params }: Props) {
             </div>
             <div className="flex flex-col rounded-2xl border border-night-line bg-night p-8">
               <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/10 ring-1 ring-inset ring-accent/30">
+                  <SocialIcon network="max" className="h-6 w-6 text-muted" />
+                </span>
+                <h3 className="text-lg font-semibold">{t("channels.maxBotTitle")}</h3>
+              </div>
+              <p className="mt-4 flex-1 text-sm leading-6 text-muted">{t("channels.maxBotText")}</p>
+              <SocialLink
+                network="max"
+                external
+                size="sm"
+                href={maxBotUrl}
+                className="mt-6"
+              >
+                {t("channels.maxBotCta")}
+              </SocialLink>
+            </div>
+            <div className="flex flex-col rounded-2xl border border-night-line bg-night p-8">
+              <div className="flex items-center gap-3">
                 <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-sage/15 text-sage-ink">
                   <AndroidIcon className="h-6 w-6" />
                 </span>
@@ -164,6 +200,30 @@ export default async function LandingPage({ params }: Props) {
                 {t("hero.appCta")}
               </a>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="socials" className="border-t border-night-line bg-night-soft/40">
+        <div className="mx-auto max-w-6xl px-6 py-20 text-center">
+          <h2 className="text-3xl font-semibold tracking-tight">{t("socials.title")}</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-muted">{t("socials.text")}</p>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <SocialLink network="telegram" external href={TELEGRAM_CHANNEL_URL}>
+              Telegram
+            </SocialLink>
+            <SocialLink network="max" external href={maxBotUrl}>
+              MAX
+            </SocialLink>
+            <SocialLink network="instagram" external href={INSTAGRAM_URL}>
+              Instagram
+            </SocialLink>
+            <SocialLink network="youtube" external href={YOUTUBE_URL}>
+              YouTube
+            </SocialLink>
+            <SocialLink network="tiktok" external href={TIKTOK_URL}>
+              TikTok
+            </SocialLink>
           </div>
         </div>
       </section>

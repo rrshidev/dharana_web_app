@@ -8,7 +8,15 @@ import type { ReactNode } from "react";
  * и один <path> в `OUTLINE_ICONS` — кнопки, подложки и hover берут стиль отсюда.
  * Знаки намеренно без фирменных заливок: цвет задаёт CSS (currentColor).
  */
-export type SocialNetwork = "google" | "telegram" | "vk" | "max" | "yandex";
+export type SocialNetwork =
+  | "google"
+  | "telegram"
+  | "vk"
+  | "max"
+  | "yandex"
+  | "instagram"
+  | "youtube"
+  | "tiktok";
 
 const OUTLINE_ICONS: Record<SocialNetwork, ReactNode> = {
   // «G» по форме оригинала: окружность, разрыв справа сверху, горизонтальная
@@ -38,6 +46,25 @@ const OUTLINE_ICONS: Record<SocialNetwork, ReactNode> = {
       <path d="M14 21V3H9.6a5.4 5.4 0 0 0 0 10.8H14" />
       <path d="M9.6 13.8 4.4 21" />
     </>
+  ),
+  // Instagram: скруглённый корпус камеры, объектив и вспышка.
+  instagram: (
+    <>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <path d="M17.2 6.8h.01" />
+    </>
+  ),
+  // YouTube: экран со скруглением и значок воспроизведения.
+  youtube: (
+    <>
+      <rect x="2.5" y="6.5" width="19" height="11" rx="3" />
+      <path d="M10.5 9.5v5l4.8-2.5z" />
+    </>
+  ),
+  // TikTok: стилизованная музыкальная нота.
+  tiktok: (
+    <path d="M14 4v8.2a3.8 3.8 0 1 1-3-3.7M14 4a5 5 0 0 0 4 4" />
   ),
 };
 

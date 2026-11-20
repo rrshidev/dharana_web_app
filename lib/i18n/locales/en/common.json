@@ -19,6 +19,7 @@
     "title": "Inhale. Exhale. Practice",
     "subtitle": "Dharana is a companion for your daily yoga practice: an asana catalog with instructions, ready-made sequences, a practice timer and a personal sequence generator.",
     "botCta": "Open in Telegram",
+    "maxBotCta": "Open in MAX",
     "appCta": "Download the app",
     "soundOn": "Mute sound",
     "soundOff": "Unmute sound"
@@ -52,6 +53,9 @@
     "title": "Practice your way",
     "botTitle": "Telegram bot",
     "botText": "Quick asana cards, guided practice with a timer and subscription — right in your favourite messenger.",
+    "maxBotTitle": "MAX bot",
+    "maxBotText": "Asana catalog, asana of the day, yoga basics and search — right in the MAX messenger.",
+    "maxBotCta": "Open the bot",
     "appTitle": "Mobile app",
     "appText": "Full practice, sequences and a generator for Android.",
     "botCta": "Open the bot"
@@ -60,6 +64,10 @@
     "title": "Contacts",
     "text": "Email us — we'll help you find the right practice and answer your questions.",
     "emailCta": "support@dharana.ru"
+  },
+  "socials": {
+    "title": "Follow us",
+    "text": "Subscribe to stay up to date with practices, news and project updates."
   },
   "footer": {
     "rights": "All rights reserved.",

@@ -6,6 +6,11 @@ export const TELEGRAM_BOT_URL = "https://t.me/yogaasana_bot";
 export const MAX_BOT_NAME = process.env.NEXT_PUBLIC_MAX_BOT_NAME ?? "";
 export const MAX_BOT_URL = MAX_BOT_NAME ? `https://max.ru/${MAX_BOT_NAME}` : "";
 
+export const TELEGRAM_CHANNEL_URL = "https://t.me/dharana_yoga";
+export const INSTAGRAM_URL = "https://www.instagram.com/timerasana_bot";
+export const YOUTUBE_URL = "https://youtube.com/channel/UC1q01jpORkhy5hdTo6BaXug?si=J-ySo-FH-V7c0UK2";
+export const TIKTOK_URL = "https://www.tiktok.com/@dharana.project";
+
 export const APK_URL = "/download/dharana.apk";
 
 // Амбиент-видео лендинга (пальмы, первый экран). Файл отдаёт Caddy
